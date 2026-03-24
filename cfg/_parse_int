@@ -1,0 +1,22 @@
+digraph cluster_parse_int {
+	graph [label=_parse_int]
+	96 [label="#96
+\"\"\"Convert string to int without int().\"\"\"
+negative = s.startswith('-')
+digits = s[1:] if negative or s.startswith('+') else s
+result = 0
+"]
+	97 [label="#97
+for ch in digits:
+"]
+	98 [label="#98
+result = result * 10 + (ord(ch) - ord('0'))
+"]
+	98 -> 97 [label=""]
+	97 -> 98 [label=digits]
+	99 [label="#99
+return -result if negative else result
+"]
+	97 -> 99 [label=""]
+	96 -> 97 [label=""]
+}
