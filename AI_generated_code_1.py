@@ -23,8 +23,102 @@ This program is intentionally written as a substantial single-file system with
 explicit control flow, helper methods, branching logic, loops, and validation
 to support static analysis tasks such as call graph, CFG, and dependency analysis.
 """
+"""
+Prompt to generate the code:
+You are generating a standalone Python program.
 
+Your task is to write a complete Python program for a Course Registration and Enrollment Management System.
+
+The program must be substantial and nontrivial: it should be at least 300 lines of actual code, and preferably around 400-700 lines. The code should be complex enough to support static analysis such as call graph construction, control flow graph construction, and dependency analysis. Therefore, the code must contain many functions, meaningful inter-function calls, branching logic, loops, validation checks, and data flow across functions.
+
+Important constraints:
+1. Use Python only.
+2. Use only the Python standard library.
+3. Do not use external libraries.
+4. Do not make any network requests or API calls.
+5. Do not rely on GUI frameworks or heavy UI code.
+6. Keep the interface simple, such as a command-line menu or text-based interaction.
+7. Put everything in a single Python file.
+8. The code must be executable and self-contained.
+
+Program topic:
+Build a Course Registration and Enrollment Management System for a university.
+
+The program should model and support realistic academic registration operations, including the following core entities and behaviors:
+
+Entities:
+- Student
+- Course
+- Instructor
+- Section or Class Offering
+- Enrollment record
+
+Core features:
+- Add and remove students
+- Add and remove courses
+- Create course sections with meeting times, instructor, capacity, and semester
+- Register a student for a course section
+- Drop a student from a course section
+- Maintain a waitlist when a section is full
+- Check for prerequisite satisfaction before registration
+- Check for schedule conflicts before registration
+- Enforce maximum credit limits
+- Record completed courses for students
+- Track enrollment counts and available seats
+- Promote students from waitlist when seats open
+- Search/list courses and student schedules
+- Generate reports such as:
+  - student schedule
+  - course roster
+  - open sections
+  - overloaded students
+  - waitlisted students
+- Save system state to a local JSON file and load it back
+
+Required structural goals:
+- Use multiple classes and helper functions
+- Include substantial control flow:
+  - nested conditionals
+  - loops
+  - validation branches
+  - nontrivial update logic
+- Include meaningful data dependencies:
+  - registration decisions should depend on prerequisites, schedule conflicts, capacity, and credit limits
+  - waitlist promotion should depend on seat changes
+  - reporting should depend on enrollment state
+- Avoid writing a trivial CRUD app; the program should include real policy logic
+
+Suggested design components:
+- Student class
+- Course class
+- Section class
+- RegistrationSystem class
+- utility/helper functions for validation and conflict detection
+- serialization/deserialization functions
+- CLI command loop
+
+Important implementation requirements:
+- Code should be clean and readable
+- Include docstrings for major classes/functions
+- Include comments where logic is non-obvious
+- Use type hints where reasonable
+- Avoid excessive metaprogramming or reflection
+- Avoid dynamically generating code
+- Avoid overly compact or clever code; make the control flow explicit and analyzable
+- Do not use inheritance unless it clearly improves structure
+- Prefer explicit function calls over deeply nested anonymous logic
+
+Also include:
+1. A small hardcoded demo dataset in the main block so the program can be run immediately.
+2. A simple text menu so a user can try common operations.
+3. Several validation/error-handling branches.
+4. A brief note at the top describing the program architecture.
+
+Do not provide explanation outside the code. Output only the complete Python code in one file.
+
+"""
 from __future__ import annotations
+
 
 import json
 from dataclasses import dataclass, field
