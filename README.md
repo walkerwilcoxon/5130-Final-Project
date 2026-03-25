@@ -43,3 +43,40 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     codeql database create codeql-db --language=python --source-root=.
     codeql query run example_query.ql --database=codeql-db 
     ``` -->
+
+
+# Program Dependency Graphs
+
+We use [Joern](https://docs.joern.io/frontends/python/) on Python code to export PDGs.
+
+## Install
+
+```Bash
+# Install Joern
+mkdir joern && cd joern
+curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
+chmod u+x joern-install.sh
+./joern-install.sh --interactive
+
+
+
+# Install Java and Graphviz
+sudo apt update
+sudo apt install default-jdk graphviz
+
+# If you don't have sudo permission, I installed them with anaconda/miniconda
+conda install -c conda-forge openjdk 
+conda install -c conda-forge graphviz
+```
+
+## Parse a Python project
+
+```Bash
+mkdir $PROJ_DIR
+cp json_parser.py $PROJ_DIR # put the python code under a project dir
+
+joern-parse $PROJ_DIR --language PYTHONSRC
+joern-export --repr pdg --out $OUTPUT_DIR # output .dot files are saved at $OUTPUT_DIR
+
+bash pdg/draw_pdg.sh # render dot files to pvg files.
+```
