@@ -51,7 +51,7 @@ We use [Joern](https://docs.joern.io/frontends/python/) on Python code to export
 
 ## Install
 
-```Bash
+```bash
 # Install Joern
 mkdir joern && cd joern
 curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
@@ -71,7 +71,7 @@ conda install -c conda-forge graphviz
 
 ## Parse a Python project
 
-```Bash
+```bash
 mkdir $PROJ_DIR
 cp json_parser.py $PROJ_DIR # put the python code under a project dir
 
