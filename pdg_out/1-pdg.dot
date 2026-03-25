@@ -1,0 +1,12 @@
+digraph "&lt;body&gt;" {  
+node [shape="rect"];  
+"107374182401" [label = <METHOD, 24<BR/>&lt;body&gt;> ]
+"124554051585" [label = <METHOD_RETURN, 24<BR/>ANY> ]
+"111669149696" [label = <PARAM, 24<BR/>cls> ]
+"30064771096" [label = <&lt;operator&gt;.assignment, 25<BR/>__init__ = def __init__(...)> ]
+  "111669149696" -> "124554051585"  [ label = "DDG: cls"] 
+  "30064771096" -> "124554051585"  [ label = "DDG: __init__"] 
+  "30064771096" -> "124554051585"  [ label = "DDG: __init__ = def __init__(...)"] 
+  "107374182401" -> "111669149696"  [ label = "DDG: "] 
+  "107374182401" -> "30064771096"  [ label = "DDG: "] 
+}

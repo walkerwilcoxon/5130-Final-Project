@@ -1,0 +1,18 @@
+digraph "peek&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182419" [label = <METHOD, 40<BR/>peek&lt;metaClassAdapter&gt;> ]
+"124554051603" [label = <METHOD_RETURN, 40<BR/>ANY> ]
+"111669149731" [label = <PARAM, 40<BR/>cls> ]
+"111669149732" [label = <PARAM, 40<BR/>self> ]
+"141733920782" [label = <RETURN, 40<BR/>return peek(self)> ]
+"30064771159" [label = <json_parser.py:&lt;module&gt;.Parser.peek, 40<BR/>peek(self)> ]
+  "141733920782" -> "124554051603"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149731" -> "124554051603"  [ label = "DDG: cls"] 
+  "30064771159" -> "124554051603"  [ label = "DDG: self"] 
+  "30064771159" -> "124554051603"  [ label = "DDG: peek(self)"] 
+  "107374182419" -> "111669149731"  [ label = "DDG: "] 
+  "107374182419" -> "111669149732"  [ label = "DDG: "] 
+  "30064771159" -> "141733920782"  [ label = "DDG: peek(self)"] 
+  "111669149732" -> "30064771159"  [ label = "DDG: self"] 
+  "107374182419" -> "30064771159"  [ label = "DDG: "] 
+}

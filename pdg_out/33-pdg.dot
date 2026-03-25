@@ -1,0 +1,21 @@
+digraph "__init__" {  
+node [shape="rect"];  
+"107374182433" [label = <METHOD, 344<BR/>__init__> ]
+"124554051617" [label = <METHOD_RETURN, 344<BR/>ANY> ]
+"111669149747" [label = <PARAM, 344<BR/>self> ]
+"30064771586" [label = <&lt;operator&gt;.assignment, 345<BR/>self.passed = 0> ]
+"30064771588" [label = <&lt;operator&gt;.assignment, 346<BR/>self.failed = 0> ]
+"30064771591" [label = <&lt;operator&gt;.assignment, 347<BR/>self.errors = []> ]
+  "111669149747" -> "124554051617"  [ label = "DDG: self"] 
+  "30064771586" -> "124554051617"  [ label = "DDG: self.passed"] 
+  "30064771586" -> "124554051617"  [ label = "DDG: self.passed = 0"] 
+  "30064771588" -> "124554051617"  [ label = "DDG: self.failed"] 
+  "30064771588" -> "124554051617"  [ label = "DDG: self.failed = 0"] 
+  "30064771591" -> "124554051617"  [ label = "DDG: self.errors"] 
+  "30064771591" -> "124554051617"  [ label = "DDG: []"] 
+  "30064771591" -> "124554051617"  [ label = "DDG: self.errors = []"] 
+  "107374182433" -> "111669149747"  [ label = "DDG: "] 
+  "107374182433" -> "30064771586"  [ label = "DDG: "] 
+  "107374182433" -> "30064771588"  [ label = "DDG: "] 
+  "107374182433" -> "30064771591"  [ label = "DDG: "] 
+}

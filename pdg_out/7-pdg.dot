@@ -1,0 +1,20 @@
+digraph "__init__" {  
+node [shape="rect"];  
+"107374182407" [label = <METHOD, 36<BR/>__init__> ]
+"124554051591" [label = <METHOD_RETURN, 36<BR/>ANY> ]
+"111669149710" [label = <PARAM, 36<BR/>self> ]
+"111669149711" [label = <PARAM, 36<BR/>source> ]
+"30064771107" [label = <&lt;operator&gt;.assignment, 37<BR/>self.source = source> ]
+"30064771109" [label = <&lt;operator&gt;.assignment, 38<BR/>self.pos = 0> ]
+  "111669149710" -> "124554051591"  [ label = "DDG: self"] 
+  "30064771107" -> "124554051591"  [ label = "DDG: self.source"] 
+  "30064771107" -> "124554051591"  [ label = "DDG: source"] 
+  "30064771107" -> "124554051591"  [ label = "DDG: self.source = source"] 
+  "30064771109" -> "124554051591"  [ label = "DDG: self.pos"] 
+  "30064771109" -> "124554051591"  [ label = "DDG: self.pos = 0"] 
+  "107374182407" -> "111669149710"  [ label = "DDG: "] 
+  "107374182407" -> "111669149711"  [ label = "DDG: "] 
+  "111669149711" -> "30064771107"  [ label = "DDG: source"] 
+  "107374182407" -> "30064771107"  [ label = "DDG: "] 
+  "107374182407" -> "30064771109"  [ label = "DDG: "] 
+}

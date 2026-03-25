@@ -1,0 +1,17 @@
+digraph "remaining" {  
+node [shape="rect"];  
+"107374182412" [label = <METHOD, 61<BR/>remaining> ]
+"124554051596" [label = <METHOD_RETURN, 61<BR/>ANY> ]
+"111669149717" [label = <PARAM, 61<BR/>self> ]
+"141733920775" [label = <RETURN, 62<BR/>return self.source[self.pos:]> ]
+"30064771147" [label = <&lt;operator&gt;.slice, 62<BR/>self.source[self.pos:]> ]
+  "141733920775" -> "124554051596"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149717" -> "124554051596"  [ label = "DDG: self"] 
+  "30064771147" -> "124554051596"  [ label = "DDG: self.source"] 
+  "30064771147" -> "124554051596"  [ label = "DDG: self.pos"] 
+  "30064771147" -> "124554051596"  [ label = "DDG: self.source[self.pos:]"] 
+  "107374182412" -> "111669149717"  [ label = "DDG: "] 
+  "30064771147" -> "141733920775"  [ label = "DDG: self.source[self.pos:]"] 
+  "111669149717" -> "30064771147"  [ label = "DDG: self"] 
+  "107374182412" -> "30064771147"  [ label = "DDG: "] 
+}

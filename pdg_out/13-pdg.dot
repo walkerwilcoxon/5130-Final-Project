@@ -1,0 +1,15 @@
+digraph "&lt;metaClassCallHandler&gt;" {  
+node [shape="rect"];  
+"107374182413" [label = <METHOD, 36<BR/>&lt;metaClassCallHandler&gt;> ]
+"124554051597" [label = <METHOD_RETURN, 36<BR/>json_parser.py:&lt;module&gt;.Parser> ]
+"111669149718" [label = <PARAM, 36<BR/>source> ]
+"141733920776" [label = <RETURN, 36<BR/>return class Parser&lt;meta&gt;(...).&lt;fakeNew&gt;(source)> ]
+"30064771150" [label = <, 36<BR/>class Parser&lt;meta&gt;(...).&lt;fakeNew&gt;(source)> ]
+  "141733920776" -> "124554051597"  [ label = "DDG: &lt;RET&gt;"] 
+  "30064771150" -> "124554051597"  [ label = "DDG: source"] 
+  "30064771150" -> "124554051597"  [ label = "DDG: class Parser&lt;meta&gt;(...).&lt;fakeNew&gt;(source)"] 
+  "107374182413" -> "111669149718"  [ label = "DDG: "] 
+  "30064771150" -> "141733920776"  [ label = "DDG: class Parser&lt;meta&gt;(...).&lt;fakeNew&gt;(source)"] 
+  "107374182413" -> "30064771150"  [ label = "DDG: "] 
+  "111669149718" -> "30064771150"  [ label = "DDG: source"] 
+}

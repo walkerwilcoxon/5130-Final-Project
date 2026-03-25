@@ -1,0 +1,18 @@
+digraph "eof&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182417" [label = <METHOD, 58<BR/>eof&lt;metaClassAdapter&gt;> ]
+"124554051601" [label = <METHOD_RETURN, 58<BR/>ANY> ]
+"111669149726" [label = <PARAM, 58<BR/>cls> ]
+"111669149727" [label = <PARAM, 58<BR/>self> ]
+"141733920780" [label = <RETURN, 58<BR/>return eof(self)> ]
+"30064771157" [label = <json_parser.py:&lt;module&gt;.Parser.eof, 58<BR/>eof(self)> ]
+  "141733920780" -> "124554051601"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149726" -> "124554051601"  [ label = "DDG: cls"] 
+  "30064771157" -> "124554051601"  [ label = "DDG: self"] 
+  "30064771157" -> "124554051601"  [ label = "DDG: eof(self)"] 
+  "107374182417" -> "111669149726"  [ label = "DDG: "] 
+  "107374182417" -> "111669149727"  [ label = "DDG: "] 
+  "30064771157" -> "141733920780"  [ label = "DDG: eof(self)"] 
+  "111669149727" -> "30064771157"  [ label = "DDG: self"] 
+  "107374182417" -> "30064771157"  [ label = "DDG: "] 
+}

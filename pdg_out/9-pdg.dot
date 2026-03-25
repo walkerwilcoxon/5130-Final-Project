@@ -1,0 +1,23 @@
+digraph "advance" {  
+node [shape="rect"];  
+"107374182409" [label = <METHOD, 45<BR/>advance> ]
+"124554051593" [label = <METHOD_RETURN, 45<BR/>ANY> ]
+"111669149713" [label = <PARAM, 45<BR/>self> ]
+"30064771122" [label = <&lt;operator&gt;.assignment, 46<BR/>ch = self.source[self.pos]> ]
+"30064771124" [label = <&lt;operator&gt;.assignmentPlus, 47<BR/>self.pos += 1> ]
+"141733920773" [label = <RETURN, 48<BR/>return ch> ]
+"68719476787" [label = <IDENTIFIER, 48<BR/>ch<BR/>return ch> ]
+  "141733920773" -> "124554051593"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149713" -> "124554051593"  [ label = "DDG: self"] 
+  "30064771122" -> "124554051593"  [ label = "DDG: ch"] 
+  "30064771122" -> "124554051593"  [ label = "DDG: self.source[self.pos]"] 
+  "30064771122" -> "124554051593"  [ label = "DDG: ch = self.source[self.pos]"] 
+  "30064771124" -> "124554051593"  [ label = "DDG: self.pos"] 
+  "30064771124" -> "124554051593"  [ label = "DDG: self.pos += 1"] 
+  "107374182409" -> "111669149713"  [ label = "DDG: "] 
+  "107374182409" -> "30064771124"  [ label = "DDG: "] 
+  "68719476787" -> "141733920773"  [ label = "DDG: ch"] 
+  "111669149713" -> "30064771124"  [ label = "DDG: self"] 
+  "30064771122" -> "68719476787"  [ label = "DDG: ch"] 
+  "107374182409" -> "68719476787"  [ label = "DDG: "] 
+}

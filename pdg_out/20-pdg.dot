@@ -1,0 +1,18 @@
+digraph "remaining&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182420" [label = <METHOD, 61<BR/>remaining&lt;metaClassAdapter&gt;> ]
+"124554051604" [label = <METHOD_RETURN, 61<BR/>ANY> ]
+"111669149733" [label = <PARAM, 61<BR/>cls> ]
+"111669149734" [label = <PARAM, 61<BR/>self> ]
+"141733920783" [label = <RETURN, 61<BR/>return remaining(self)> ]
+"30064771160" [label = <json_parser.py:&lt;module&gt;.Parser.remaining, 61<BR/>remaining(self)> ]
+  "141733920783" -> "124554051604"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149733" -> "124554051604"  [ label = "DDG: cls"] 
+  "30064771160" -> "124554051604"  [ label = "DDG: self"] 
+  "30064771160" -> "124554051604"  [ label = "DDG: remaining(self)"] 
+  "107374182420" -> "111669149733"  [ label = "DDG: "] 
+  "107374182420" -> "111669149734"  [ label = "DDG: "] 
+  "30064771160" -> "141733920783"  [ label = "DDG: remaining(self)"] 
+  "111669149734" -> "30064771160"  [ label = "DDG: self"] 
+  "107374182420" -> "30064771160"  [ label = "DDG: "] 
+}

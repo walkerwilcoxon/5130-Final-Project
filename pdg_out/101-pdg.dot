@@ -1,0 +1,4 @@
+digraph "lstrip" {  
+node [shape="rect"];  
+
+}

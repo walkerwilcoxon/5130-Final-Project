@@ -1,0 +1,11 @@
+digraph "&lt;metaClassCallHandler&gt;" {  
+node [shape="rect"];  
+"107374182437" [label = <METHOD, 344<BR/>&lt;metaClassCallHandler&gt;> ]
+"124554051621" [label = <METHOD_RETURN, 344<BR/>json_parser.py:&lt;module&gt;.TestResult> ]
+"141733920803" [label = <RETURN, 344<BR/>return class TestResult&lt;meta&gt;(...).&lt;fakeNew&gt;()> ]
+"30064771640" [label = <, 344<BR/>class TestResult&lt;meta&gt;(...).&lt;fakeNew&gt;()> ]
+  "141733920803" -> "124554051621"  [ label = "DDG: &lt;RET&gt;"] 
+  "30064771640" -> "124554051621"  [ label = "DDG: class TestResult&lt;meta&gt;(...).&lt;fakeNew&gt;()"] 
+  "30064771640" -> "141733920803"  [ label = "DDG: class TestResult&lt;meta&gt;(...).&lt;fakeNew&gt;()"] 
+  "107374182437" -> "30064771640"  [ label = "DDG: "] 
+}

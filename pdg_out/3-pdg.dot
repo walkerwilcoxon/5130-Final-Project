@@ -1,0 +1,19 @@
+digraph "&lt;metaClassCallHandler&gt;" {  
+node [shape="rect"];  
+"107374182403" [label = <METHOD, 25<BR/>&lt;metaClassCallHandler&gt;> ]
+"124554051587" [label = <METHOD_RETURN, 25<BR/>json_parser.py:&lt;module&gt;.JSONParseError> ]
+"111669149700" [label = <PARAM, 25<BR/>message> ]
+"111669149701" [label = <PARAM, 25<BR/>pos> ]
+"141733920768" [label = <RETURN, 25<BR/>return class JSONParseError&lt;meta&gt;(...).&lt;fakeNew...> ]
+"30064771098" [label = <, 25<BR/>class JSONParseError&lt;meta&gt;(...).&lt;fakeNew&gt;(messa...> ]
+  "141733920768" -> "124554051587"  [ label = "DDG: &lt;RET&gt;"] 
+  "30064771098" -> "124554051587"  [ label = "DDG: message"] 
+  "30064771098" -> "124554051587"  [ label = "DDG: pos"] 
+  "30064771098" -> "124554051587"  [ label = "DDG: class JSONParseError&lt;meta&gt;(...).&lt;fakeNew&gt;(message, pos)"] 
+  "107374182403" -> "111669149700"  [ label = "DDG: "] 
+  "107374182403" -> "111669149701"  [ label = "DDG: "] 
+  "30064771098" -> "141733920768"  [ label = "DDG: class JSONParseError&lt;meta&gt;(...).&lt;fakeNew&gt;(message, pos)"] 
+  "107374182403" -> "30064771098"  [ label = "DDG: "] 
+  "111669149700" -> "30064771098"  [ label = "DDG: message"] 
+  "111669149701" -> "30064771098"  [ label = "DDG: pos"] 
+}

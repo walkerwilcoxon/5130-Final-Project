@@ -1,0 +1,22 @@
+digraph "eof" {  
+node [shape="rect"];  
+"107374182411" [label = <METHOD, 58<BR/>eof> ]
+"124554051595" [label = <METHOD_RETURN, 58<BR/>ANY> ]
+"111669149716" [label = <PARAM, 58<BR/>self> ]
+"141733920774" [label = <RETURN, 59<BR/>return self.pos &gt;= len(self.source)> ]
+"30064771143" [label = <&lt;operator&gt;.greaterEqualsThan, 59<BR/>self.pos &gt;= len(self.source)> ]
+"68719476804" [label = <IDENTIFIER, 59<BR/>len<BR/>len(self.source)> ]
+"30064771142" [label = <len, 59<BR/>len(self.source)> ]
+  "141733920774" -> "124554051595"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149716" -> "124554051595"  [ label = "DDG: self"] 
+  "30064771143" -> "124554051595"  [ label = "DDG: self.pos"] 
+  "30064771142" -> "124554051595"  [ label = "DDG: self.source"] 
+  "30064771143" -> "124554051595"  [ label = "DDG: len(self.source)"] 
+  "30064771143" -> "124554051595"  [ label = "DDG: self.pos &gt;= len(self.source)"] 
+  "107374182411" -> "111669149716"  [ label = "DDG: "] 
+  "30064771143" -> "141733920774"  [ label = "DDG: self.pos &gt;= len(self.source)"] 
+  "111669149716" -> "30064771143"  [ label = "DDG: self"] 
+  "30064771142" -> "30064771143"  [ label = "DDG: self.source"] 
+  "107374182411" -> "68719476804"  [ label = "DDG: "] 
+  "111669149716" -> "30064771142"  [ label = "DDG: self"] 
+}

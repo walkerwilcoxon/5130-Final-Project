@@ -1,0 +1,22 @@
+digraph "__init__&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182415" [label = <METHOD, 36<BR/>__init__&lt;metaClassAdapter&gt;> ]
+"124554051599" [label = <METHOD_RETURN, 36<BR/>ANY> ]
+"111669149721" [label = <PARAM, 36<BR/>cls> ]
+"111669149722" [label = <PARAM, 36<BR/>self> ]
+"111669149723" [label = <PARAM, 36<BR/>source> ]
+"141733920778" [label = <RETURN, 36<BR/>return __init__(self, source)> ]
+"30064771155" [label = <json_parser.py:&lt;module&gt;.Parser.__init__, 36<BR/>__init__(self, source)> ]
+  "141733920778" -> "124554051599"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149721" -> "124554051599"  [ label = "DDG: cls"] 
+  "30064771155" -> "124554051599"  [ label = "DDG: self"] 
+  "30064771155" -> "124554051599"  [ label = "DDG: source"] 
+  "30064771155" -> "124554051599"  [ label = "DDG: __init__(self, source)"] 
+  "107374182415" -> "111669149721"  [ label = "DDG: "] 
+  "107374182415" -> "111669149722"  [ label = "DDG: "] 
+  "107374182415" -> "111669149723"  [ label = "DDG: "] 
+  "30064771155" -> "141733920778"  [ label = "DDG: __init__(self, source)"] 
+  "111669149722" -> "30064771155"  [ label = "DDG: self"] 
+  "107374182415" -> "30064771155"  [ label = "DDG: "] 
+  "111669149723" -> "30064771155"  [ label = "DDG: source"] 
+}

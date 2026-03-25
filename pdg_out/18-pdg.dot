@@ -1,0 +1,22 @@
+digraph "expect&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182418" [label = <METHOD, 50<BR/>expect&lt;metaClassAdapter&gt;> ]
+"124554051602" [label = <METHOD_RETURN, 50<BR/>ANY> ]
+"111669149728" [label = <PARAM, 50<BR/>cls> ]
+"111669149729" [label = <PARAM, 50<BR/>self> ]
+"111669149730" [label = <PARAM, 50<BR/>ch> ]
+"141733920781" [label = <RETURN, 50<BR/>return expect(self, ch)> ]
+"30064771158" [label = <json_parser.py:&lt;module&gt;.Parser.expect, 50<BR/>expect(self, ch)> ]
+  "141733920781" -> "124554051602"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149728" -> "124554051602"  [ label = "DDG: cls"] 
+  "30064771158" -> "124554051602"  [ label = "DDG: self"] 
+  "30064771158" -> "124554051602"  [ label = "DDG: ch"] 
+  "30064771158" -> "124554051602"  [ label = "DDG: expect(self, ch)"] 
+  "107374182418" -> "111669149728"  [ label = "DDG: "] 
+  "107374182418" -> "111669149729"  [ label = "DDG: "] 
+  "107374182418" -> "111669149730"  [ label = "DDG: "] 
+  "30064771158" -> "141733920781"  [ label = "DDG: expect(self, ch)"] 
+  "111669149729" -> "30064771158"  [ label = "DDG: self"] 
+  "107374182418" -> "30064771158"  [ label = "DDG: "] 
+  "111669149730" -> "30064771158"  [ label = "DDG: ch"] 
+}
