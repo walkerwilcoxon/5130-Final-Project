@@ -1,0 +1,32 @@
+digraph clustershow_menu {
+	graph [label=show_menu]
+	658 [label="#658
+print(\"\"\"
+=== Course Registration and Enrollment Management System ===\"\"\")
+print('1.  List all students')
+print('2.  List all courses')
+print('3.  List all instructors')
+print('4.  List all sections')
+print('5.  Add student')
+print('6.  Remove student')
+print('7.  Add course')
+print('8.  Remove course')
+print('9.  Add instructor')
+print('10. Remove instructor')
+print('11. Create section')
+print('12. Remove section')
+print('13. Register student in section')
+print('14. Drop student from section')
+print('15. Record completed course for student')
+print('16. Search courses')
+print('17. Student schedule report')
+print('18. Course roster report')
+print('19. Open sections report')
+print('20. Overloaded students report')
+print('21. Waitlisted students report')
+print('22. System summary report')
+print('23. Save to JSON')
+print('24. Load from JSON')
+print('0.  Exit')
+"]
+}

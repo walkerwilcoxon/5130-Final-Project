@@ -1,0 +1,16 @@
+digraph clustersafe_int_input {
+	graph [label=safe_int_input]
+	55 [label="#55
+\"\"\"Read an integer from input; return None if invalid.\"\"\"
+raw = input(prompt).strip()
+try:
+"]
+	56 [label="#56
+return int(raw)
+"]
+	55 -> 56 [label="(True)"]
+	57 [label="#57
+return None
+"]
+	55 -> 57 [label=ValueError]
+}

@@ -1,0 +1,55 @@
+digraph clustermeeting_times_conflict {
+	graph [label=meeting_times_conflict]
+	37 [label="#37
+\"\"\"
+    Return True if any meeting time in two lists conflicts on the same day.
+    \"\"\"
+parsed_a: List[Tuple[str, int, int]] = []
+parsed_b: List[Tuple[str, int, int]] = []
+"]
+	38 [label="#38
+for entry in times_a:
+"]
+	39 [label="#39
+parsed_a.append(parse_meeting_time(entry))
+"]
+	39 -> 38 [label=""]
+	38 -> 39 [label=times_a]
+	40 [label="#40
+for entry in times_b:
+"]
+	41 [label="#41
+parsed_b.append(parse_meeting_time(entry))
+"]
+	41 -> 40 [label=""]
+	40 -> 41 [label=times_b]
+	42 [label="#42
+for day_a, start_a, end_a in parsed_a:
+"]
+	43 [label="#43
+for day_b, start_b, end_b in parsed_b:
+"]
+	45 [label="#45
+if day_a != day_b:
+"]
+	48 [label="#48
+if start_a < end_b and start_b < end_a:
+"]
+	49 [label="#49
+return True
+"]
+	48 -> 49 [label="start_a < end_b and start_b < end_a"]
+	48 -> 43 [label="(not (start_a < end_b and start_b < end_a))"]
+	45 -> 48 [label="(day_a == day_b)"]
+	45 -> 43 [label="day_a != day_b"]
+	43 -> 45 [label=parsed_b]
+	43 -> 42 [label=""]
+	42 -> 43 [label=parsed_a]
+	44 [label="#44
+return False
+"]
+	42 -> 44 [label=""]
+	40 -> 42 [label=""]
+	38 -> 40 [label=""]
+	37 -> 38 [label=""]
+}

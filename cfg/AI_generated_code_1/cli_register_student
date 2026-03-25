@@ -1,0 +1,9 @@
+digraph clustercli_register_student {
+	graph [label=cli_register_student]
+	705 [label="#705
+student_id = input('Student ID: ').strip()
+section_id = input('Section ID: ').strip()
+success, message = system.register_student(student_id, section_id)
+print(message if success else f'Registration failed: {message}')
+"]
+}

@@ -1,0 +1,7 @@
+digraph clustercli_student_schedule_report {
+	graph [label=cli_student_schedule_report]
+	723 [label="#723
+student_id = input('Student ID: ').strip()
+print(system.report_student_schedule(student_id))
+"]
+}

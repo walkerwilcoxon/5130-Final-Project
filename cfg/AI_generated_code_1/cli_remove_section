@@ -1,0 +1,8 @@
+digraph clustercli_remove_section {
+	graph [label=cli_remove_section]
+	702 [label="#702
+section_id = input('Section ID to remove: ').strip()
+success = system.remove_section(section_id)
+print('Section removed.' if success else 'Failed to remove section.')
+"]
+}

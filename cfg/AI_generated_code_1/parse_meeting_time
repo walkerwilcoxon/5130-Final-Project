@@ -1,0 +1,49 @@
+digraph clusterparse_meeting_time {
+	graph [label=parse_meeting_time]
+	21 [label="#21
+\"\"\"
+    Parse a meeting time string like 'Mon 09:00-10:15' into structured form.
+    Returns (day, start_minutes, end_minutes).
+    \"\"\"
+raw = entry.strip()
+pieces = raw.split()
+if len(pieces) != 2:
+"]
+	22 [label="#22
+raise ValueError(f\"Meeting time must look like 'Mon 09:00-10:15': {entry}\")
+"]
+	21 -> 22 [label="len(pieces) != 2"]
+	23 [label="#23
+day = pieces[0]
+if day not in VALID_DAYS:
+"]
+	25 [label="#25
+raise ValueError(f\"Invalid day '{day}' in meeting time '{entry}'\")
+"]
+	23 -> 25 [label="day not in VALID_DAYS"]
+	26 [label="#26
+time_range = pieces[1]
+if '-' not in time_range:
+"]
+	28 [label="#28
+raise ValueError(f\"Time range must contain '-': {entry}\")
+"]
+	26 -> 28 [label="'-' not in time_range"]
+	29 [label="#29
+start_str, end_str = time_range.split('-', 1)
+start_min = parse_time_string(start_str)
+end_min = parse_time_string(end_str)
+if end_min <= start_min:
+"]
+	31 [label="#31
+raise ValueError(f'End time must be after start time: {entry}')
+"]
+	29 -> 31 [label="end_min <= start_min"]
+	32 [label="#32
+return day, start_min, end_min
+"]
+	29 -> 32 [label="(end_min > start_min)"]
+	26 -> 29 [label="('-' in time_range)"]
+	23 -> 26 [label="(day in VALID_DAYS)"]
+	21 -> 23 [label="(len(pieces) == 2)"]
+}

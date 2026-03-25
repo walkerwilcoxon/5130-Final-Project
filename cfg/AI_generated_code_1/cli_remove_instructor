@@ -1,0 +1,18 @@
+digraph clustercli_remove_instructor {
+	graph [label=cli_remove_instructor]
+	685 [label="#685
+instructor_id = input('Instructor ID to remove: ').strip()
+success = system.remove_instructor(instructor_id)
+if success:
+"]
+	686 [label="#686
+print('Instructor removed.')
+"]
+	685 -> 686 [label=success]
+	688 [label="#688
+print(
+    'Failed to remove instructor. It may not exist, or sections may still reference it.'
+    )
+"]
+	685 -> 688 [label="(not success)"]
+}

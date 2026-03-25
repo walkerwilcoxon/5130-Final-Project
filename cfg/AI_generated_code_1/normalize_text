@@ -1,0 +1,7 @@
+digraph clusternormalize_text {
+	graph [label=normalize_text]
+	3 [label="#3
+\"\"\"Normalize a text value for comparison/search.\"\"\"
+return ' '.join(value.strip().split()).lower()
+"]
+}

@@ -1,0 +1,44 @@
+digraph clusterbuild_demo_system {
+	graph [label=build_demo_system]
+	654 [label="#654
+\"\"\"Create a hardcoded demo dataset so the program runs immediately.\"\"\"
+system = RegistrationSystem()
+system.add_instructor('I100', 'Dr. Alice Nguyen', 'Computer Science')
+system.add_instructor('I101', 'Dr. Ben Carter', 'Mathematics')
+system.add_instructor('I102', 'Dr. Priya Shah', 'Computer Science')
+system.add_instructor('I103', 'Dr. Elena Ruiz', 'Physics')
+system.add_course('CS101', 'Introduction to Programming', 3)
+system.add_course('CS201', 'Data Structures', 4, ['CS101'])
+system.add_course('CS301', 'Algorithms', 4, ['CS201'])
+system.add_course('MATH201', 'Discrete Mathematics', 3)
+system.add_course('PHYS101', 'General Physics I', 4)
+system.add_course('CS240', 'Computer Organization', 3, ['CS101'])
+system.add_student('S001', 'John Kim', 18)
+system.add_student('S002', 'Maya Patel', 15)
+system.add_student('S003', 'Luis Gomez', 12)
+system.add_student('S004', 'Nina Brooks', 18)
+system.record_completed_course('S001', 'CS101')
+system.record_completed_course('S001', 'MATH201')
+system.record_completed_course('S002', 'CS101')
+system.record_completed_course('S002', 'CS201')
+system.record_completed_course('S003', 'MATH201')
+system.record_completed_course('S004', 'CS101')
+system.create_section('SEC1001', 'CS201', 'Fall 2026', 'I100', [
+    'Mon 09:00-10:15', 'Wed 09:00-10:15'], 2)
+system.create_section('SEC1002', 'CS301', 'Fall 2026', 'I102', [
+    'Tue 10:30-11:45', 'Thu 10:30-11:45'], 2)
+system.create_section('SEC1003', 'MATH201', 'Fall 2026', 'I101', [
+    'Mon 11:00-12:15', 'Wed 11:00-12:15'], 3)
+system.create_section('SEC1004', 'PHYS101', 'Fall 2026', 'I103', [
+    'Tue 09:00-10:15', 'Thu 09:00-10:15'], 2)
+system.create_section('SEC1005', 'CS240', 'Fall 2026', 'I100', [
+    'Mon 09:30-10:45', 'Wed 09:30-10:45'], 2)
+system.register_student('S001', 'SEC1001')
+system.register_student('S002', 'SEC1002')
+system.register_student('S003', 'SEC1003')
+system.register_student('S004', 'SEC1001')
+system.register_student('S002', 'SEC1001')
+system.register_student('S001', 'SEC1004')
+return system
+"]
+}

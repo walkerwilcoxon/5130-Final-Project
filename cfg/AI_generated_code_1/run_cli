@@ -1,0 +1,247 @@
+digraph clusterrun_cli {
+	graph [label=run_cli]
+	736 [label="#736
+while True:
+"]
+	737 [label="#737
+show_menu()
+choice = input('Select an option: ').strip()
+if choice == '1':
+"]
+	739 [label="#739
+system.print_all_students()
+"]
+	739 -> 736 [label=""]
+	737 -> 739 [label="choice == '1'"]
+	741 [label="#741
+if choice == '2':
+"]
+	742 [label="#742
+system.print_all_courses()
+"]
+	742 -> 736 [label=""]
+	741 -> 742 [label="choice == '2'"]
+	744 [label="#744
+if choice == '3':
+"]
+	745 [label="#745
+system.print_all_instructors()
+"]
+	745 -> 736 [label=""]
+	744 -> 745 [label="choice == '3'"]
+	747 [label="#747
+if choice == '4':
+"]
+	748 [label="#748
+system.print_all_sections()
+"]
+	748 -> 736 [label=""]
+	747 -> 748 [label="choice == '4'"]
+	750 [label="#750
+if choice == '5':
+"]
+	751 [label="#751
+cli_add_student(system)
+"]
+	751 -> 736 [label=""]
+	750 -> 751 [label="choice == '5'"]
+	753 [label="#753
+if choice == '6':
+"]
+	754 [label="#754
+cli_remove_student(system)
+"]
+	754 -> 736 [label=""]
+	753 -> 754 [label="choice == '6'"]
+	756 [label="#756
+if choice == '7':
+"]
+	757 [label="#757
+cli_add_course(system)
+"]
+	757 -> 736 [label=""]
+	756 -> 757 [label="choice == '7'"]
+	759 [label="#759
+if choice == '8':
+"]
+	760 [label="#760
+cli_remove_course(system)
+"]
+	760 -> 736 [label=""]
+	759 -> 760 [label="choice == '8'"]
+	762 [label="#762
+if choice == '9':
+"]
+	763 [label="#763
+cli_add_instructor(system)
+"]
+	763 -> 736 [label=""]
+	762 -> 763 [label="choice == '9'"]
+	765 [label="#765
+if choice == '10':
+"]
+	766 [label="#766
+cli_remove_instructor(system)
+"]
+	766 -> 736 [label=""]
+	765 -> 766 [label="choice == '10'"]
+	768 [label="#768
+if choice == '11':
+"]
+	769 [label="#769
+cli_create_section(system)
+"]
+	769 -> 736 [label=""]
+	768 -> 769 [label="choice == '11'"]
+	771 [label="#771
+if choice == '12':
+"]
+	772 [label="#772
+cli_remove_section(system)
+"]
+	772 -> 736 [label=""]
+	771 -> 772 [label="choice == '12'"]
+	774 [label="#774
+if choice == '13':
+"]
+	775 [label="#775
+cli_register_student(system)
+"]
+	775 -> 736 [label=""]
+	774 -> 775 [label="choice == '13'"]
+	777 [label="#777
+if choice == '14':
+"]
+	778 [label="#778
+cli_drop_student(system)
+"]
+	778 -> 736 [label=""]
+	777 -> 778 [label="choice == '14'"]
+	780 [label="#780
+if choice == '15':
+"]
+	781 [label="#781
+cli_record_completed_course(system)
+"]
+	781 -> 736 [label=""]
+	780 -> 781 [label="choice == '15'"]
+	783 [label="#783
+if choice == '16':
+"]
+	784 [label="#784
+cli_search_courses(system)
+"]
+	784 -> 736 [label=""]
+	783 -> 784 [label="choice == '16'"]
+	786 [label="#786
+if choice == '17':
+"]
+	787 [label="#787
+cli_student_schedule_report(system)
+"]
+	787 -> 736 [label=""]
+	786 -> 787 [label="choice == '17'"]
+	789 [label="#789
+if choice == '18':
+"]
+	790 [label="#790
+cli_course_roster_report(system)
+"]
+	790 -> 736 [label=""]
+	789 -> 790 [label="choice == '18'"]
+	792 [label="#792
+if choice == '19':
+"]
+	793 [label="#793
+print(system.report_open_sections())
+"]
+	793 -> 736 [label=""]
+	792 -> 793 [label="choice == '19'"]
+	795 [label="#795
+if choice == '20':
+"]
+	796 [label="#796
+print(system.report_overloaded_students())
+"]
+	796 -> 736 [label=""]
+	795 -> 796 [label="choice == '20'"]
+	798 [label="#798
+if choice == '21':
+"]
+	799 [label="#799
+print(system.report_waitlisted_students())
+"]
+	799 -> 736 [label=""]
+	798 -> 799 [label="choice == '21'"]
+	801 [label="#801
+if choice == '22':
+"]
+	802 [label="#802
+print(system.report_system_summary())
+"]
+	802 -> 736 [label=""]
+	801 -> 802 [label="choice == '22'"]
+	804 [label="#804
+if choice == '23':
+"]
+	805 [label="#805
+cli_save(system)
+"]
+	805 -> 736 [label=""]
+	804 -> 805 [label="choice == '23'"]
+	807 [label="#807
+if choice == '24':
+"]
+	808 [label="#808
+loaded = cli_load()
+if loaded is not None:
+"]
+	814 [label="#814
+system.students = loaded.students
+system.courses = loaded.courses
+system.instructors = loaded.instructors
+system.sections = loaded.sections
+system.enrollment_history = loaded.enrollment_history
+"]
+	814 -> 736 [label=""]
+	808 -> 814 [label="loaded is not None"]
+	808 -> 736 [label="(loaded is None)"]
+	807 -> 808 [label="choice == '24'"]
+	810 [label="#810
+if choice == '0':
+"]
+	811 [label="#811
+print('Exiting.')
+"]
+	810 -> 811 [label="choice == '0'"]
+	813 [label="#813
+print('Invalid choice. Please select a valid menu option.')
+"]
+	813 -> 736 [label=""]
+	810 -> 813 [label="(choice != '0')"]
+	807 -> 810 [label="(choice != '24')"]
+	804 -> 807 [label="(choice != '23')"]
+	801 -> 804 [label="(choice != '22')"]
+	798 -> 801 [label="(choice != '21')"]
+	795 -> 798 [label="(choice != '20')"]
+	792 -> 795 [label="(choice != '19')"]
+	789 -> 792 [label="(choice != '18')"]
+	786 -> 789 [label="(choice != '17')"]
+	783 -> 786 [label="(choice != '16')"]
+	780 -> 783 [label="(choice != '15')"]
+	777 -> 780 [label="(choice != '14')"]
+	774 -> 777 [label="(choice != '13')"]
+	771 -> 774 [label="(choice != '12')"]
+	768 -> 771 [label="(choice != '11')"]
+	765 -> 768 [label="(choice != '10')"]
+	762 -> 765 [label="(choice != '9')"]
+	759 -> 762 [label="(choice != '8')"]
+	756 -> 759 [label="(choice != '7')"]
+	753 -> 756 [label="(choice != '6')"]
+	750 -> 753 [label="(choice != '5')"]
+	747 -> 750 [label="(choice != '4')"]
+	744 -> 747 [label="(choice != '3')"]
+	741 -> 744 [label="(choice != '2')"]
+	737 -> 741 [label="(choice != '1')"]
+	736 -> 737 [label=True]
+}

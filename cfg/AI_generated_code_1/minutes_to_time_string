@@ -1,0 +1,9 @@
+digraph clusterminutes_to_time_string {
+	graph [label=minutes_to_time_string]
+	17 [label="#17
+\"\"\"Convert minutes since midnight to HH:MM.\"\"\"
+hour = value // 60
+minute = value % 60
+return f'{hour:02d}:{minute:02d}'
+"]
+}
