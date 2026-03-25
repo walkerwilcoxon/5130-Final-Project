@@ -1,0 +1,22 @@
+digraph "course_exists&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182512" [label = <METHOD, 564<BR/>course_exists&lt;metaClassAdapter&gt;> ]
+"124554051696" [label = <METHOD_RETURN, 564<BR/>__builtin.bool> ]
+"111669149909" [label = <PARAM, 564<BR/>cls> ]
+"111669149910" [label = <PARAM, 564<BR/>self> ]
+"111669149911" [label = <PARAM, 564<BR/>course_code> ]
+"141733920926" [label = <RETURN, 564<BR/>return course_exists(self, course_code)> ]
+"30064773393" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.course_exists, 564<BR/>course_exists(self, course_code)> ]
+  "141733920926" -> "124554051696"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149909" -> "124554051696"  [ label = "DDG: cls"] 
+  "30064773393" -> "124554051696"  [ label = "DDG: self"] 
+  "30064773393" -> "124554051696"  [ label = "DDG: course_code"] 
+  "30064773393" -> "124554051696"  [ label = "DDG: course_exists(self, course_code)"] 
+  "107374182512" -> "111669149909"  [ label = "DDG: "] 
+  "107374182512" -> "111669149910"  [ label = "DDG: "] 
+  "107374182512" -> "111669149911"  [ label = "DDG: "] 
+  "30064773393" -> "141733920926"  [ label = "DDG: course_exists(self, course_code)"] 
+  "111669149910" -> "30064773393"  [ label = "DDG: self"] 
+  "107374182512" -> "30064773393"  [ label = "DDG: "] 
+  "111669149911" -> "30064773393"  [ label = "DDG: course_code"] 
+}

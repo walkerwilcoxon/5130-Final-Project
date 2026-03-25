@@ -1,0 +1,22 @@
+digraph "remove_course&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182525" [label = <METHOD, 464<BR/>remove_course&lt;metaClassAdapter&gt;> ]
+"124554051709" [label = <METHOD_RETURN, 464<BR/>__builtin.bool> ]
+"111669149955" [label = <PARAM, 464<BR/>cls> ]
+"111669149956" [label = <PARAM, 464<BR/>self> ]
+"111669149957" [label = <PARAM, 464<BR/>course_code> ]
+"141733920939" [label = <RETURN, 464<BR/>return remove_course(self, course_code)> ]
+"30064773406" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.remove_course, 464<BR/>remove_course(self, course_code)> ]
+  "141733920939" -> "124554051709"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149955" -> "124554051709"  [ label = "DDG: cls"] 
+  "30064773406" -> "124554051709"  [ label = "DDG: self"] 
+  "30064773406" -> "124554051709"  [ label = "DDG: course_code"] 
+  "30064773406" -> "124554051709"  [ label = "DDG: remove_course(self, course_code)"] 
+  "107374182525" -> "111669149955"  [ label = "DDG: "] 
+  "107374182525" -> "111669149956"  [ label = "DDG: "] 
+  "107374182525" -> "111669149957"  [ label = "DDG: "] 
+  "30064773406" -> "141733920939"  [ label = "DDG: remove_course(self, course_code)"] 
+  "111669149956" -> "30064773406"  [ label = "DDG: self"] 
+  "107374182525" -> "30064773406"  [ label = "DDG: "] 
+  "111669149957" -> "30064773406"  [ label = "DDG: course_code"] 
+}

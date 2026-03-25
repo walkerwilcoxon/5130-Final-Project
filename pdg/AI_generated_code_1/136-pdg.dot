@@ -1,0 +1,22 @@
+digraph "search_courses&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182536" [label = <METHOD, 889<BR/>search_courses&lt;metaClassAdapter&gt;> ]
+"124554051720" [label = <METHOD_RETURN, 889<BR/>typing.List> ]
+"111669149984" [label = <PARAM, 889<BR/>cls> ]
+"111669149985" [label = <PARAM, 889<BR/>self> ]
+"111669149986" [label = <PARAM, 889<BR/>query> ]
+"141733920950" [label = <RETURN, 889<BR/>return search_courses(self, query)> ]
+"30064773417" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.search_courses, 889<BR/>search_courses(self, query)> ]
+  "141733920950" -> "124554051720"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149984" -> "124554051720"  [ label = "DDG: cls"] 
+  "30064773417" -> "124554051720"  [ label = "DDG: self"] 
+  "30064773417" -> "124554051720"  [ label = "DDG: query"] 
+  "30064773417" -> "124554051720"  [ label = "DDG: search_courses(self, query)"] 
+  "107374182536" -> "111669149984"  [ label = "DDG: "] 
+  "107374182536" -> "111669149985"  [ label = "DDG: "] 
+  "107374182536" -> "111669149986"  [ label = "DDG: "] 
+  "30064773417" -> "141733920950"  [ label = "DDG: search_courses(self, query)"] 
+  "111669149985" -> "30064773417"  [ label = "DDG: self"] 
+  "107374182536" -> "30064773417"  [ label = "DDG: "] 
+  "111669149986" -> "30064773417"  [ label = "DDG: query"] 
+}

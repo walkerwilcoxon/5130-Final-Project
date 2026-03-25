@@ -1,0 +1,18 @@
+digraph "to_dict&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182539" [label = <METHOD, 1074<BR/>to_dict&lt;metaClassAdapter&gt;> ]
+"124554051723" [label = <METHOD_RETURN, 1074<BR/>typing.Dict> ]
+"111669149993" [label = <PARAM, 1074<BR/>cls> ]
+"111669149994" [label = <PARAM, 1074<BR/>self> ]
+"141733920953" [label = <RETURN, 1074<BR/>return to_dict(self)> ]
+"30064773420" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.to_dict, 1074<BR/>to_dict(self)> ]
+  "141733920953" -> "124554051723"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149993" -> "124554051723"  [ label = "DDG: cls"] 
+  "30064773420" -> "124554051723"  [ label = "DDG: self"] 
+  "30064773420" -> "124554051723"  [ label = "DDG: to_dict(self)"] 
+  "107374182539" -> "111669149993"  [ label = "DDG: "] 
+  "107374182539" -> "111669149994"  [ label = "DDG: "] 
+  "30064773420" -> "141733920953"  [ label = "DDG: to_dict(self)"] 
+  "111669149994" -> "30064773420"  [ label = "DDG: self"] 
+  "107374182539" -> "30064773420"  [ label = "DDG: "] 
+}

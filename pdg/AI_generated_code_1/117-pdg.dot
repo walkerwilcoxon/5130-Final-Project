@@ -1,0 +1,22 @@
+digraph "list_student_schedule&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182517" [label = <METHOD, 907<BR/>list_student_schedule&lt;metaClassAdapter&gt;> ]
+"124554051701" [label = <METHOD_RETURN, 907<BR/>typing.List> ]
+"111669149933" [label = <PARAM, 907<BR/>cls> ]
+"111669149934" [label = <PARAM, 907<BR/>self> ]
+"111669149935" [label = <PARAM, 907<BR/>student_id> ]
+"141733920931" [label = <RETURN, 907<BR/>return list_student_schedule(self, student_id)> ]
+"30064773398" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.list_student_schedule, 907<BR/>list_student_schedule(self, student_id)> ]
+  "141733920931" -> "124554051701"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149933" -> "124554051701"  [ label = "DDG: cls"] 
+  "30064773398" -> "124554051701"  [ label = "DDG: self"] 
+  "30064773398" -> "124554051701"  [ label = "DDG: student_id"] 
+  "30064773398" -> "124554051701"  [ label = "DDG: list_student_schedule(self, student_id)"] 
+  "107374182517" -> "111669149933"  [ label = "DDG: "] 
+  "107374182517" -> "111669149934"  [ label = "DDG: "] 
+  "107374182517" -> "111669149935"  [ label = "DDG: "] 
+  "30064773398" -> "141733920931"  [ label = "DDG: list_student_schedule(self, student_id)"] 
+  "111669149934" -> "30064773398"  [ label = "DDG: self"] 
+  "107374182517" -> "30064773398"  [ label = "DDG: "] 
+  "111669149935" -> "30064773398"  [ label = "DDG: student_id"] 
+}

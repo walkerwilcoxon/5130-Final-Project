@@ -1,0 +1,18 @@
+digraph "report_waitlisted_students&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182534" [label = <METHOD, 1032<BR/>report_waitlisted_students&lt;metaClassAdapter&gt;> ]
+"124554051718" [label = <METHOD_RETURN, 1032<BR/>__builtin.str> ]
+"111669149979" [label = <PARAM, 1032<BR/>cls> ]
+"111669149980" [label = <PARAM, 1032<BR/>self> ]
+"141733920948" [label = <RETURN, 1032<BR/>return report_waitlisted_students(self)> ]
+"30064773415" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.report_waitlisted_students, 1032<BR/>report_waitlisted_students(self)> ]
+  "141733920948" -> "124554051718"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149979" -> "124554051718"  [ label = "DDG: cls"] 
+  "30064773415" -> "124554051718"  [ label = "DDG: self"] 
+  "30064773415" -> "124554051718"  [ label = "DDG: report_waitlisted_students(self)"] 
+  "107374182534" -> "111669149979"  [ label = "DDG: "] 
+  "107374182534" -> "111669149980"  [ label = "DDG: "] 
+  "30064773415" -> "141733920948"  [ label = "DDG: report_waitlisted_students(self)"] 
+  "111669149980" -> "30064773415"  [ label = "DDG: self"] 
+  "107374182534" -> "30064773415"  [ label = "DDG: "] 
+}

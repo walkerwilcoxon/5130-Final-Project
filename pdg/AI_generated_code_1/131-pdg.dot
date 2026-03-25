@@ -1,0 +1,18 @@
+digraph "report_overloaded_students&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182531" [label = <METHOD, 1020<BR/>report_overloaded_students&lt;metaClassAdapter&gt;> ]
+"124554051715" [label = <METHOD_RETURN, 1020<BR/>__builtin.str> ]
+"111669149972" [label = <PARAM, 1020<BR/>cls> ]
+"111669149973" [label = <PARAM, 1020<BR/>self> ]
+"141733920945" [label = <RETURN, 1020<BR/>return report_overloaded_students(self)> ]
+"30064773412" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.report_overloaded_students, 1020<BR/>report_overloaded_students(self)> ]
+  "141733920945" -> "124554051715"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149972" -> "124554051715"  [ label = "DDG: cls"] 
+  "30064773412" -> "124554051715"  [ label = "DDG: self"] 
+  "30064773412" -> "124554051715"  [ label = "DDG: report_overloaded_students(self)"] 
+  "107374182531" -> "111669149972"  [ label = "DDG: "] 
+  "107374182531" -> "111669149973"  [ label = "DDG: "] 
+  "30064773412" -> "141733920945"  [ label = "DDG: report_overloaded_students(self)"] 
+  "111669149973" -> "30064773412"  [ label = "DDG: self"] 
+  "107374182531" -> "30064773412"  [ label = "DDG: "] 
+}

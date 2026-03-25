@@ -1,0 +1,22 @@
+digraph "list_sections_for_course&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182516" [label = <METHOD, 899<BR/>list_sections_for_course&lt;metaClassAdapter&gt;> ]
+"124554051700" [label = <METHOD_RETURN, 899<BR/>typing.List> ]
+"111669149930" [label = <PARAM, 899<BR/>cls> ]
+"111669149931" [label = <PARAM, 899<BR/>self> ]
+"111669149932" [label = <PARAM, 899<BR/>course_code> ]
+"141733920930" [label = <RETURN, 899<BR/>return list_sections_for_course(self, course_code)> ]
+"30064773397" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.list_sections_for_course, 899<BR/>list_sections_for_course(self, course_code)> ]
+  "141733920930" -> "124554051700"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149930" -> "124554051700"  [ label = "DDG: cls"] 
+  "30064773397" -> "124554051700"  [ label = "DDG: self"] 
+  "30064773397" -> "124554051700"  [ label = "DDG: course_code"] 
+  "30064773397" -> "124554051700"  [ label = "DDG: list_sections_for_course(self, course_code)"] 
+  "107374182516" -> "111669149930"  [ label = "DDG: "] 
+  "107374182516" -> "111669149931"  [ label = "DDG: "] 
+  "107374182516" -> "111669149932"  [ label = "DDG: "] 
+  "30064773397" -> "141733920930"  [ label = "DDG: list_sections_for_course(self, course_code)"] 
+  "111669149931" -> "30064773397"  [ label = "DDG: self"] 
+  "107374182516" -> "30064773397"  [ label = "DDG: "] 
+  "111669149932" -> "30064773397"  [ label = "DDG: course_code"] 
+}

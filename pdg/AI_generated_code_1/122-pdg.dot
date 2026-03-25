@@ -1,0 +1,22 @@
+digraph "promote_waitlist&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182522" [label = <METHOD, 750<BR/>promote_waitlist&lt;metaClassAdapter&gt;> ]
+"124554051706" [label = <METHOD_RETURN, 750<BR/>__builtin.str> ]
+"111669149944" [label = <PARAM, 750<BR/>cls> ]
+"111669149945" [label = <PARAM, 750<BR/>self> ]
+"111669149946" [label = <PARAM, 750<BR/>section_id> ]
+"141733920936" [label = <RETURN, 750<BR/>return promote_waitlist(self, section_id)> ]
+"30064773403" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.promote_waitlist, 750<BR/>promote_waitlist(self, section_id)> ]
+  "141733920936" -> "124554051706"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149944" -> "124554051706"  [ label = "DDG: cls"] 
+  "30064773403" -> "124554051706"  [ label = "DDG: self"] 
+  "30064773403" -> "124554051706"  [ label = "DDG: section_id"] 
+  "30064773403" -> "124554051706"  [ label = "DDG: promote_waitlist(self, section_id)"] 
+  "107374182522" -> "111669149944"  [ label = "DDG: "] 
+  "107374182522" -> "111669149945"  [ label = "DDG: "] 
+  "107374182522" -> "111669149946"  [ label = "DDG: "] 
+  "30064773403" -> "141733920936"  [ label = "DDG: promote_waitlist(self, section_id)"] 
+  "111669149945" -> "30064773403"  [ label = "DDG: self"] 
+  "107374182522" -> "30064773403"  [ label = "DDG: "] 
+  "111669149946" -> "30064773403"  [ label = "DDG: section_id"] 
+}

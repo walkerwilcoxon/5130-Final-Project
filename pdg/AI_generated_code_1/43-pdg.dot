@@ -1,0 +1,21 @@
+digraph "from_dict" {  
+node [shape="rect"];  
+"107374182443" [label = <METHOD, 394<BR/>from_dict> ]
+"124554051627" [label = <METHOD_RETURN, 394<BR/>AI_generated_code_1.py:&lt;module&gt;.EnrollmentRecord> ]
+"111669149752" [label = <PARAM, 394<BR/>data> ]
+"141733920808" [label = <RETURN, 395<BR/>return EnrollmentRecord( student_id...> ]
+"30064771519" [label = <EnrollmentRecord, 395<BR/>EnrollmentRecord(student_id = data[&quot;student_id&quot;...> ]
+"68719477171" [label = <IDENTIFIER, 395<BR/>EnrollmentRecord<BR/>EnrollmentRecord(student_id = data[&quot;student_id&quot;...> ]
+  "141733920808" -> "124554051627"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149752" -> "124554051627"  [ label = "DDG: data"] 
+  "30064771519" -> "124554051627"  [ label = "DDG: data[&quot;student_id&quot;]"] 
+  "30064771519" -> "124554051627"  [ label = "DDG: data[&quot;section_id&quot;]"] 
+  "30064771519" -> "124554051627"  [ label = "DDG: data[&quot;status&quot;]"] 
+  "30064771519" -> "124554051627"  [ label = "DDG: EnrollmentRecord(student_id = data[&quot;student_id&quot;], section_id = data[&quot;section_id&quot;], status = data[&quot;status&quot;])"] 
+  "107374182443" -> "111669149752"  [ label = "DDG: "] 
+  "30064771519" -> "141733920808"  [ label = "DDG: EnrollmentRecord(student_id = data[&quot;student_id&quot;], section_id = data[&quot;section_id&quot;], status = data[&quot;status&quot;])"] 
+  "30064771529" -> "68719477171"  [ label = "DDG: EnrollmentRecord"] 
+  "30064771530" -> "68719477171"  [ label = "DDG: EnrollmentRecord"] 
+  "107374182443" -> "68719477171"  [ label = "DDG: "] 
+  "111669149752" -> "30064771519"  [ label = "DDG: data"] 
+}

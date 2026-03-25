@@ -1,0 +1,18 @@
+digraph "print_all_instructors&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182519" [label = <METHOD, 1153<BR/>print_all_instructors&lt;metaClassAdapter&gt;> ]
+"124554051703" [label = <METHOD_RETURN, 1153<BR/>ANY> ]
+"111669149938" [label = <PARAM, 1153<BR/>cls> ]
+"111669149939" [label = <PARAM, 1153<BR/>self> ]
+"141733920933" [label = <RETURN, 1153<BR/>return print_all_instructors(self)> ]
+"30064773400" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.print_all_instructors, 1153<BR/>print_all_instructors(self)> ]
+  "141733920933" -> "124554051703"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149938" -> "124554051703"  [ label = "DDG: cls"] 
+  "30064773400" -> "124554051703"  [ label = "DDG: self"] 
+  "30064773400" -> "124554051703"  [ label = "DDG: print_all_instructors(self)"] 
+  "107374182519" -> "111669149938"  [ label = "DDG: "] 
+  "107374182519" -> "111669149939"  [ label = "DDG: "] 
+  "30064773400" -> "141733920933"  [ label = "DDG: print_all_instructors(self)"] 
+  "111669149939" -> "30064773400"  [ label = "DDG: self"] 
+  "107374182519" -> "30064773400"  [ label = "DDG: "] 
+}

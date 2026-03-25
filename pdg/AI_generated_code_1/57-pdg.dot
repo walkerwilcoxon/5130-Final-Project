@@ -1,0 +1,20 @@
+digraph "student_exists" {  
+node [shape="rect"];  
+"107374182457" [label = <METHOD, 561<BR/>student_exists> ]
+"124554051641" [label = <METHOD_RETURN, 561<BR/>__builtin.bool> ]
+"111669149786" [label = <PARAM, 561<BR/>self> ]
+"111669149787" [label = <PARAM, 561<BR/>student_id> ]
+"141733920840" [label = <RETURN, 562<BR/>return student_id in self.students> ]
+"30064771737" [label = <&lt;operator&gt;.in, 562<BR/>student_id in self.students> ]
+  "141733920840" -> "124554051641"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149786" -> "124554051641"  [ label = "DDG: self"] 
+  "30064771737" -> "124554051641"  [ label = "DDG: student_id"] 
+  "30064771737" -> "124554051641"  [ label = "DDG: self.students"] 
+  "30064771737" -> "124554051641"  [ label = "DDG: student_id in self.students"] 
+  "107374182457" -> "111669149786"  [ label = "DDG: "] 
+  "107374182457" -> "111669149787"  [ label = "DDG: "] 
+  "30064771737" -> "141733920840"  [ label = "DDG: student_id in self.students"] 
+  "111669149787" -> "30064771737"  [ label = "DDG: student_id"] 
+  "107374182457" -> "30064771737"  [ label = "DDG: "] 
+  "111669149786" -> "30064771737"  [ label = "DDG: self"] 
+}

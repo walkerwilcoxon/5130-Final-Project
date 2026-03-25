@@ -1,0 +1,22 @@
+digraph "save_to_file&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182535" [label = <METHOD, 1095<BR/>save_to_file&lt;metaClassAdapter&gt;> ]
+"124554051719" [label = <METHOD_RETURN, 1095<BR/>typing.Tuple> ]
+"111669149981" [label = <PARAM, 1095<BR/>cls> ]
+"111669149982" [label = <PARAM, 1095<BR/>self> ]
+"111669149983" [label = <PARAM, 1095<BR/>filename> ]
+"141733920949" [label = <RETURN, 1095<BR/>return save_to_file(self, filename)> ]
+"30064773416" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.save_to_file, 1095<BR/>save_to_file(self, filename)> ]
+  "141733920949" -> "124554051719"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149981" -> "124554051719"  [ label = "DDG: cls"] 
+  "30064773416" -> "124554051719"  [ label = "DDG: self"] 
+  "30064773416" -> "124554051719"  [ label = "DDG: filename"] 
+  "30064773416" -> "124554051719"  [ label = "DDG: save_to_file(self, filename)"] 
+  "107374182535" -> "111669149981"  [ label = "DDG: "] 
+  "107374182535" -> "111669149982"  [ label = "DDG: "] 
+  "107374182535" -> "111669149983"  [ label = "DDG: "] 
+  "30064773416" -> "141733920949"  [ label = "DDG: save_to_file(self, filename)"] 
+  "111669149982" -> "30064773416"  [ label = "DDG: self"] 
+  "107374182535" -> "30064773416"  [ label = "DDG: "] 
+  "111669149983" -> "30064773416"  [ label = "DDG: filename"] 
+}

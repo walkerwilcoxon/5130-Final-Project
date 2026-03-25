@@ -1,0 +1,22 @@
+digraph "report_course_roster&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182529" [label = <METHOD, 961<BR/>report_course_roster&lt;metaClassAdapter&gt;> ]
+"124554051713" [label = <METHOD_RETURN, 961<BR/>__builtin.str> ]
+"111669149967" [label = <PARAM, 961<BR/>cls> ]
+"111669149968" [label = <PARAM, 961<BR/>self> ]
+"111669149969" [label = <PARAM, 961<BR/>section_id> ]
+"141733920943" [label = <RETURN, 961<BR/>return report_course_roster(self, section_id)> ]
+"30064773410" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.report_course_roster, 961<BR/>report_course_roster(self, section_id)> ]
+  "141733920943" -> "124554051713"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149967" -> "124554051713"  [ label = "DDG: cls"] 
+  "30064773410" -> "124554051713"  [ label = "DDG: self"] 
+  "30064773410" -> "124554051713"  [ label = "DDG: section_id"] 
+  "30064773410" -> "124554051713"  [ label = "DDG: report_course_roster(self, section_id)"] 
+  "107374182529" -> "111669149967"  [ label = "DDG: "] 
+  "107374182529" -> "111669149968"  [ label = "DDG: "] 
+  "107374182529" -> "111669149969"  [ label = "DDG: "] 
+  "30064773410" -> "141733920943"  [ label = "DDG: report_course_roster(self, section_id)"] 
+  "111669149968" -> "30064773410"  [ label = "DDG: self"] 
+  "107374182529" -> "30064773410"  [ label = "DDG: "] 
+  "111669149969" -> "30064773410"  [ label = "DDG: section_id"] 
+}

@@ -1,0 +1,18 @@
+digraph "print_all_courses&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182518" [label = <METHOD, 1129<BR/>print_all_courses&lt;metaClassAdapter&gt;> ]
+"124554051702" [label = <METHOD_RETURN, 1129<BR/>ANY> ]
+"111669149936" [label = <PARAM, 1129<BR/>cls> ]
+"111669149937" [label = <PARAM, 1129<BR/>self> ]
+"141733920932" [label = <RETURN, 1129<BR/>return print_all_courses(self)> ]
+"30064773399" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.print_all_courses, 1129<BR/>print_all_courses(self)> ]
+  "141733920932" -> "124554051702"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149936" -> "124554051702"  [ label = "DDG: cls"] 
+  "30064773399" -> "124554051702"  [ label = "DDG: self"] 
+  "30064773399" -> "124554051702"  [ label = "DDG: print_all_courses(self)"] 
+  "107374182518" -> "111669149936"  [ label = "DDG: "] 
+  "107374182518" -> "111669149937"  [ label = "DDG: "] 
+  "30064773399" -> "141733920932"  [ label = "DDG: print_all_courses(self)"] 
+  "111669149937" -> "30064773399"  [ label = "DDG: self"] 
+  "107374182518" -> "30064773399"  [ label = "DDG: "] 
+}

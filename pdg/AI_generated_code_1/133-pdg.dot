@@ -1,0 +1,18 @@
+digraph "report_system_summary&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182533" [label = <METHOD, 1051<BR/>report_system_summary&lt;metaClassAdapter&gt;> ]
+"124554051717" [label = <METHOD_RETURN, 1051<BR/>__builtin.str> ]
+"111669149977" [label = <PARAM, 1051<BR/>cls> ]
+"111669149978" [label = <PARAM, 1051<BR/>self> ]
+"141733920947" [label = <RETURN, 1051<BR/>return report_system_summary(self)> ]
+"30064773414" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.report_system_summary, 1051<BR/>report_system_summary(self)> ]
+  "141733920947" -> "124554051717"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149977" -> "124554051717"  [ label = "DDG: cls"] 
+  "30064773414" -> "124554051717"  [ label = "DDG: self"] 
+  "30064773414" -> "124554051717"  [ label = "DDG: report_system_summary(self)"] 
+  "107374182533" -> "111669149977"  [ label = "DDG: "] 
+  "107374182533" -> "111669149978"  [ label = "DDG: "] 
+  "30064773414" -> "141733920947"  [ label = "DDG: report_system_summary(self)"] 
+  "111669149978" -> "30064773414"  [ label = "DDG: self"] 
+  "107374182533" -> "30064773414"  [ label = "DDG: "] 
+}

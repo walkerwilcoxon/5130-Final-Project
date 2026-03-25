@@ -1,0 +1,22 @@
+digraph "current_credit_load&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182415" [label = <METHOD, 235<BR/>current_credit_load&lt;metaClassAdapter&gt;> ]
+"124554051599" [label = <METHOD_RETURN, 235<BR/>__builtin.int> ]
+"111669149714" [label = <PARAM, 235<BR/>cls> ]
+"111669149715" [label = <PARAM, 235<BR/>self> ]
+"111669149716" [label = <PARAM, 235<BR/>sections> ]
+"141733920784" [label = <RETURN, 235<BR/>return current_credit_load(self, sections)> ]
+"30064771349" [label = <AI_generated_code_1.py:&lt;module&gt;.Student.current_credit_load, 235<BR/>current_credit_load(self, sections)> ]
+  "141733920784" -> "124554051599"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149714" -> "124554051599"  [ label = "DDG: cls"] 
+  "30064771349" -> "124554051599"  [ label = "DDG: self"] 
+  "30064771349" -> "124554051599"  [ label = "DDG: sections"] 
+  "30064771349" -> "124554051599"  [ label = "DDG: current_credit_load(self, sections)"] 
+  "107374182415" -> "111669149714"  [ label = "DDG: "] 
+  "107374182415" -> "111669149715"  [ label = "DDG: "] 
+  "107374182415" -> "111669149716"  [ label = "DDG: "] 
+  "30064771349" -> "141733920784"  [ label = "DDG: current_credit_load(self, sections)"] 
+  "111669149715" -> "30064771349"  [ label = "DDG: self"] 
+  "107374182415" -> "30064771349"  [ label = "DDG: "] 
+  "111669149716" -> "30064771349"  [ label = "DDG: sections"] 
+}

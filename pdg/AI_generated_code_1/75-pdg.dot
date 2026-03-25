@@ -1,0 +1,16 @@
+digraph "&lt;lambda&gt;1" {  
+node [shape="rect"];  
+"107374182475" [label = <METHOD, 904<BR/>&lt;lambda&gt;1> ]
+"124554051659" [label = <METHOD_RETURN, 904<BR/>ANY> ]
+"111669149834" [label = <PARAM, 904<BR/>s> ]
+"141733920881" [label = <RETURN, 904<BR/>lambda s: (s.semester, s.section_id)> ]
+"30064772452" [label = <&lt;operator&gt;.tupleLiteral, 904<BR/>(s.semester, s.section_id)> ]
+  "141733920881" -> "124554051659"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149834" -> "124554051659"  [ label = "DDG: s"] 
+  "30064772452" -> "124554051659"  [ label = "DDG: s.semester"] 
+  "30064772452" -> "124554051659"  [ label = "DDG: s.section_id"] 
+  "30064772452" -> "124554051659"  [ label = "DDG: (s.semester, s.section_id)"] 
+  "107374182475" -> "111669149834"  [ label = "DDG: "] 
+  "30064772452" -> "141733920881"  [ label = "DDG: (s.semester, s.section_id)"] 
+  "111669149834" -> "30064772452"  [ label = "DDG: s"] 
+}

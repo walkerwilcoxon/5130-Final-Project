@@ -1,0 +1,18 @@
+digraph "seats_available&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182439" [label = <METHOD, 343<BR/>seats_available&lt;metaClassAdapter&gt;> ]
+"124554051623" [label = <METHOD_RETURN, 343<BR/>__builtin.int> ]
+"111669149746" [label = <PARAM, 343<BR/>cls> ]
+"111669149747" [label = <PARAM, 343<BR/>self> ]
+"141733920805" [label = <RETURN, 343<BR/>return seats_available(self)> ]
+"30064771500" [label = <AI_generated_code_1.py:&lt;module&gt;.Section.seats_available, 343<BR/>seats_available(self)> ]
+  "141733920805" -> "124554051623"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149746" -> "124554051623"  [ label = "DDG: cls"] 
+  "30064771500" -> "124554051623"  [ label = "DDG: self"] 
+  "30064771500" -> "124554051623"  [ label = "DDG: seats_available(self)"] 
+  "107374182439" -> "111669149746"  [ label = "DDG: "] 
+  "107374182439" -> "111669149747"  [ label = "DDG: "] 
+  "30064771500" -> "141733920805"  [ label = "DDG: seats_available(self)"] 
+  "111669149747" -> "30064771500"  [ label = "DDG: self"] 
+  "107374182439" -> "30064771500"  [ label = "DDG: "] 
+}

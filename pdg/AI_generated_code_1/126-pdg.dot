@@ -1,0 +1,22 @@
+digraph "remove_instructor&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182526" [label = <METHOD, 488<BR/>remove_instructor&lt;metaClassAdapter&gt;> ]
+"124554051710" [label = <METHOD_RETURN, 488<BR/>__builtin.bool> ]
+"111669149958" [label = <PARAM, 488<BR/>cls> ]
+"111669149959" [label = <PARAM, 488<BR/>self> ]
+"111669149960" [label = <PARAM, 488<BR/>instructor_id> ]
+"141733920940" [label = <RETURN, 488<BR/>return remove_instructor(self, instructor_id)> ]
+"30064773407" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.remove_instructor, 488<BR/>remove_instructor(self, instructor_id)> ]
+  "141733920940" -> "124554051710"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149958" -> "124554051710"  [ label = "DDG: cls"] 
+  "30064773407" -> "124554051710"  [ label = "DDG: self"] 
+  "30064773407" -> "124554051710"  [ label = "DDG: instructor_id"] 
+  "30064773407" -> "124554051710"  [ label = "DDG: remove_instructor(self, instructor_id)"] 
+  "107374182526" -> "111669149958"  [ label = "DDG: "] 
+  "107374182526" -> "111669149959"  [ label = "DDG: "] 
+  "107374182526" -> "111669149960"  [ label = "DDG: "] 
+  "30064773407" -> "141733920940"  [ label = "DDG: remove_instructor(self, instructor_id)"] 
+  "111669149959" -> "30064773407"  [ label = "DDG: self"] 
+  "107374182526" -> "30064773407"  [ label = "DDG: "] 
+  "111669149960" -> "30064773407"  [ label = "DDG: instructor_id"] 
+}

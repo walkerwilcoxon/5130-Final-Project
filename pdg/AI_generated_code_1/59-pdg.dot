@@ -1,0 +1,20 @@
+digraph "section_exists" {  
+node [shape="rect"];  
+"107374182459" [label = <METHOD, 567<BR/>section_exists> ]
+"124554051643" [label = <METHOD_RETURN, 567<BR/>__builtin.bool> ]
+"111669149790" [label = <PARAM, 567<BR/>self> ]
+"111669149791" [label = <PARAM, 567<BR/>section_id> ]
+"141733920842" [label = <RETURN, 568<BR/>return section_id in self.sections> ]
+"30064771743" [label = <&lt;operator&gt;.in, 568<BR/>section_id in self.sections> ]
+  "141733920842" -> "124554051643"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149790" -> "124554051643"  [ label = "DDG: self"] 
+  "30064771743" -> "124554051643"  [ label = "DDG: section_id"] 
+  "30064771743" -> "124554051643"  [ label = "DDG: self.sections"] 
+  "30064771743" -> "124554051643"  [ label = "DDG: section_id in self.sections"] 
+  "107374182459" -> "111669149790"  [ label = "DDG: "] 
+  "107374182459" -> "111669149791"  [ label = "DDG: "] 
+  "30064771743" -> "141733920842"  [ label = "DDG: section_id in self.sections"] 
+  "111669149791" -> "30064771743"  [ label = "DDG: section_id"] 
+  "107374182459" -> "30064771743"  [ label = "DDG: "] 
+  "111669149790" -> "30064771743"  [ label = "DDG: self"] 
+}

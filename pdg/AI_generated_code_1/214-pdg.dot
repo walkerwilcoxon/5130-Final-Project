@@ -1,0 +1,4 @@
+digraph "staticmethod" {  
+node [shape="rect"];  
+
+}

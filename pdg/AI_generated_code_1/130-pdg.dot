@@ -1,0 +1,18 @@
+digraph "report_open_sections&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182530" [label = <METHOD, 1004<BR/>report_open_sections&lt;metaClassAdapter&gt;> ]
+"124554051714" [label = <METHOD_RETURN, 1004<BR/>__builtin.str> ]
+"111669149970" [label = <PARAM, 1004<BR/>cls> ]
+"111669149971" [label = <PARAM, 1004<BR/>self> ]
+"141733920944" [label = <RETURN, 1004<BR/>return report_open_sections(self)> ]
+"30064773411" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.report_open_sections, 1004<BR/>report_open_sections(self)> ]
+  "141733920944" -> "124554051714"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149970" -> "124554051714"  [ label = "DDG: cls"] 
+  "30064773411" -> "124554051714"  [ label = "DDG: self"] 
+  "30064773411" -> "124554051714"  [ label = "DDG: report_open_sections(self)"] 
+  "107374182530" -> "111669149970"  [ label = "DDG: "] 
+  "107374182530" -> "111669149971"  [ label = "DDG: "] 
+  "30064773411" -> "141733920944"  [ label = "DDG: report_open_sections(self)"] 
+  "111669149971" -> "30064773411"  [ label = "DDG: self"] 
+  "107374182530" -> "30064773411"  [ label = "DDG: "] 
+}

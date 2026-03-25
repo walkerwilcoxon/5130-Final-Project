@@ -1,0 +1,22 @@
+digraph "has_completed&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182416" [label = <METHOD, 244<BR/>has_completed&lt;metaClassAdapter&gt;> ]
+"124554051600" [label = <METHOD_RETURN, 244<BR/>__builtin.bool> ]
+"111669149717" [label = <PARAM, 244<BR/>cls> ]
+"111669149718" [label = <PARAM, 244<BR/>self> ]
+"111669149719" [label = <PARAM, 244<BR/>course_code> ]
+"141733920785" [label = <RETURN, 244<BR/>return has_completed(self, course_code)> ]
+"30064771350" [label = <AI_generated_code_1.py:&lt;module&gt;.Student.has_completed, 244<BR/>has_completed(self, course_code)> ]
+  "141733920785" -> "124554051600"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149717" -> "124554051600"  [ label = "DDG: cls"] 
+  "30064771350" -> "124554051600"  [ label = "DDG: self"] 
+  "30064771350" -> "124554051600"  [ label = "DDG: course_code"] 
+  "30064771350" -> "124554051600"  [ label = "DDG: has_completed(self, course_code)"] 
+  "107374182416" -> "111669149717"  [ label = "DDG: "] 
+  "107374182416" -> "111669149718"  [ label = "DDG: "] 
+  "107374182416" -> "111669149719"  [ label = "DDG: "] 
+  "30064771350" -> "141733920785"  [ label = "DDG: has_completed(self, course_code)"] 
+  "111669149718" -> "30064771350"  [ label = "DDG: self"] 
+  "107374182416" -> "30064771350"  [ label = "DDG: "] 
+  "111669149719" -> "30064771350"  [ label = "DDG: course_code"] 
+}

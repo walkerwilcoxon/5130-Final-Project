@@ -1,0 +1,22 @@
+digraph "section_exists&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182537" [label = <METHOD, 567<BR/>section_exists&lt;metaClassAdapter&gt;> ]
+"124554051721" [label = <METHOD_RETURN, 567<BR/>__builtin.bool> ]
+"111669149987" [label = <PARAM, 567<BR/>cls> ]
+"111669149988" [label = <PARAM, 567<BR/>self> ]
+"111669149989" [label = <PARAM, 567<BR/>section_id> ]
+"141733920951" [label = <RETURN, 567<BR/>return section_exists(self, section_id)> ]
+"30064773418" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.section_exists, 567<BR/>section_exists(self, section_id)> ]
+  "141733920951" -> "124554051721"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149987" -> "124554051721"  [ label = "DDG: cls"] 
+  "30064773418" -> "124554051721"  [ label = "DDG: self"] 
+  "30064773418" -> "124554051721"  [ label = "DDG: section_id"] 
+  "30064773418" -> "124554051721"  [ label = "DDG: section_exists(self, section_id)"] 
+  "107374182537" -> "111669149987"  [ label = "DDG: "] 
+  "107374182537" -> "111669149988"  [ label = "DDG: "] 
+  "107374182537" -> "111669149989"  [ label = "DDG: "] 
+  "30064773418" -> "141733920951"  [ label = "DDG: section_exists(self, section_id)"] 
+  "111669149988" -> "30064773418"  [ label = "DDG: self"] 
+  "107374182537" -> "30064773418"  [ label = "DDG: "] 
+  "111669149989" -> "30064773418"  [ label = "DDG: section_id"] 
+}

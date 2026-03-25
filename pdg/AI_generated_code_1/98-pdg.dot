@@ -1,0 +1,10 @@
+digraph "&lt;lambda&gt;9" {  
+node [shape="rect"];  
+"107374182498" [label = <METHOD, 1158<BR/>&lt;lambda&gt;9> ]
+"124554051682" [label = <METHOD_RETURN, 1158<BR/>ANY> ]
+"111669149861" [label = <PARAM, 1158<BR/>i> ]
+"141733920912" [label = <RETURN, 1158<BR/>lambda i: i.instructor_id> ]
+  "141733920912" -> "124554051682"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149861" -> "124554051682"  [ label = "DDG: i"] 
+  "107374182498" -> "111669149861"  [ label = "DDG: "] 
+}

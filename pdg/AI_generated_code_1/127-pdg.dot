@@ -1,0 +1,22 @@
+digraph "remove_section&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182527" [label = <METHOD, 540<BR/>remove_section&lt;metaClassAdapter&gt;> ]
+"124554051711" [label = <METHOD_RETURN, 540<BR/>__builtin.bool> ]
+"111669149961" [label = <PARAM, 540<BR/>cls> ]
+"111669149962" [label = <PARAM, 540<BR/>self> ]
+"111669149963" [label = <PARAM, 540<BR/>section_id> ]
+"141733920941" [label = <RETURN, 540<BR/>return remove_section(self, section_id)> ]
+"30064773408" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.remove_section, 540<BR/>remove_section(self, section_id)> ]
+  "141733920941" -> "124554051711"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149961" -> "124554051711"  [ label = "DDG: cls"] 
+  "30064773408" -> "124554051711"  [ label = "DDG: self"] 
+  "30064773408" -> "124554051711"  [ label = "DDG: section_id"] 
+  "30064773408" -> "124554051711"  [ label = "DDG: remove_section(self, section_id)"] 
+  "107374182527" -> "111669149961"  [ label = "DDG: "] 
+  "107374182527" -> "111669149962"  [ label = "DDG: "] 
+  "107374182527" -> "111669149963"  [ label = "DDG: "] 
+  "30064773408" -> "141733920941"  [ label = "DDG: remove_section(self, section_id)"] 
+  "111669149962" -> "30064773408"  [ label = "DDG: self"] 
+  "107374182527" -> "30064773408"  [ label = "DDG: "] 
+  "111669149963" -> "30064773408"  [ label = "DDG: section_id"] 
+}

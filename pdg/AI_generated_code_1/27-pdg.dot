@@ -1,0 +1,21 @@
+digraph "from_dict" {  
+node [shape="rect"];  
+"107374182427" [label = <METHOD, 322<BR/>from_dict> ]
+"124554051611" [label = <METHOD_RETURN, 322<BR/>AI_generated_code_1.py:&lt;module&gt;.Instructor> ]
+"111669149734" [label = <PARAM, 322<BR/>data> ]
+"141733920794" [label = <RETURN, 323<BR/>return Instructor( instructor_id=da...> ]
+"30064771413" [label = <Instructor, 323<BR/>Instructor(instructor_id = data[&quot;instructor_id&quot;...> ]
+"68719477072" [label = <IDENTIFIER, 323<BR/>Instructor<BR/>Instructor(instructor_id = data[&quot;instructor_id&quot;...> ]
+  "141733920794" -> "124554051611"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149734" -> "124554051611"  [ label = "DDG: data"] 
+  "30064771413" -> "124554051611"  [ label = "DDG: data[&quot;instructor_id&quot;]"] 
+  "30064771413" -> "124554051611"  [ label = "DDG: data[&quot;name&quot;]"] 
+  "30064771413" -> "124554051611"  [ label = "DDG: data[&quot;department&quot;]"] 
+  "30064771413" -> "124554051611"  [ label = "DDG: Instructor(instructor_id = data[&quot;instructor_id&quot;], name = data[&quot;name&quot;], department = data[&quot;department&quot;])"] 
+  "107374182427" -> "111669149734"  [ label = "DDG: "] 
+  "30064771413" -> "141733920794"  [ label = "DDG: Instructor(instructor_id = data[&quot;instructor_id&quot;], name = data[&quot;name&quot;], department = data[&quot;department&quot;])"] 
+  "30064771423" -> "68719477072"  [ label = "DDG: Instructor"] 
+  "30064771424" -> "68719477072"  [ label = "DDG: Instructor"] 
+  "107374182427" -> "68719477072"  [ label = "DDG: "] 
+  "111669149734" -> "30064771413"  [ label = "DDG: data"] 
+}

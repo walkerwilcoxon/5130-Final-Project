@@ -1,0 +1,18 @@
+digraph "__init__&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182501" [label = <METHOD, 409<BR/>__init__&lt;metaClassAdapter&gt;> ]
+"124554051685" [label = <METHOD_RETURN, 409<BR/>ANY> ]
+"111669149863" [label = <PARAM, 409<BR/>cls> ]
+"111669149864" [label = <PARAM, 409<BR/>self> ]
+"141733920915" [label = <RETURN, 409<BR/>return __init__(self)> ]
+"30064773382" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.__init__, 409<BR/>__init__(self)> ]
+  "141733920915" -> "124554051685"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149863" -> "124554051685"  [ label = "DDG: cls"] 
+  "30064773382" -> "124554051685"  [ label = "DDG: self"] 
+  "30064773382" -> "124554051685"  [ label = "DDG: __init__(self)"] 
+  "107374182501" -> "111669149863"  [ label = "DDG: "] 
+  "107374182501" -> "111669149864"  [ label = "DDG: "] 
+  "30064773382" -> "141733920915"  [ label = "DDG: __init__(self)"] 
+  "111669149864" -> "30064773382"  [ label = "DDG: self"] 
+  "107374182501" -> "30064773382"  [ label = "DDG: "] 
+}

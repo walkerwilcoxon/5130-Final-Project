@@ -1,0 +1,22 @@
+digraph "has_completed" {  
+node [shape="rect"];  
+"107374182409" [label = <METHOD, 244<BR/>has_completed> ]
+"124554051593" [label = <METHOD_RETURN, 244<BR/>__builtin.bool> ]
+"111669149706" [label = <PARAM, 244<BR/>self> ]
+"111669149707" [label = <PARAM, 244<BR/>course_code> ]
+"90194313294" [label = <LITERAL, 245<BR/>&quot;&quot;&quot;Check if student completed a course.&quot;&quot;&quot;<BR/>> ]
+"141733920777" [label = <RETURN, 246<BR/>return course_code in self.completed_courses> ]
+"30064771283" [label = <&lt;operator&gt;.in, 246<BR/>course_code in self.completed_courses> ]
+  "141733920777" -> "124554051593"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149706" -> "124554051593"  [ label = "DDG: self"] 
+  "30064771283" -> "124554051593"  [ label = "DDG: course_code"] 
+  "30064771283" -> "124554051593"  [ label = "DDG: self.completed_courses"] 
+  "30064771283" -> "124554051593"  [ label = "DDG: course_code in self.completed_courses"] 
+  "107374182409" -> "111669149706"  [ label = "DDG: "] 
+  "107374182409" -> "111669149707"  [ label = "DDG: "] 
+  "107374182409" -> "90194313294"  [ label = "DDG: "] 
+  "30064771283" -> "141733920777"  [ label = "DDG: course_code in self.completed_courses"] 
+  "111669149707" -> "30064771283"  [ label = "DDG: course_code"] 
+  "107374182409" -> "30064771283"  [ label = "DDG: "] 
+  "111669149706" -> "30064771283"  [ label = "DDG: self"] 
+}

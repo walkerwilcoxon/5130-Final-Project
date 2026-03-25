@@ -1,0 +1,4 @@
+digraph "strip" {  
+node [shape="rect"];  
+
+}

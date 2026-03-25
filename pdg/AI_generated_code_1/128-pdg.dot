@@ -1,0 +1,22 @@
+digraph "remove_student&lt;metaClassAdapter&gt;" {  
+node [shape="rect"];  
+"107374182528" [label = <METHOD, 430<BR/>remove_student&lt;metaClassAdapter&gt;> ]
+"124554051712" [label = <METHOD_RETURN, 430<BR/>__builtin.bool> ]
+"111669149964" [label = <PARAM, 430<BR/>cls> ]
+"111669149965" [label = <PARAM, 430<BR/>self> ]
+"111669149966" [label = <PARAM, 430<BR/>student_id> ]
+"141733920942" [label = <RETURN, 430<BR/>return remove_student(self, student_id)> ]
+"30064773409" [label = <AI_generated_code_1.py:&lt;module&gt;.RegistrationSystem.remove_student, 430<BR/>remove_student(self, student_id)> ]
+  "141733920942" -> "124554051712"  [ label = "DDG: &lt;RET&gt;"] 
+  "111669149964" -> "124554051712"  [ label = "DDG: cls"] 
+  "30064773409" -> "124554051712"  [ label = "DDG: self"] 
+  "30064773409" -> "124554051712"  [ label = "DDG: student_id"] 
+  "30064773409" -> "124554051712"  [ label = "DDG: remove_student(self, student_id)"] 
+  "107374182528" -> "111669149964"  [ label = "DDG: "] 
+  "107374182528" -> "111669149965"  [ label = "DDG: "] 
+  "107374182528" -> "111669149966"  [ label = "DDG: "] 
+  "30064773409" -> "141733920942"  [ label = "DDG: remove_student(self, student_id)"] 
+  "111669149965" -> "30064773409"  [ label = "DDG: self"] 
+  "107374182528" -> "30064773409"  [ label = "DDG: "] 
+  "111669149966" -> "30064773409"  [ label = "DDG: student_id"] 
+}
