@@ -1,0 +1,23 @@
+digraph clustercli_add_course {
+	graph [label=cli_add_course]
+	670 [label="#670
+course_code = input('Course code: ').strip()
+title = input('Course title: ').strip()
+credits = safe_int_input('Credits: ')
+if credits is None:
+"]
+	671 [label="#671
+print('Invalid credits.')
+return
+"]
+	670 -> 671 [label="credits is None"]
+	672 [label="#672
+prereq_raw = input(
+    'Prerequisites (comma-separated course codes, blank for none): ').strip()
+prereqs = [p.strip() for p in prereq_raw.split(',') if p.strip()
+    ] if prereq_raw else []
+success = system.add_course(course_code, title, credits, prereqs)
+print('Course added.' if success else 'Failed to add course.')
+"]
+	670 -> 672 [label="(credits is not None)"]
+}

@@ -1,0 +1,8 @@
+digraph clustercli_remove_student {
+	graph [label=cli_remove_student]
+	667 [label="#667
+student_id = input('Student ID to remove: ').strip()
+success = system.remove_student(student_id)
+print('Student removed.' if success else 'Failed to remove student.')
+"]
+}

@@ -1,0 +1,8 @@
+digraph clustercli_save {
+	graph [label=cli_save]
+	729 [label="#729
+filename = input('Filename to save JSON: ').strip()
+success, message = system.save_to_file(filename)
+print(message if success else f'Save failed: {message}')
+"]
+}

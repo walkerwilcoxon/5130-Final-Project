@@ -1,0 +1,44 @@
+digraph clustercli_create_section {
+	graph [label=cli_create_section]
+	691 [label="#691
+section_id = input('Section ID: ').strip()
+course_code = input('Course code: ').strip()
+semester = input('Semester: ').strip()
+instructor_id = input('Instructor ID: ').strip()
+capacity = safe_int_input('Capacity: ')
+if capacity is None:
+"]
+	692 [label="#692
+print('Invalid capacity.')
+return
+"]
+	691 -> 692 [label="capacity is None"]
+	693 [label="#693
+print(
+    \"Enter meeting times one per line like 'Mon 09:00-10:15'. Blank line to finish.\"
+    )
+meeting_times: List[str] = []
+"]
+	695 [label="#695
+while True:
+"]
+	696 [label="#696
+line = input('Meeting time: ').strip()
+if not line:
+"]
+	699 [label="#699
+meeting_times.append(line)
+"]
+	699 -> 695 [label=""]
+	696 -> 699 [label="(not not line)"]
+	697 [label="#697
+success = system.create_section(section_id=section_id, course_code=
+    course_code, semester=semester, instructor_id=instructor_id,
+    meeting_times=meeting_times, capacity=capacity)
+print('Section created.' if success else 'Failed to create section.')
+"]
+	696 -> 697 [label="not line"]
+	695 -> 696 [label=True]
+	693 -> 695 [label=""]
+	691 -> 693 [label="(capacity is not None)"]
+}

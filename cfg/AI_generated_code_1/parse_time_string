@@ -1,0 +1,29 @@
+digraph clusterparse_time_string {
+	graph [label=parse_time_string]
+	7 [label="#7
+\"\"\"
+    Convert 'HH:MM' into minutes since midnight.
+    Raises ValueError on invalid input.
+    \"\"\"
+parts = time_str.strip().split(':')
+if len(parts) != 2:
+"]
+	8 [label="#8
+raise ValueError(f'Invalid time format: {time_str}')
+"]
+	7 -> 8 [label="len(parts) != 2"]
+	9 [label="#9
+hour = int(parts[0])
+minute = int(parts[1])
+if hour < 0 or hour > 23 or minute < 0 or minute > 59:
+"]
+	11 [label="#11
+raise ValueError(f'Time out of range: {time_str}')
+"]
+	9 -> 11 [label="hour < 0 or hour > 23 or minute < 0 or minute > 59"]
+	12 [label="#12
+return hour * 60 + minute
+"]
+	9 -> 12 [label="(not (hour < 0 or hour > 23 or minute < 0 or minute > 59))"]
+	7 -> 9 [label="(len(parts) == 2)"]
+}

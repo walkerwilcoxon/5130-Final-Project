@@ -1,0 +1,10 @@
+digraph clustercli_add_instructor {
+	graph [label=cli_add_instructor]
+	682 [label="#682
+instructor_id = input('Instructor ID: ').strip()
+name = input('Instructor name: ').strip()
+department = input('Department: ').strip()
+success = system.add_instructor(instructor_id, name, department)
+print('Instructor added.' if success else 'Failed to add instructor.')
+"]
+}

@@ -1,0 +1,7 @@
+digraph clustercli_course_roster_report {
+	graph [label=cli_course_roster_report]
+	726 [label="#726
+section_id = input('Section ID: ').strip()
+print(system.report_course_roster(section_id))
+"]
+}

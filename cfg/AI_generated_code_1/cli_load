@@ -1,0 +1,9 @@
+digraph clustercli_load {
+	graph [label=cli_load]
+	732 [label="#732
+filename = input('Filename to load JSON: ').strip()
+system, message = RegistrationSystem.load_from_file(filename)
+print(message)
+return system
+"]
+}

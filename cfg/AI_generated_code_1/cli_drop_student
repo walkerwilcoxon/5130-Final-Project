@@ -1,0 +1,9 @@
+digraph clustercli_drop_student {
+	graph [label=cli_drop_student]
+	708 [label="#708
+student_id = input('Student ID: ').strip()
+section_id = input('Section ID: ').strip()
+success, message = system.drop_student(student_id, section_id)
+print(message if success else f'Drop failed: {message}')
+"]
+}

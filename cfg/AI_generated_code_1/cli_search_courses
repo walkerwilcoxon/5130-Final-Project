@@ -1,0 +1,29 @@
+digraph clustercli_search_courses {
+	graph [label=cli_search_courses]
+	714 [label="#714
+query = input('Search query: ').strip()
+results = system.search_courses(query)
+if not results:
+"]
+	715 [label="#715
+print('No courses found.')
+return
+"]
+	714 -> 715 [label="not results"]
+	716 [label="#716
+print('Search results:')
+"]
+	718 [label="#718
+for course in results:
+"]
+	719 [label="#719
+prereqs = ', '.join(course.prerequisites) if course.prerequisites else 'none'
+print(
+    f'  {course.course_code}: {course.title} | Credits: {course.credits} | Prereqs: {prereqs}'
+    )
+"]
+	719 -> 718 [label=""]
+	718 -> 719 [label=results]
+	716 -> 718 [label=""]
+	714 -> 716 [label="(not not results)"]
+}

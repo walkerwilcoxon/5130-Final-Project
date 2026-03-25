@@ -1,0 +1,18 @@
+digraph clustercli_remove_course {
+	graph [label=cli_remove_course]
+	676 [label="#676
+course_code = input('Course code to remove: ').strip()
+success = system.remove_course(course_code)
+if success:
+"]
+	677 [label="#677
+print('Course removed.')
+"]
+	676 -> 677 [label=success]
+	679 [label="#679
+print(
+    'Failed to remove course. It may not exist, or sections may still reference it.'
+    )
+"]
+	676 -> 679 [label="(not success)"]
+}

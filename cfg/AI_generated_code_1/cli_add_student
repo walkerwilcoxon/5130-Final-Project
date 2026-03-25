@@ -1,0 +1,19 @@
+digraph clustercli_add_student {
+	graph [label=cli_add_student]
+	661 [label="#661
+student_id = input('Student ID: ').strip()
+name = input('Student name: ').strip()
+max_credits = safe_int_input('Maximum credits: ')
+if max_credits is None:
+"]
+	662 [label="#662
+print('Invalid max credits.')
+return
+"]
+	661 -> 662 [label="max_credits is None"]
+	663 [label="#663
+success = system.add_student(student_id, name, max_credits)
+print('Student added.' if success else 'Failed to add student.')
+"]
+	661 -> 663 [label="(max_credits is not None)"]
+}

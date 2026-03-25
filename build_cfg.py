@@ -12,7 +12,7 @@ def main():
 
     for (_, func_name), func_cfg in cfg.functioncfgs.items():
         dot = func_cfg.build_visual('png')
-        dot.render(f'cfg/{func_name}', view=False)
+        dot.render(f'cfg/{name[:-3]}/{func_name}', view=False)
         
 if __name__ == "__main__":
     main()

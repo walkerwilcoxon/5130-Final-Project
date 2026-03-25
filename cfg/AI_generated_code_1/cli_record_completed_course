@@ -1,0 +1,9 @@
+digraph clustercli_record_completed_course {
+	graph [label=cli_record_completed_course]
+	711 [label="#711
+student_id = input('Student ID: ').strip()
+course_code = input('Completed course code: ').strip()
+success, message = system.record_completed_course(student_id, course_code)
+print(message if success else f'Failed: {message}')
+"]
+}

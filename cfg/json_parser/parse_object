@@ -1,0 +1,61 @@
+digraph clusterparse_object {
+	graph [label=parse_object]
+	158 [label="#158
+\"\"\"Parse a JSON object: { \"key\": value, ... }\"\"\"
+p.expect('{')
+result = {}
+skip_whitespace(p)
+if p.peek() == '}':
+"]
+	159 [label="#159
+p.advance()
+return result
+"]
+	158 -> 159 [label="p.peek() == '}'"]
+	160 [label="#160
+while True:
+"]
+	162 [label="#162
+skip_whitespace(p)
+if p.peek() != '\"':
+"]
+	164 [label="#164
+raise JSONParseError(f'Expected string key, got {repr(p.peek())}', p.pos)
+"]
+	162 -> 164 [label="p.peek() != '\"'"]
+	165 [label="#165
+key = parse_string(p)
+skip_whitespace(p)
+p.expect(':')
+skip_whitespace(p)
+value = parse_value(p)
+result[key] = value
+skip_whitespace(p)
+if p.peek() == ',':
+"]
+	167 [label="#167
+p.advance()
+"]
+	167 -> 160 [label=""]
+	165 -> 167 [label="p.peek() == ','"]
+	169 [label="#169
+if p.peek() == '}':
+"]
+	170 [label="#170
+p.advance()
+"]
+	163 [label="#163
+return result
+"]
+	170 -> 163 [label=""]
+	169 -> 170 [label="p.peek() == '}'"]
+	172 [label="#172
+raise JSONParseError(f\"Expected ',' or '}}' in object, got {repr(p.peek())}\",
+    p.pos)
+"]
+	169 -> 172 [label="(p.peek() != '}')"]
+	165 -> 169 [label="(p.peek() != ',')"]
+	162 -> 165 [label="(p.peek() == '\"')"]
+	160 -> 162 [label=True]
+	158 -> 160 [label="(p.peek() != '}')"]
+}
