@@ -40,7 +40,7 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     ```
 * To run performance/stress testing, run:
     ```bash
-    python run_performance_stress_testing.py
+    python run_pytest_benchmark.py
     ```
 <!-- * To run the CodeQL analysis, execute the following command in the terminal:
     ```bash
