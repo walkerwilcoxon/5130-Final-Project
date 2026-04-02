@@ -38,6 +38,10 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     coverage report
     coverage html
     ```
+* To run performance/stress testing, run:
+    ```bash
+    python run_performance_stress_testing.py
+    ```
 <!-- * To run the CodeQL analysis, execute the following command in the terminal:
     ```bash
     codeql database create codeql-db --language=python --source-root=.
