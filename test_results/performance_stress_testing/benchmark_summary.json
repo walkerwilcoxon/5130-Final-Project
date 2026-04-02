@@ -1,0 +1,1054 @@
+{
+  "summary": {
+    "min": [
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 2.6050001906696706e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 2.8155000109109096e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 3.3764999898266976e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 3.5999983083456755e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 3.5999983083456755e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 3.7999961932655424e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 4.4099942897446454e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 4.699995770351961e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 4.952856085895161e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 5.209985829424113e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 5.809997674077749e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 6.609989213757217e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 8.509996405337006e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 9.109990060096607e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 1.0619987733662128e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 1.0619987733662128e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 1.0819985618581995e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 1.1919983080588281e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 1.231999704032205e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 1.2920008884975687e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 1.5129990060813725e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 1.5529985830653459e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 1.8730006559053436e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 2.3239990696310997e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 2.3749998945277184e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 2.425000275252387e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 3.5270004445919767e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 3.797998942900449e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 3.967999873566441e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 7.434999133693054e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 9.1479996626731e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 1.7405000107828528e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 1.9899998733308166e-05
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 7.455100057995878e-05
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 0.00021638799989887048
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 0.0035184170010325033
+      },
+      {
+        "name": "test_stress_registration",
+        "value": 0.004043581000587437
+      }
+    ],
+    "max": [
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 2.1699000171793157e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 4.83828573903468e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 6.934049997653346e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 6.946049961698009e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 1.1594000170589425e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 1.3667999155586585e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 1.369800156680867e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 1.5551000615232624e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 1.6955000319285318e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 1.7846999980974942e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 2.7816000510938466e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 2.973999835376162e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 3.2605999876977876e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 3.398899934836663e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 3.433900019444991e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 3.5312001273268834e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 3.901899981428869e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 3.975099934905302e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 4.860900116909761e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 5.30480010638712e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 5.393899846239947e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 5.452099867397919e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 5.977100045129191e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 5.991199941490777e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 6.321799992292654e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 6.577299973287154e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 7.872900096117519e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 8.571299986215308e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 0.00010087400005431846
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 0.000116466000690707
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 0.00014563500008080155
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 0.0001481810013501672
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 0.00029213200105004944
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 0.0003897599999618251
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 0.00040669400004844647
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 0.004880044998571975
+      },
+      {
+        "name": "test_stress_registration",
+        "value": 0.005979593001029571
+      }
+    ],
+    "mean": [
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 3.0010224383681305e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 3.1293543629897993e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 3.821259693037468e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 4.0323851311681475e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 4.328781996349975e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 4.911209109643762e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 5.150205659932288e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 5.605060791385057e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 5.771738272639344e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 5.992637629655763e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 6.524216380867664e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 7.982441240441736e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 9.251215300952253e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 1.0206783775716687e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 1.1439143694745205e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 1.1983748322292423e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 1.2133804334820204e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 1.3441120293923906e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 1.387340063780878e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 1.4570526077690476e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 1.5849078266818857e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 1.6667466245336502e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 2.0797482123246005e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 2.534137613936737e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 2.585835452707349e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 2.680582815334676e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 4.109528169445687e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 4.155662344176791e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 4.330051966389713e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 9.114298729991747e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 1.0884350118766086e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 1.836767102183441e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 2.1957818484559246e-05
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 7.830057447622254e-05
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 0.00023579936895140575
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 0.003720163759684776
+      },
+      {
+        "name": "test_stress_registration",
+        "value": 0.00439823613278269
+      }
+    ],
+    "median": [
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 2.665499778231606e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 2.9659995561814865e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 3.517499862937257e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 3.8100006349850446e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 3.8100006349850446e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 4.810008249478415e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 5.109995981911197e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 5.209998822205566e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 5.609999789157882e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 5.609999789157882e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 6.210011633811519e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 7.119997462723404e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 9.020004654303193e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 9.520008461549878e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 1.1020001693395898e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 1.1119991540908813e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 1.1419997463235632e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 1.2919990695081651e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 1.3429998944047838e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 1.5129990060813725e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 1.5630012057954445e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 1.6340000001946464e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 1.9640010577859357e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 2.4450000637443736e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 2.515000232961029e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 2.5560002541169524e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 3.787001332966611e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 3.9480000850744545e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 4.09800122724846e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 9.018000127980486e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 9.499000952928327e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 1.7936999938683584e-05
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 2.1193000065977685e-05
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 7.70050010032719e-05
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 0.0002237684993815492
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 0.0036674370003311196
+      },
+      {
+        "name": "test_stress_registration",
+        "value": 0.0043277370004943805
+      }
+    ],
+    "ops": [
+      {
+        "name": "test_stress_registration",
+        "value": 227.36387265485828
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 268.80537110676386
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 4240.893452967989
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 12771.298380494885
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 45541.864766902996
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 54443.483815191306
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 91875.03057953504
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 109717.71165557412
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 230944.1105469629
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 240635.52742711903
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 243336.93766476476
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 373053.2010723004
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 386722.2096259095
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 394611.56114821957
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 480827.4357799631
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 599971.2165487639
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 630951.5185457625
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 686317.017428177
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 720803.8073049868
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 743985.6039768148
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 824143.8318980589
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 834463.4525908548
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 874191.3089695426
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 979740.5548838357
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 1080939.0631056519
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 1252749.5911071203
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 1532751.1253803766
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 1668714.282090578
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 1732580.2951607374
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 1784101.9700214379
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 1941670.0342276182
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 2036158.464595566
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 2310118.645021161
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 2479921.851389003
+      },
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 2616938.0788802486
+      },
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 3195547.336622483
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 3332197.6777480254
+      }
+    ],
+    "stddev": [
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 6.963932338119655e-08
+      },
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 7.217806615547135e-08
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 8.41700843397702e-08
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 8.857032936372703e-08
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 1.7080135450824855e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 1.7542070089050995e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 1.9179219787735003e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 2.0300063915650058e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 2.18685563733285e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 2.8269923369270787e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 2.9712141881163016e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 3.02397410309514e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 3.11603027884421e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 3.186431881054767e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 3.436729690416913e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 3.817963034544634e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 4.4343980922867926e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 4.4922160813769077e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 5.031627680272318e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 5.9537916307271e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 6.087926554263826e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 6.234332805446373e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 6.314783174097281e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 6.843808172360454e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 7.94359585716778e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 8.336500149761774e-07
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 1.00420516853558e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 1.1846012610621715e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 1.2747894887872892e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 1.3629504192192434e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 2.4196443424316812e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 2.9407279620958114e-06
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 2.9919114974820577e-06
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 4.551796793374637e-06
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 2.4498626884359972e-05
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 0.0002023333387087065
+      },
+      {
+        "name": "test_stress_registration",
+        "value": 0.0002647711436917053
+      }
+    ],
+    "total": [
+      {
+        "name": "test_all_methods_benchmark[remove_instructor]",
+        "value": 0.029102046120897285
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_student]",
+        "value": 0.030336969986819895
+      },
+      {
+        "name": "test_all_methods_benchmark[add_course]",
+        "value": 0.03729881943036162
+      },
+      {
+        "name": "test_all_methods_benchmark[record_completed_course]",
+        "value": 0.040143861579235815
+      },
+      {
+        "name": "test_all_methods_benchmark[add_student]",
+        "value": 0.04104085659973862
+      },
+      {
+        "name": "test_all_methods_benchmark[create_section]",
+        "value": 0.04347215549569228
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_course]",
+        "value": 0.04443343832472237
+      },
+      {
+        "name": "test_all_methods_benchmark[report_course_roster]",
+        "value": 0.06224313297207118
+      },
+      {
+        "name": "test_all_methods_benchmark[remove_section]",
+        "value": 0.06683920298019075
+      },
+      {
+        "name": "test_all_methods_benchmark[add_instructor]",
+        "value": 0.08599576263077324
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+        "value": 0.093292808815022
+      },
+      {
+        "name": "test_all_methods_benchmark[check_prerequisites]",
+        "value": 0.10061140171144091
+      },
+      {
+        "name": "test_all_methods_benchmark[list_student_schedule]",
+        "value": 0.10545342793557211
+      },
+      {
+        "name": "test_all_methods_benchmark[drop_student]",
+        "value": 0.1070950118919427
+      },
+      {
+        "name": "test_all_methods_benchmark[list_sections_for_course]",
+        "value": 0.11528720585920382
+      },
+      {
+        "name": "test_all_methods_benchmark[report_waitlisted_students]",
+        "value": 0.11864588807657128
+      },
+      {
+        "name": "test_all_methods_benchmark[report_open_sections]",
+        "value": 0.14084793036272458
+      },
+      {
+        "name": "test_all_methods_benchmark[section_exists]",
+        "value": 0.1414518752717413
+      },
+      {
+        "name": "test_all_methods_benchmark[report_overloaded_students]",
+        "value": 0.14168284696461342
+      },
+      {
+        "name": "test_all_methods_benchmark[promote_waitlist]",
+        "value": 0.14536782945287996
+      },
+      {
+        "name": "test_all_methods_benchmark[check_credit_limit]",
+        "value": 0.14585003482716274
+      },
+      {
+        "name": "test_all_methods_benchmark[student_exists]",
+        "value": 0.15062612941255793
+      },
+      {
+        "name": "test_all_methods_benchmark[report_system_summary]",
+        "value": 0.1529909560285887
+      },
+      {
+        "name": "test_all_methods_benchmark[from_dict]",
+        "value": 0.1600716456923692
+      },
+      {
+        "name": "test_all_methods_benchmark[course_exists]",
+        "value": 0.1640474131818337
+      },
+      {
+        "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+        "value": 0.17325261416590365
+      },
+      {
+        "name": "test_all_methods_benchmark[to_dict]",
+        "value": 0.17455232285465172
+      },
+      {
+        "name": "test_all_methods_benchmark[search_courses]",
+        "value": 0.1760297012369847
+      },
+      {
+        "name": "test_all_methods_benchmark[report_student_schedule]",
+        "value": 0.1849082199842087
+      },
+      {
+        "name": "test_all_methods_benchmark[get_student_semester_sections]",
+        "value": 0.1915674486590433
+      },
+      {
+        "name": "test_all_methods_benchmark[can_register]",
+        "value": 0.2923903109403909
+      },
+      {
+        "name": "test_all_methods_benchmark[check_schedule_conflict]",
+        "value": 0.4552409929656278
+      },
+      {
+        "name": "test_all_methods_benchmark[register_student]",
+        "value": 0.4791023309335287
+      },
+      {
+        "name": "test_stress_registration",
+        "value": 0.497000683004444
+      },
+      {
+        "name": "test_full_registration_flow",
+        "value": 0.5536633621213696
+      },
+      {
+        "name": "test_stress_waitlist",
+        "value": 0.7215460689913016
+      },
+      {
+        "name": "test_stress_conflict_checks",
+        "value": 0.8667981560065527
+      }
+    ]
+  }
+}

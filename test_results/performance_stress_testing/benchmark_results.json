@@ -1,0 +1,1367 @@
+{
+  "benchmarks": [
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[add_course]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[add_course]",
+      "params": {
+        "method_name": "add_course"
+      },
+      "param": "add_course",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.4099942897446454e-07,
+        "max": 5.452099867397919e-05,
+        "mean": 5.150205659932288e-07,
+        "stddev": 3.817963034544634e-07,
+        "rounds": 72422,
+        "median": 5.109995981911197e-07,
+        "iqr": 6.09998096479103e-08,
+        "q1": 4.7100002120714635e-07,
+        "q3": 5.319998308550566e-07,
+        "iqr_outliers": 879,
+        "stddev_outliers": 287,
+        "outliers": "287;879",
+        "ld15iqr": 4.4099942897446454e-07,
+        "hd15iqr": 6.309983291430399e-07,
+        "ops": 1941670.0342276182,
+        "total": 0.03729881943036162,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[add_instructor]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[add_instructor]",
+      "params": {
+        "method_name": "add_instructor"
+      },
+      "param": "add_instructor",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.7999961932655424e-07,
+        "max": 4.860900116909761e-05,
+        "mean": 4.911209109643762e-07,
+        "stddev": 2.18685563733285e-07,
+        "rounds": 175101,
+        "median": 4.810008249478415e-07,
+        "iqr": 8.999995770864189e-08,
+        "q1": 4.1100065573118627e-07,
+        "q3": 5.010006134398282e-07,
+        "iqr_outliers": 6011,
+        "stddev_outliers": 3333,
+        "outliers": "3333;6011",
+        "ld15iqr": 3.7999961932655424e-07,
+        "hd15iqr": 6.40999132883735e-07,
+        "ops": 2036158.464595566,
+        "total": 0.08599576263077324,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[add_student]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[add_student]",
+      "params": {
+        "method_name": "add_student"
+      },
+      "param": "add_student",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 2.8155000109109096e-07,
+        "max": 6.946049961698009e-06,
+        "mean": 3.1293543629897993e-07,
+        "stddev": 6.963932338119655e-08,
+        "rounds": 131148,
+        "median": 2.9659995561814865e-07,
+        "iqr": 2.6550060283625477e-08,
+        "q1": 2.845999915734865e-07,
+        "q3": 3.1115005185711195e-07,
+        "iqr_outliers": 15125,
+        "stddev_outliers": 7772,
+        "outliers": "7772;15125",
+        "ld15iqr": 2.8155000109109096e-07,
+        "hd15iqr": 3.511999238980934e-07,
+        "ops": 3195547.336622483,
+        "total": 0.04104085659973862,
+        "iterations": 20
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[can_register]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[can_register]",
+      "params": {
+        "method_name": "can_register"
+      },
+      "param": "can_register",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.9899998733308166e-05,
+        "max": 5.991199941490777e-05,
+        "mean": 2.1957818484559246e-05,
+        "stddev": 2.9919114974820577e-06,
+        "rounds": 13316,
+        "median": 2.1193000065977685e-05,
+        "iqr": 9.109990060096607e-07,
+        "q1": 2.0572000721585937e-05,
+        "q3": 2.1482999727595598e-05,
+        "iqr_outliers": 1719,
+        "stddev_outliers": 1219,
+        "outliers": "1219;1719",
+        "ld15iqr": 1.9899998733308166e-05,
+        "hd15iqr": 2.285599839524366e-05,
+        "ops": 45541.864766902996,
+        "total": 0.2923903109403909,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[check_credit_limit]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[check_credit_limit]",
+      "params": {
+        "method_name": "check_credit_limit"
+      },
+      "param": "check_credit_limit",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 8.509996405337006e-07,
+        "max": 1.1594000170589425e-05,
+        "mean": 9.251215300952253e-07,
+        "stddev": 1.9179219787735003e-07,
+        "rounds": 157655,
+        "median": 9.020004654303193e-07,
+        "iqr": 3.000059223268181e-08,
+        "q1": 8.919996616896242e-07,
+        "q3": 9.22000253922306e-07,
+        "iqr_outliers": 15542,
+        "stddev_outliers": 2370,
+        "outliers": "2370;15542",
+        "ld15iqr": 8.509996405337006e-07,
+        "hd15iqr": 9.709983714856207e-07,
+        "ops": 1080939.0631056519,
+        "total": 0.14585003482716274,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[check_duplicate_course_in_semester]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[check_duplicate_course_in_semester]",
+      "params": {
+        "method_name": "check_duplicate_course_in_semester"
+      },
+      "param": "check_duplicate_course_in_semester",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.5529985830653459e-06,
+        "max": 3.2605999876977876e-05,
+        "mean": 1.6667466245336502e-06,
+        "stddev": 3.186431881054767e-07,
+        "rounds": 55973,
+        "median": 1.6340000001946464e-06,
+        "iqr": 5.999936547596008e-08,
+        "q1": 1.6129997675307095e-06,
+        "q3": 1.6729991330066696e-06,
+        "iqr_outliers": 3375,
+        "stddev_outliers": 551,
+        "outliers": "551;3375",
+        "ld15iqr": 1.5529985830653459e-06,
+        "hd15iqr": 1.7629990907153115e-06,
+        "ops": 599971.2165487639,
+        "total": 0.093292808815022,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[check_duplicate_course_in_semester_promotion]",
+      "params": {
+        "method_name": "check_duplicate_course_in_semester_promotion"
+      },
+      "param": "check_duplicate_course_in_semester_promotion",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.5129990060813725e-06,
+        "max": 3.433900019444991e-05,
+        "mean": 1.5849078266818857e-06,
+        "stddev": 3.11603027884421e-07,
+        "rounds": 109314,
+        "median": 1.5630012057954445e-06,
+        "iqr": 2.1000232663936913e-08,
+        "q1": 1.5530004020547494e-06,
+        "q3": 1.5740006347186863e-06,
+        "iqr_outliers": 5597,
+        "stddev_outliers": 349,
+        "outliers": "349;5597",
+        "ld15iqr": 1.5229998098220676e-06,
+        "hd15iqr": 1.6129997675307095e-06,
+        "ops": 630951.5185457625,
+        "total": 0.17325261416590365,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[check_prerequisites]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[check_prerequisites]",
+      "params": {
+        "method_name": "check_prerequisites"
+      },
+      "param": "check_prerequisites",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.952856085895161e-07,
+        "max": 4.83828573903468e-06,
+        "mean": 5.605060791385057e-07,
+        "stddev": 8.857032936372703e-08,
+        "rounds": 179501,
+        "median": 5.209998822205566e-07,
+        "iqr": 1.1314270003432677e-07,
+        "q1": 5.138572305440903e-07,
+        "q3": 6.26999930578417e-07,
+        "iqr_outliers": 3340,
+        "stddev_outliers": 14244,
+        "outliers": "14244;3340",
+        "ld15iqr": 4.952856085895161e-07,
+        "hd15iqr": 7.972856630138787e-07,
+        "ops": 1784101.9700214379,
+        "total": 0.10061140171144091,
+        "iterations": 7
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[check_schedule_conflict]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[check_schedule_conflict]",
+      "params": {
+        "method_name": "check_schedule_conflict"
+      },
+      "param": "check_schedule_conflict",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 7.434999133693054e-06,
+        "max": 5.30480010638712e-05,
+        "mean": 9.114298729991747e-06,
+        "stddev": 1.3629504192192434e-06,
+        "rounds": 49948,
+        "median": 9.018000127980486e-06,
+        "iqr": 1.6139983927132562e-06,
+        "q1": 8.126000466290861e-06,
+        "q3": 9.739998859004118e-06,
+        "iqr_outliers": 1279,
+        "stddev_outliers": 2723,
+        "outliers": "2723;1279",
+        "ld15iqr": 7.434999133693054e-06,
+        "hd15iqr": 1.2163998690084554e-05,
+        "ops": 109717.71165557412,
+        "total": 0.4552409929656278,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[course_exists]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[course_exists]",
+      "params": {
+        "method_name": "course_exists"
+      },
+      "param": "course_exists",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.2920008884975687e-06,
+        "max": 2.7816000510938466e-05,
+        "mean": 1.387340063780878e-06,
+        "stddev": 2.9712141881163016e-07,
+        "rounds": 118246,
+        "median": 1.3429998944047838e-06,
+        "iqr": 2.0001607481390238e-08,
+        "q1": 1.3329990906640887e-06,
+        "q3": 1.353000698145479e-06,
+        "iqr_outliers": 15735,
+        "stddev_outliers": 2697,
+        "outliers": "2697;15735",
+        "ld15iqr": 1.302998498431407e-06,
+        "hd15iqr": 1.3919998309575021e-06,
+        "ops": 720803.8073049868,
+        "total": 0.1640474131818337,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[create_section]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[create_section]",
+      "params": {
+        "method_name": "create_section"
+      },
+      "param": "create_section",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.699995770351961e-07,
+        "max": 0.000116466000690707,
+        "mean": 5.771738272639344e-07,
+        "stddev": 8.336500149761774e-07,
+        "rounds": 75319,
+        "median": 5.609999789157882e-07,
+        "iqr": 1.0100120562128723e-07,
+        "q1": 4.90999809699133e-07,
+        "q3": 5.920010153204203e-07,
+        "iqr_outliers": 3053,
+        "stddev_outliers": 308,
+        "outliers": "308;3053",
+        "ld15iqr": 4.699995770351961e-07,
+        "hd15iqr": 7.509988790843636e-07,
+        "ops": 1732580.2951607374,
+        "total": 0.04347215549569228,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[drop_student]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[drop_student]",
+      "params": {
+        "method_name": "drop_student"
+      },
+      "param": "drop_student",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 5.809997674077749e-07,
+        "max": 0.00040669400004844647,
+        "mean": 6.524216380867664e-07,
+        "stddev": 1.1846012610621715e-06,
+        "rounds": 164150,
+        "median": 6.210011633811519e-07,
+        "iqr": 3.0999217415228486e-08,
+        "q1": 6.110003596404567e-07,
+        "q3": 6.419995770556852e-07,
+        "iqr_outliers": 16063,
+        "stddev_outliers": 370,
+        "outliers": "370;16063",
+        "ld15iqr": 5.809997674077749e-07,
+        "hd15iqr": 6.909995136084035e-07,
+        "ops": 1532751.1253803766,
+        "total": 0.1070950118919427,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[from_dict]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[from_dict]",
+      "params": {
+        "method_name": "from_dict"
+      },
+      "param": "from_dict",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.231999704032205e-06,
+        "max": 0.0001481810013501672,
+        "mean": 1.3441120293923906e-06,
+        "stddev": 7.94359585716778e-07,
+        "rounds": 119091,
+        "median": 1.2919990695081651e-06,
+        "iqr": 8.000097295735031e-08,
+        "q1": 1.2729997251881287e-06,
+        "q3": 1.353000698145479e-06,
+        "iqr_outliers": 5488,
+        "stddev_outliers": 720,
+        "outliers": "720;5488",
+        "ld15iqr": 1.231999704032205e-06,
+        "hd15iqr": 1.4829984138486907e-06,
+        "ops": 743985.6039768148,
+        "total": 0.1600716456923692,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[get_student_semester_sections]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[get_student_semester_sections]",
+      "params": {
+        "method_name": "get_student_semester_sections"
+      },
+      "param": "get_student_semester_sections",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.1919983080588281e-06,
+        "max": 2.973999835376162e-05,
+        "mean": 1.4570526077690476e-06,
+        "stddev": 3.436729690416913e-07,
+        "rounds": 131476,
+        "median": 1.5129990060813725e-06,
+        "iqr": 2.9100010578986257e-07,
+        "q1": 1.2519994925241917e-06,
+        "q3": 1.5429995983140543e-06,
+        "iqr_outliers": 1949,
+        "stddev_outliers": 3402,
+        "outliers": "3402;1949",
+        "ld15iqr": 1.1919983080588281e-06,
+        "hd15iqr": 1.983999027288519e-06,
+        "ops": 686317.017428177,
+        "total": 0.1915674486590433,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[list_sections_for_course]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[list_sections_for_course]",
+      "params": {
+        "method_name": "list_sections_for_course"
+      },
+      "param": "list_sections_for_course",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 6.609989213757217e-07,
+        "max": 7.872900096117519e-05,
+        "mean": 7.982441240441736e-07,
+        "stddev": 5.9537916307271e-07,
+        "rounds": 144426,
+        "median": 7.119997462723404e-07,
+        "iqr": 9.100040188059211e-08,
+        "q1": 6.909995136084035e-07,
+        "q3": 7.819999154889956e-07,
+        "iqr_outliers": 13499,
+        "stddev_outliers": 2979,
+        "outliers": "2979;13499",
+        "ld15iqr": 6.609989213757217e-07,
+        "hd15iqr": 9.209998097503558e-07,
+        "ops": 1252749.5911071203,
+        "total": 0.11528720585920382,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[list_student_schedule]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[list_student_schedule]",
+      "params": {
+        "method_name": "list_student_schedule"
+      },
+      "param": "list_student_schedule",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 9.109990060096607e-07,
+        "max": 8.571299986215308e-05,
+        "mean": 1.0206783775716687e-06,
+        "stddev": 4.4343980922867926e-07,
+        "rounds": 103317,
+        "median": 9.520008461549878e-07,
+        "iqr": 3.000059223268181e-08,
+        "q1": 9.420000424142927e-07,
+        "q3": 9.720006346469745e-07,
+        "iqr_outliers": 22245,
+        "stddev_outliers": 2343,
+        "outliers": "2343;22245",
+        "ld15iqr": 9.109990060096607e-07,
+        "hd15iqr": 1.0219991963822395e-06,
+        "ops": 979740.5548838357,
+        "total": 0.10545342793557211,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[promote_waitlist]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[promote_waitlist]",
+      "params": {
+        "method_name": "promote_waitlist"
+      },
+      "param": "promote_waitlist",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.0819985618581995e-06,
+        "max": 1.7846999980974942e-05,
+        "mean": 1.2133804334820204e-06,
+        "stddev": 3.02397410309514e-07,
+        "rounds": 119804,
+        "median": 1.1419997463235632e-06,
+        "iqr": 8.000097295735031e-08,
+        "q1": 1.1230004020035267e-06,
+        "q3": 1.203001374960877e-06,
+        "iqr_outliers": 15975,
+        "stddev_outliers": 6901,
+        "outliers": "6901;15975",
+        "ld15iqr": 1.0819985618581995e-06,
+        "hd15iqr": 1.3319986464921385e-06,
+        "ops": 824143.8318980589,
+        "total": 0.14536782945287996,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[record_completed_course]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[record_completed_course]",
+      "params": {
+        "method_name": "record_completed_course"
+      },
+      "param": "record_completed_course",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.3764999898266976e-07,
+        "max": 2.1699000171793157e-06,
+        "mean": 3.821259693037468e-07,
+        "stddev": 7.217806615547135e-08,
+        "rounds": 105054,
+        "median": 3.517499862937257e-07,
+        "iqr": 7.164999260567129e-08,
+        "q1": 3.441999979258981e-07,
+        "q3": 4.1584999053156937e-07,
+        "iqr_outliers": 3944,
+        "stddev_outliers": 7617,
+        "outliers": "7617;3944",
+        "ld15iqr": 3.3764999898266976e-07,
+        "hd15iqr": 5.235499884292949e-07,
+        "ops": 2616938.0788802486,
+        "total": 0.040143861579235815,
+        "iterations": 20
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[register_student]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[register_student]",
+      "params": {
+        "method_name": "register_student"
+      },
+      "param": "register_student",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.7405000107828528e-05,
+        "max": 0.00029213200105004944,
+        "mean": 1.836767102183441e-05,
+        "stddev": 2.4196443424316812e-06,
+        "rounds": 26084,
+        "median": 1.7936999938683584e-05,
+        "iqr": 3.2000025385059416e-07,
+        "q1": 1.780599995981902e-05,
+        "q3": 1.8126000213669613e-05,
+        "iqr_outliers": 2553,
+        "stddev_outliers": 1281,
+        "outliers": "1281;2553",
+        "ld15iqr": 1.7405000107828528e-05,
+        "hd15iqr": 1.860699921962805e-05,
+        "ops": 54443.483815191306,
+        "total": 0.4791023309335287,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[remove_course]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[remove_course]",
+      "params": {
+        "method_name": "remove_course"
+      },
+      "param": "remove_course",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 2.6050001906696706e-07,
+        "max": 6.934049997653346e-06,
+        "mean": 3.0010224383681305e-07,
+        "stddev": 8.41700843397702e-08,
+        "rounds": 148061,
+        "median": 2.665499778231606e-07,
+        "iqr": 5.460005922941493e-08,
+        "q1": 2.6404995878692716e-07,
+        "q3": 3.186500180163421e-07,
+        "iqr_outliers": 12187,
+        "stddev_outliers": 14983,
+        "outliers": "14983;12187",
+        "ld15iqr": 2.6050001906696706e-07,
+        "hd15iqr": 4.0079994505504147e-07,
+        "ops": 3332197.6777480254,
+        "total": 0.04443343832472237,
+        "iterations": 20
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[remove_instructor]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[remove_instructor]",
+      "params": {
+        "method_name": "remove_instructor"
+      },
+      "param": "remove_instructor",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 5.209985829424113e-07,
+        "max": 1.369800156680867e-05,
+        "mean": 5.992637629655763e-07,
+        "stddev": 2.0300063915650058e-07,
+        "rounds": 48563,
+        "median": 5.609999789157882e-07,
+        "iqr": 2.0001607481390238e-08,
+        "q1": 5.509991751750931e-07,
+        "q3": 5.710007826564834e-07,
+        "iqr_outliers": 9323,
+        "stddev_outliers": 1746,
+        "outliers": "1746;9323",
+        "ld15iqr": 5.209985829424113e-07,
+        "hd15iqr": 6.020000000717118e-07,
+        "ops": 1668714.282090578,
+        "total": 0.029102046120897285,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[remove_section]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[remove_section]",
+      "params": {
+        "method_name": "remove_section"
+      },
+      "param": "remove_section",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.5999983083456755e-07,
+        "max": 1.5551000615232624e-05,
+        "mean": 4.0323851311681475e-07,
+        "stddev": 1.7080135450824855e-07,
+        "rounds": 165756,
+        "median": 3.8100006349850446e-07,
+        "iqr": 1.0997609933838248e-08,
+        "q1": 3.800014383159578e-07,
+        "q3": 3.9099904824979603e-07,
+        "iqr_outliers": 19713,
+        "stddev_outliers": 4843,
+        "outliers": "4843;19713",
+        "ld15iqr": 3.699988155858591e-07,
+        "hd15iqr": 4.099983925698325e-07,
+        "ops": 2479921.851389003,
+        "total": 0.06683920298019075,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[remove_student]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[remove_student]",
+      "params": {
+        "method_name": "remove_student"
+      },
+      "param": "remove_student",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.5999983083456755e-07,
+        "max": 1.3667999155586585e-05,
+        "mean": 4.328781996349975e-07,
+        "stddev": 1.7542070089050995e-07,
+        "rounds": 70082,
+        "median": 3.8100006349850446e-07,
+        "iqr": 1.1000156519003212e-07,
+        "q1": 3.8100006349850446e-07,
+        "q3": 4.910016286885366e-07,
+        "iqr_outliers": 1514,
+        "stddev_outliers": 2836,
+        "outliers": "2836;1514",
+        "ld15iqr": 3.5999983083456755e-07,
+        "hd15iqr": 6.609989213757217e-07,
+        "ops": 2310118.645021161,
+        "total": 0.030336969986819895,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[report_course_roster]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[report_course_roster]",
+      "params": {
+        "method_name": "report_course_roster"
+      },
+      "param": "report_course_roster",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 2.425000275252387e-06,
+        "max": 3.5312001273268834e-05,
+        "mean": 2.680582815334676e-06,
+        "stddev": 6.234332805446373e-07,
+        "rounds": 23220,
+        "median": 2.515000232961029e-06,
+        "iqr": 3.5099947126582265e-07,
+        "q1": 2.495000444469042e-06,
+        "q3": 2.8459999157348648e-06,
+        "iqr_outliers": 955,
+        "stddev_outliers": 1002,
+        "outliers": "1002;955",
+        "ld15iqr": 2.425000275252387e-06,
+        "hd15iqr": 3.3760006772354245e-06,
+        "ops": 373053.2010723004,
+        "total": 0.06224313297207118,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[report_open_sections]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[report_open_sections]",
+      "params": {
+        "method_name": "report_open_sections"
+      },
+      "param": "report_open_sections",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.967999873566441e-06,
+        "max": 5.393899846239947e-05,
+        "mean": 4.330051966389713e-06,
+        "stddev": 1.00420516853558e-06,
+        "rounds": 32528,
+        "median": 4.09800122724846e-06,
+        "iqr": 1.0900021152338013e-07,
+        "q1": 4.069000169693027e-06,
+        "q3": 4.178000381216407e-06,
+        "iqr_outliers": 7712,
+        "stddev_outliers": 1289,
+        "outliers": "1289;7712",
+        "ld15iqr": 3.967999873566441e-06,
+        "hd15iqr": 4.3479994928929955e-06,
+        "ops": 230944.1105469629,
+        "total": 0.14084793036272458,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[report_overloaded_students]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[report_overloaded_students]",
+      "params": {
+        "method_name": "report_overloaded_students"
+      },
+      "param": "report_overloaded_students",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.8730006559053436e-06,
+        "max": 6.577299973287154e-05,
+        "mean": 2.0797482123246005e-06,
+        "stddev": 6.087926554263826e-07,
+        "rounds": 68125,
+        "median": 1.9640010577859357e-06,
+        "iqr": 8.000097295735031e-08,
+        "q1": 1.9439994503045455e-06,
+        "q3": 2.0240004232618958e-06,
+        "iqr_outliers": 14706,
+        "stddev_outliers": 1577,
+        "outliers": "1577;14706",
+        "ld15iqr": 1.8730006559053436e-06,
+        "hd15iqr": 2.144999598385766e-06,
+        "ops": 480827.4357799631,
+        "total": 0.14168284696461342,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[report_student_schedule]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[report_student_schedule]",
+      "params": {
+        "method_name": "report_student_schedule"
+      },
+      "param": "report_student_schedule",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.5270004445919767e-06,
+        "max": 6.321799992292654e-05,
+        "mean": 4.109528169445687e-06,
+        "stddev": 1.2747894887872892e-06,
+        "rounds": 44995,
+        "median": 3.787001332966611e-06,
+        "iqr": 4.3000000005122274e-07,
+        "q1": 3.707998985191807e-06,
+        "q3": 4.13799898524303e-06,
+        "iqr_outliers": 4193,
+        "stddev_outliers": 2300,
+        "outliers": "2300;4193",
+        "ld15iqr": 3.5270004445919767e-06,
+        "hd15iqr": 4.78899892186746e-06,
+        "ops": 243336.93766476476,
+        "total": 0.1849082199842087,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[report_system_summary]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[report_system_summary]",
+      "params": {
+        "method_name": "report_system_summary"
+      },
+      "param": "report_system_summary",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 2.3239990696310997e-06,
+        "max": 5.977100045129191e-05,
+        "mean": 2.534137613936737e-06,
+        "stddev": 6.314783174097281e-07,
+        "rounds": 60372,
+        "median": 2.4450000637443736e-06,
+        "iqr": 4.999856173526496e-08,
+        "q1": 2.4150012905010954e-06,
+        "q3": 2.4649998522363603e-06,
+        "iqr_outliers": 8837,
+        "stddev_outliers": 1472,
+        "outliers": "1472;8837",
+        "ld15iqr": 2.3439988581230864e-06,
+        "hd15iqr": 2.544999006204307e-06,
+        "ops": 394611.56114821957,
+        "total": 0.1529909560285887,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[report_waitlisted_students]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[report_waitlisted_students]",
+      "params": {
+        "method_name": "report_waitlisted_students"
+      },
+      "param": "report_waitlisted_students",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 2.3749998945277184e-06,
+        "max": 1.6955000319285318e-05,
+        "mean": 2.585835452707349e-06,
+        "stddev": 2.8269923369270787e-07,
+        "rounds": 45883,
+        "median": 2.5560002541169524e-06,
+        "iqr": 4.000139597337693e-08,
+        "q1": 2.544999006204307e-06,
+        "q3": 2.585000402177684e-06,
+        "iqr_outliers": 2913,
+        "stddev_outliers": 529,
+        "outliers": "529;2913",
+        "ld15iqr": 2.484999640728347e-06,
+        "hd15iqr": 2.6459983928361908e-06,
+        "ops": 386722.2096259095,
+        "total": 0.11864588807657128,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[search_courses]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[search_courses]",
+      "params": {
+        "method_name": "search_courses"
+      },
+      "param": "search_courses",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.797998942900449e-06,
+        "max": 3.398899934836663e-05,
+        "mean": 4.155662344176791e-06,
+        "stddev": 6.843808172360454e-07,
+        "rounds": 42359,
+        "median": 3.9480000850744545e-06,
+        "iqr": 1.0999974620062858e-07,
+        "q1": 3.908000508090481e-06,
+        "q3": 4.01800025429111e-06,
+        "iqr_outliers": 8945,
+        "stddev_outliers": 2072,
+        "outliers": "2072;8945",
+        "ld15iqr": 3.797998942900449e-06,
+        "hd15iqr": 4.188001184957102e-06,
+        "ops": 240635.52742711903,
+        "total": 0.1760297012369847,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[section_exists]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[section_exists]",
+      "params": {
+        "method_name": "section_exists"
+      },
+      "param": "section_exists",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.0619987733662128e-06,
+        "max": 3.975099934905302e-05,
+        "mean": 1.1439143694745205e-06,
+        "stddev": 4.4922160813769077e-07,
+        "rounds": 123656,
+        "median": 1.1020001693395898e-06,
+        "iqr": 2.0998413674533367e-08,
+        "q1": 1.0920011845882982e-06,
+        "q3": 1.1129995982628316e-06,
+        "iqr_outliers": 14104,
+        "stddev_outliers": 1485,
+        "outliers": "1485;14104",
+        "ld15iqr": 1.0619987733662128e-06,
+        "hd15iqr": 1.1519987310748547e-06,
+        "ops": 874191.3089695426,
+        "total": 0.1414518752717413,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[student_exists]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[student_exists]",
+      "params": {
+        "method_name": "student_exists"
+      },
+      "param": "student_exists",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 1.0619987733662128e-06,
+        "max": 3.901899981428869e-05,
+        "mean": 1.1983748322292423e-06,
+        "stddev": 5.031627680272318e-07,
+        "rounds": 125692,
+        "median": 1.1119991540908813e-06,
+        "iqr": 1.6000194591470063e-07,
+        "q1": 1.1019983503501862e-06,
+        "q3": 1.2620002962648869e-06,
+        "iqr_outliers": 7052,
+        "stddev_outliers": 2591,
+        "outliers": "2591;7052",
+        "ld15iqr": 1.0619987733662128e-06,
+        "hd15iqr": 1.5029982023406774e-06,
+        "ops": 834463.4525908548,
+        "total": 0.15062612941255793,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_all_methods_benchmark[to_dict]",
+      "fullname": "performance_stress_testing.py::test_all_methods_benchmark[to_dict]",
+      "params": {
+        "method_name": "to_dict"
+      },
+      "param": "to_dict",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 9.1479996626731e-06,
+        "max": 0.00010087400005431846,
+        "mean": 1.0884350118766086e-05,
+        "stddev": 2.9407279620958114e-06,
+        "rounds": 16037,
+        "median": 9.499000952928327e-06,
+        "iqr": 1.6329995560226962e-06,
+        "q1": 9.379000402987003e-06,
+        "q3": 1.10119999590097e-05,
+        "iqr_outliers": 2033,
+        "stddev_outliers": 1820,
+        "outliers": "1820;2033",
+        "ld15iqr": 9.1479996626731e-06,
+        "hd15iqr": 1.3467000826494768e-05,
+        "ops": 91875.03057953504,
+        "total": 0.17455232285465172,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_stress_registration",
+      "fullname": "performance_stress_testing.py::test_stress_registration",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.004043581000587437,
+        "max": 0.005979593001029571,
+        "mean": 0.00439823613278269,
+        "stddev": 0.0002647711436917053,
+        "rounds": 113,
+        "median": 0.0043277370004943805,
+        "iqr": 0.00027992675040877657,
+        "q1": 0.004219988750264747,
+        "q3": 0.004499915500673524,
+        "iqr_outliers": 4,
+        "stddev_outliers": 25,
+        "outliers": "25;4",
+        "ld15iqr": 0.004043581000587437,
+        "hd15iqr": 0.005009237000194844,
+        "ops": 227.36387265485828,
+        "total": 0.497000683004444,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_stress_waitlist",
+      "fullname": "performance_stress_testing.py::test_stress_waitlist",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.00021638799989887048,
+        "max": 0.0003897599999618251,
+        "mean": 0.00023579936895140575,
+        "stddev": 2.4498626884359972e-05,
+        "rounds": 3060,
+        "median": 0.0002237684993815492,
+        "iqr": 2.595750083855819e-05,
+        "q1": 0.00022014599926478695,
+        "q3": 0.00024610350010334514,
+        "iqr_outliers": 168,
+        "stddev_outliers": 383,
+        "outliers": "383;168",
+        "ld15iqr": 0.00021638799989887048,
+        "hd15iqr": 0.0002855580005416414,
+        "ops": 4240.893452967989,
+        "total": 0.7215460689913016,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_stress_conflict_checks",
+      "fullname": "performance_stress_testing.py::test_stress_conflict_checks",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0035184170010325033,
+        "max": 0.004880044998571975,
+        "mean": 0.003720163759684776,
+        "stddev": 0.0002023333387087065,
+        "rounds": 233,
+        "median": 0.0036674370003311196,
+        "iqr": 9.642274972065934e-05,
+        "q1": 0.0036257105002732715,
+        "q3": 0.003722133249993931,
+        "iqr_outliers": 26,
+        "stddev_outliers": 22,
+        "outliers": "22;26",
+        "ld15iqr": 0.0035184170010325033,
+        "hd15iqr": 0.0038821120015199995,
+        "ops": 268.80537110676386,
+        "total": 0.8667981560065527,
+        "iterations": 1
+      }
+    },
+    {
+      "group": null,
+      "name": "test_full_registration_flow",
+      "fullname": "performance_stress_testing.py::test_full_registration_flow",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 7.455100057995878e-05,
+        "max": 0.00014563500008080155,
+        "mean": 7.830057447622254e-05,
+        "stddev": 4.551796793374637e-06,
+        "rounds": 7071,
+        "median": 7.70050010032719e-05,
+        "iqr": 1.2519994925241917e-06,
+        "q1": 7.648500104551204e-05,
+        "q3": 7.773700053803623e-05,
+        "iqr_outliers": 1009,
+        "stddev_outliers": 578,
+        "outliers": "578;1009",
+        "ld15iqr": 7.466100032615941e-05,
+        "hd15iqr": 7.962199924804736e-05,
+        "ops": 12771.298380494885,
+        "total": 0.5536633621213696,
+        "iterations": 1
+      }
+    }
+  ],
+  "datetime": "2026-04-02T00:01:45.302036+00:00",
+  "version": "5.2.3"
+}
