@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Course Registration and Enrollment Management System
 ===================================================
@@ -117,7 +118,7 @@ Also include:
 Do not provide explanation outside the code. Output only the complete Python code in one file.
 
 """
-from __future__ import annotations
+
 
 
 import json

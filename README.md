@@ -52,7 +52,11 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     codeql query run example_query.ql --database=codeql-db 
     ``` -->
 
+# Automated Test Case Generation
 
+```bash
+pytest --cov=myprog --cov-report=term --cov-report=html
+```
 # Program Dependency Graphs
 
 We use [Joern](https://docs.joern.io/frontends/python/) on Python code to export PDGs.
