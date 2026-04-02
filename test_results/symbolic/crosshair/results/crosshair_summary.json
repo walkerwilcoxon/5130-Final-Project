@@ -1,0 +1,14 @@
+{
+  "tool": "CrossHair",
+  "started_at_utc": "2026-04-02T23:49:14.352146+00:00",
+  "duration_seconds": 7.488,
+  "exit_code": 0,
+  "analysis_kind": "PEP316",
+  "per_path_timeout": 1.5,
+  "per_condition_timeout": 12.0,
+  "max_uninteresting_iterations": 20,
+  "properties_file": "/Users/hbtong/5130-Final-Project/test_results/symbolic/crosshair/scripts/crosshair_properties.py",
+  "raw_log": "/Users/hbtong/5130-Final-Project/test_results/symbolic/crosshair/raw/crosshair_check.log",
+  "finding_count": 0,
+  "findings": []
+}

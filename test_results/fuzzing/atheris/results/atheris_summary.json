@@ -1,0 +1,29 @@
+{
+  "tool": "Atheris",
+  "started_at_utc": "2026-04-02T23:49:14.363434+00:00",
+  "duration_seconds": 0.29,
+  "exit_code": 77,
+  "coverage_exit_code": 0,
+  "run_count": 50000,
+  "max_len": 256,
+  "fuzzer_script": "/Users/hbtong/5130-Final-Project/test_results/fuzzing/atheris/scripts/fuzz_course_management_atheris.py",
+  "raw_log": "/Users/hbtong/5130-Final-Project/test_results/fuzzing/atheris/raw/atheris.log",
+  "corpus_dir": "/Users/hbtong/5130-Final-Project/test_results/fuzzing/atheris/raw/corpus",
+  "crash_dir": "/Users/hbtong/5130-Final-Project/test_results/fuzzing/atheris/raw/crashes",
+  "coverage_json": "/Users/hbtong/5130-Final-Project/test_results/fuzzing/atheris/raw/coverage.json",
+  "course_management_system_percent_covered": 40.18691588785047,
+  "corpus_files": [
+    "seed_bytes.bin",
+    "seed_conflict.bin",
+    "seed_empty_system_json.bin",
+    "seed_parse_meeting.bin",
+    "seed_parse_time.bin",
+    "seed_partial_schema_json.bin",
+    "seed_registration.bin",
+    "seed_serialize.bin",
+    "seed_valid_system_json.bin"
+  ],
+  "crash_files": [
+    "crash-aa154d6dcd4e4c9d8a47c3e49c77ad36eb8d3cf5"
+  ]
+}
