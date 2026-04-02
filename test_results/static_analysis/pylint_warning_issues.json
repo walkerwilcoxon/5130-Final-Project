@@ -1,0 +1,67 @@
+[
+    {
+        "type": "warning",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem.add_course",
+        "line": 330,
+        "column": 55,
+        "endLine": 330,
+        "endColumn": 67,
+        "path": "course_management_system.py",
+        "symbol": "redefined-builtin",
+        "message": "Redefining built-in 'credits'",
+        "message-id": "W0622"
+    },
+    {
+        "type": "warning",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem.promote_waitlist",
+        "line": 653,
+        "column": 12,
+        "endLine": 653,
+        "endColumn": 19,
+        "path": "course_management_system.py",
+        "symbol": "unused-variable",
+        "message": "Unused variable 'allowed'",
+        "message-id": "W0612"
+    },
+    {
+        "type": "warning",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem.promote_waitlist",
+        "line": 653,
+        "column": 21,
+        "endLine": 653,
+        "endColumn": 28,
+        "path": "course_management_system.py",
+        "symbol": "unused-variable",
+        "message": "Unused variable 'reasons'",
+        "message-id": "W0612"
+    },
+    {
+        "type": "warning",
+        "module": "course_management_system",
+        "obj": "cli_add_course",
+        "line": 1151,
+        "column": 4,
+        "endLine": 1151,
+        "endColumn": 11,
+        "path": "course_management_system.py",
+        "symbol": "redefined-builtin",
+        "message": "Redefining built-in 'credits'",
+        "message-id": "W0622"
+    },
+    {
+        "type": "warning",
+        "module": "course_management_system",
+        "obj": "",
+        "line": 8,
+        "column": 0,
+        "endLine": 8,
+        "endColumn": 29,
+        "path": "course_management_system.py",
+        "symbol": "unused-import",
+        "message": "Unused deque imported from collections",
+        "message-id": "W0611"
+    }
+]

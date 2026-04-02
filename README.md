@@ -38,9 +38,13 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     coverage report
     coverage html
     ```
-* To run performance/stress testing, run:
+* To run performance/stress testing, install pytest-benchmark in venv, then run:
     ```bash
     python run_pytest_benchmark.py
+    ```
+* To run static analysis, install pylint in venv, then run:
+    ```bash
+    python run_pylint.py
     ```
 <!-- * To run the CodeQL analysis, execute the following command in the terminal:
     ```bash

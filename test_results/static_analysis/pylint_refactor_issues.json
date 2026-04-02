@@ -1,0 +1,93 @@
+[
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "Section",
+        "line": 213,
+        "column": 0,
+        "endLine": 213,
+        "endColumn": 13,
+        "path": "course_management_system.py",
+        "symbol": "too-many-instance-attributes",
+        "message": "Too many instance attributes (9/7)",
+        "message-id": "R0902"
+    },
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem.create_section",
+        "line": 382,
+        "column": 4,
+        "endLine": 382,
+        "endColumn": 22,
+        "path": "course_management_system.py",
+        "symbol": "too-many-arguments",
+        "message": "Too many arguments (7/5)",
+        "message-id": "R0913"
+    },
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem.create_section",
+        "line": 382,
+        "column": 4,
+        "endLine": 382,
+        "endColumn": 22,
+        "path": "course_management_system.py",
+        "symbol": "too-many-positional-arguments",
+        "message": "Too many positional arguments (7/5)",
+        "message-id": "R0917"
+    },
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem.create_section",
+        "line": 382,
+        "column": 4,
+        "endLine": 382,
+        "endColumn": 22,
+        "path": "course_management_system.py",
+        "symbol": "too-many-return-statements",
+        "message": "Too many return statements (7/6)",
+        "message-id": "R0911"
+    },
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "RegistrationSystem",
+        "line": 288,
+        "column": 0,
+        "endLine": 288,
+        "endColumn": 24,
+        "path": "course_management_system.py",
+        "symbol": "too-many-public-methods",
+        "message": "Too many public methods (39/20)",
+        "message-id": "R0904"
+    },
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "run_cli",
+        "line": 1278,
+        "column": 0,
+        "endLine": 1278,
+        "endColumn": 11,
+        "path": "course_management_system.py",
+        "symbol": "too-many-branches",
+        "message": "Too many branches (28/12)",
+        "message-id": "R0912"
+    },
+    {
+        "type": "refactor",
+        "module": "course_management_system",
+        "obj": "run_cli",
+        "line": 1278,
+        "column": 0,
+        "endLine": 1278,
+        "endColumn": 11,
+        "path": "course_management_system.py",
+        "symbol": "too-many-statements",
+        "message": "Too many statements (62/50)",
+        "message-id": "R0915"
+    }
+]
