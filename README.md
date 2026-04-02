@@ -55,7 +55,7 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
 # Automated Test Case Generation
 
 ```bash
-pytest --cov=myprog --cov-report=term --cov-report=html
+pytest -v --cov=course_management_system --cov-branch --cov-report=term --cov-report=html
 ```
 # Program Dependency Graphs
 
