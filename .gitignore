@@ -212,6 +212,5 @@ __marimo__/
 codeql/
 sampleproj/
 joern/
-*.zip
 cpg.bin
 draw_pdg.sh
