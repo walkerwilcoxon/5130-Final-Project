@@ -486,6 +486,7 @@ class QueryInterface:
         action = str(parsed.get("action", "")).strip().lower()
         query_type = str(parsed.get("query_type", "other"))
         related_lines = self._normalize_line_numbers(parsed.get("related_lines", []))
+        related_lines = self._sanitize_related_lines(related_lines)
 
         if action == "answer_from_source":
             can_answer = bool(parsed.get("can_answer", True))
@@ -552,7 +553,7 @@ class QueryInterface:
             "Return ONLY JSON, no markdown.\n"
             "Allowed JSON formats:\n"
             "1) {\"action\":\"call_local_api\",\"query_type\":\"...\",\"tool_name\":\"...\",\"arguments\":{...}}\n"
-            "2) {\"action\":\"answer_from_source\",\"query_type\":\"...\",\"can_answer\":true,\"answer\":\"...\",\"related_lines\":[12,13]}\n"
+            "2) {\"action\":\"answer_from_source\",\"query_type\":\"...\",\"can_answer\":true,\"answer\":\"...\",\"related_lines\":[]}\n"
             "3) {\"action\":\"cannot_answer\",\"query_type\":\"...\",\"reason\":\"...\",\"related_lines\":[...]}\n"
             "4) {\"action\":\"delegate_to_regex\"}\n"
             "Supported query types: q1_dead_code, q2_vars_defined, q3_var_live_at_point, q4_callees, q5_transitive_call_chain, q6_hotspots, other.\n"
@@ -562,6 +563,10 @@ class QueryInterface:
             "- If query is not one of the six types, inspect source and return answer_from_source or cannot_answer.\n"
             "- Never invent tool names; choose only from available tools listed below.\n"
             "- For answer_from_source/cannot_answer, include related_lines as the most relevant 1-based source line numbers when possible.\n"
+            "- The source snippet you receive is line-numbered (e.g., ' 123: code'). Use those exact numbers in related_lines.\n"
+            "- related_lines must be grounded in the provided source snippet, not guessed.\n"
+            "- Use at most 5 related lines.\n"
+            "- Do NOT use placeholder or repeated canned line numbers. If uncertain, use an empty list [].\n"
             "Known available tool names right now:\n"
             f"{tool_doc}\n"
             "Important: arguments must be a JSON object with primitive values/arrays/objects only."
@@ -590,26 +595,92 @@ class QueryInterface:
                 unique.append(ln)
         return unique
 
+    def _sanitize_related_lines(self, lines: List[int]) -> List[int]:
+        """Drop obvious placeholder line numbers and out-of-range values."""
+        if not lines:
+            return []
+
+        try:
+            source_line_count = len(Path(self.default_source).read_text(encoding="utf-8").splitlines())
+        except OSError:
+            source_line_count = 0
+
+        sanitized = [ln for ln in lines if ln > 0 and (source_line_count == 0 or ln <= source_line_count)]
+
+        # Heuristic: common placeholder examples that may leak from prompt templates.
+        if sanitized == [12, 13]:
+            return []
+
+        return sanitized
+
     def _build_ai_user_prompt(self, natural_language_query: str) -> str:
         source_text = self._get_source_for_ai()
         return (
             "User query:\n"
             f"{natural_language_query}\n\n"
             f"Source file: {self.default_source}\n"
-            "Source code (possibly truncated):\n"
+            "Source code with explicit 1-based line numbers (possibly truncated):\n"
             "-----BEGIN SOURCE-----\n"
             f"{source_text}\n"
             "-----END SOURCE-----\n"
         )
 
+    def get_ai_info(self, query_placeholder: str = "<QUERY>", source_placeholder: str = "<SOURCE_CODE>") -> Dict[str, Any]:
+        """Returns AI runtime metadata and prompt templates for GUI/debug display."""
+        client = self.ai_client
+        backend = "disabled"
+        model = "-"
+        base_url = "-"
+
+        if client is not None:
+            backend = type(client).__name__
+            model = getattr(client, "model", "-")
+            base_url = getattr(client, "base_url", "-")
+
+        user_prompt_template = (
+            "User query:\n"
+            f"{query_placeholder}\n\n"
+            f"Source file: {self.default_source}\n"
+            "Source code with explicit 1-based line numbers (possibly truncated):\n"
+            "-----BEGIN SOURCE-----\n"
+            f"{source_placeholder}\n"
+            "-----END SOURCE-----\n"
+        )
+
+        return {
+            "ai_enabled": client is not None,
+            "backend": backend,
+            "model": model,
+            "base_url": base_url,
+            "router_system_prompt": self._build_ai_router_prompt(),
+            "router_user_prompt_template": user_prompt_template,
+        }
+
     def _get_source_for_ai(self) -> str:
         try:
-            text = Path(self.default_source).read_text(encoding="utf-8")
+            lines = Path(self.default_source).read_text(encoding="utf-8").splitlines()
         except OSError:
             return "<source unavailable>"
-        if len(text) > self.ai_source_max_chars:
-            return text[: self.ai_source_max_chars] + "\n...<truncated>"
-        return text
+
+        rendered: List[str] = []
+        used_chars = 0
+        last_line_no = 0
+
+        for idx, line in enumerate(lines, start=1):
+            entry = f"{idx:4d}: {line}\n"
+            if rendered and used_chars + len(entry) > self.ai_source_max_chars:
+                break
+            rendered.append(entry)
+            used_chars += len(entry)
+            last_line_no = idx
+
+        if not rendered:
+            return "<empty source>"
+
+        out = "".join(rendered).rstrip("\n")
+        if last_line_no < len(lines):
+            out += f"\n...<truncated after line {last_line_no} of {len(lines)}>"
+        return out
 
     @staticmethod
     def _parse_ai_json(raw: str) -> Optional[Dict[str, Any]]:

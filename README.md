@@ -46,6 +46,11 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     ```bash
     python run_pylint.py
     ```
+* To run the query system GUI:
+    ```bash
+    export OPENAI_API_KEY="your_api_key"  # get it from https://platform.openai.com/settings/organization/api-keys
+    python query_gui.py
+    ```
 <!-- * To run the CodeQL analysis, execute the following command in the terminal:
     ```bash
     codeql database create codeql-db --language=python --source-root=.
