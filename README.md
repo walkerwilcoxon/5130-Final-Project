@@ -25,6 +25,10 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     ```bash
     codeql pack install
     ```
+4. Run the following command to install the Python libraries for CodeQL:
+    ```bash
+    git clone https://github.com/github/codeql codeql-libs
+    ```
 
 # Usage:
 * To run the fuzzing tests, execute the following command in the terminal:

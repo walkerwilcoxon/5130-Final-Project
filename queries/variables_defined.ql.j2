@@ -1,0 +1,12 @@
+/**
+ * Query: What variables does '{{ function_name }}' define?
+ * @kind problem
+ * @id python/variables-defined
+ */
+import python
+
+from Function f, Variable v
+where
+  v.getScope() = f and
+  f.getName() = "{{ function_name }}"
+select v, v.getId()
