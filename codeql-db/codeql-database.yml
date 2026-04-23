@@ -1,0 +1,12 @@
+---
+sourceLocationPrefix: /mnt/c/Users/Walker/Projects/5130-Final-Project/codeql-files
+baselineLinesOfCode: 1186
+unicodeNewlines: false
+columnKind: utf32
+primaryLanguage: python
+creationMetadata:
+  cliVersion: 2.25.0
+  creationTime: 2026-04-23T02:25:39.086257720Z
+overlayBaseDatabase: false
+overlayDatabase: false
+finalised: true
