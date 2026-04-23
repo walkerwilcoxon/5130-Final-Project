@@ -1,7 +1,7 @@
 """Natural-language query interface for static-analysis results.
 
-Scope: supports exactly 6 query families.
-Target source (default): json_parser.py
+Scope: supports exactly 8 query families.
+Target source (default): course_management_system.py
 """
 
 from __future__ import annotations
@@ -25,16 +25,456 @@ class QueryType(str, Enum):
     CALLEES = "q4_callees"
     TRANSITIVE_CALL_CHAIN = "q5_transitive_call_chain"
     HOTSPOTS = "q6_hotspots"
+    LINES_COVERED_BY_TESTS = "q7_lines_covered_by_tests"
+    TEST_COVERAGE_SUMMARY = "q8_test_coverage_summary"
 
 
 @dataclass
 class QueryCommand:
     query_type: QueryType
-    source_file: str = "json_parser.py"
+    source_file: str = "course_management_system.py"
     function_name: Optional[str] = None
     variable_name: Optional[str] = None
     line: Optional[int] = None
+    lines: Optional[List[int]] = None
     top_k: int = 5
+
+
+class CoverageReportInspector:
+    """Loads and answers coverage queries from local fuzzing coverage reports."""
+
+    ATHERIS_COVERAGE_PATH = "test_results/fuzzing/atheris/raw/coverage.json"
+    HYPOTHESIS_COVERAGE_PATH = "test_results/fuzzing/hypothesis/raw/coverage.json"
+
+    def __init__(self, source_file: str):
+        self.source_file = source_file
+
+    @staticmethod
+    def _load_json(path: str) -> Dict[str, Any]:
+        try:
+            return json.loads(Path(path).read_text(encoding="utf-8"))
+        except OSError as exc:
+            raise RuntimeError(f"Could not read coverage file '{path}': {exc}") from exc
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"Coverage file '{path}' is not valid JSON: {exc}") from exc
+
+    @staticmethod
+    def _find_file_coverage(report: Dict[str, Any], source_file: str) -> Optional[Dict[str, Any]]:
+        files = report.get("files")
+        if not isinstance(files, dict):
+            return None
+
+        if source_file in files and isinstance(files[source_file], dict):
+            return files[source_file]
+
+        src_name = Path(source_file).name
+        for file_key, file_value in files.items():
+            if not isinstance(file_value, dict):
+                continue
+            if Path(str(file_key)).name == src_name:
+                return file_value
+
+        return None
+
+    @staticmethod
+    def _to_line_set(value: Any) -> Set[int]:
+        if not isinstance(value, list):
+            return set()
+        out: Set[int] = set()
+        for item in value:
+            if isinstance(item, int) and item > 0:
+                out.add(item)
+        return out
+
+    @staticmethod
+    def _summary_from_file_coverage(file_cov: Dict[str, Any]) -> Dict[str, Any]:
+        summary = file_cov.get("summary", {})
+        if not isinstance(summary, dict):
+            summary = {}
+        return {
+            "covered_lines": int(summary.get("covered_lines", 0) or 0),
+            "num_statements": int(summary.get("num_statements", 0) or 0),
+            "percent_covered": float(summary.get("percent_covered", 0.0) or 0.0),
+            "percent_covered_display": str(summary.get("percent_covered_display", "0")),
+            "missing_lines": int(summary.get("missing_lines", 0) or 0),
+        }
+
+    def _load_reports(self) -> Dict[str, Dict[str, Any]]:
+        reports: Dict[str, Dict[str, Any]] = {}
+        for name, path in {
+            "atheris": self.ATHERIS_COVERAGE_PATH,
+            "hypothesis": self.HYPOTHESIS_COVERAGE_PATH,
+        }.items():
+            report = self._load_json(path)
+            file_cov = self._find_file_coverage(report, self.source_file)
+            if file_cov is None:
+                reports[name] = {
+                    "path": path,
+                    "file_coverage": None,
+                    "executed": set(),
+                    "summary": {},
+                }
+                continue
+
+            executed = self._to_line_set(file_cov.get("executed_lines", []))
+            reports[name] = {
+                "path": path,
+                "file_coverage": file_cov,
+                "executed": executed,
+                "summary": self._summary_from_file_coverage(file_cov),
+            }
+        return reports
+
+    def _analyze_source_lines(self) -> Dict[str, Any]:
+        """Analyze source lines for coverage-display semantics.
+
+        Returns:
+        - excluded_lines: 1-based lines to exclude from coverage checks.
+        - continuation_anchor: mapping of line -> logical statement start line.
+        - clause_body_map: mapping of clause header line -> lines in its indented block.
+
+        Excluded categories include:
+        - blank/whitespace-only lines
+        - comment-only lines
+        - docstring lines (module/class/function leading string literal)
+        - standalone string-literal expression blocks
+        """
+        try:
+            source = Path(self.source_file).read_text(encoding="utf-8")
+        except OSError:
+            return {
+                "excluded_lines": set(),
+                "continuation_anchor": {},
+                "clause_body_map": {},
+            }
+
+        lines = source.splitlines()
+        excluded: Set[int] = set()
+        continuation_anchor: Dict[int, int] = {}
+        clause_body_map: Dict[int, Set[int]] = {}
+
+        # Blank lines.
+        for idx, line in enumerate(lines, start=1):
+            if not line.strip():
+                excluded.add(idx)
+
+        # Comment-only lines via tokenize (ignores inline comments with code before '#').
+        try:
+            import io
+            import token
+            import tokenize
+
+            tok_iter = tokenize.generate_tokens(io.StringIO(source).readline)
+            for tok in tok_iter:
+                if tok.type != tokenize.COMMENT:
+                    continue
+                line_no = int(tok.start[0])
+                col = int(tok.start[1])
+                raw_line = lines[line_no - 1] if 1 <= line_no <= len(lines) else ""
+                if raw_line[:col].strip() == "":
+                    excluded.add(line_no)
+        except Exception:
+            # Keep best-effort behavior if tokenization fails on transient syntax issues.
+            pass
+
+        # Logical statement anchoring for multiline statements/headers.
+        # Example: multiline def signature lines all anchor to the `def` line.
+        try:
+            import io
+            import token
+            import tokenize
+
+            logical_start: Optional[int] = None
+            tok_iter = tokenize.generate_tokens(io.StringIO(source).readline)
+            for tok in tok_iter:
+                tok_type = tok.type
+                sline = int(tok.start[0])
+                eline = int(tok.end[0])
+
+                if tok_type in {tokenize.ENCODING, tokenize.NL, tokenize.NEWLINE, tokenize.INDENT, tokenize.DEDENT, tokenize.ENDMARKER}:
+                    if tok_type == tokenize.NEWLINE:
+                        logical_start = None
+                    continue
+
+                if logical_start is None:
+                    logical_start = sline
+
+                for ln in range(sline, eline + 1):
+                    if ln > 0:
+                        continuation_anchor.setdefault(ln, logical_start)
+        except Exception:
+            pass
+
+        # Clause header -> inner block mapping using indentation scanning.
+        clause_header = re.compile(
+            r"^(else:|elif\b.*:|except\b.*:|finally:|case\b.*:)$",
+            re.IGNORECASE,
+        )
+        total = len(lines)
+        for i, raw in enumerate(lines, start=1):
+            stripped = raw.strip()
+            if not clause_header.match(stripped):
+                continue
+
+            indent = len(raw) - len(raw.lstrip(" "))
+            block_lines: Set[int] = set()
+            j = i + 1
+            while j <= total:
+                probe = lines[j - 1]
+                probe_stripped = probe.strip()
+
+                if not probe_stripped:
+                    j += 1
+                    continue
+
+                probe_indent = len(probe) - len(probe.lstrip(" "))
+
+                # End of this clause block when indentation returns to same-or-less level.
+                if probe_indent <= indent:
+                    break
+
+                block_lines.add(j)
+                j += 1
+
+            if block_lines:
+                clause_body_map[i] = block_lines
+
+        # Docstring lines for module/class/function scopes.
+        try:
+            tree = ast.parse(source, filename=self.source_file)
+
+            def _mark_scope_docstring(scope: Any) -> None:
+                body = getattr(scope, "body", None)
+                if not isinstance(body, list) or not body:
+                    return
+                first = body[0]
+                if not isinstance(first, ast.Expr):
+                    return
+                value = first.value
+                if not (isinstance(value, ast.Constant) and isinstance(value.value, str)):
+                    return
+
+                start = int(getattr(first, "lineno", 0) or 0)
+                end = int(getattr(first, "end_lineno", start) or start)
+                if start <= 0:
+                    return
+                for ln in range(start, end + 1):
+                    excluded.add(ln)
+
+            _mark_scope_docstring(tree)
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    _mark_scope_docstring(node)
+
+            # Any standalone string literal expression is comment-like noise for
+            # this UI's coverage intent (e.g., large prompt blocks in triple quotes).
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Expr):
+                    continue
+                value = node.value
+                if not (isinstance(value, ast.Constant) and isinstance(value.value, str)):
+                    continue
+                start = int(getattr(node, "lineno", 0) or 0)
+                end = int(getattr(node, "end_lineno", start) or start)
+                if start <= 0:
+                    continue
+                for ln in range(start, end + 1):
+                    excluded.add(ln)
+        except SyntaxError:
+            pass
+
+        return {
+            "excluded_lines": excluded,
+            "continuation_anchor": continuation_anchor,
+            "clause_body_map": clause_body_map,
+        }
+
+    def lines_covered(self, lines: List[int]) -> Dict[str, Any]:
+        normalized: List[int] = []
+        seen: Set[int] = set()
+        for ln in lines:
+            if isinstance(ln, int) and ln > 0 and ln not in seen:
+                seen.add(ln)
+                normalized.append(ln)
+
+        if not normalized:
+            return {
+                "error": "No valid line numbers were provided.",
+                "hint": "Try a query like: Are lines 423, 547, 900 covered by tests?",
+            }
+
+        source_analysis = self._analyze_source_lines()
+        excluded_lines = set(source_analysis.get("excluded_lines", set()))
+        continuation_anchor = dict(source_analysis.get("continuation_anchor", {}))
+        clause_body_map = {
+            int(k): set(v)
+            for k, v in dict(source_analysis.get("clause_body_map", {})).items()
+            if isinstance(k, int)
+        }
+        effective_lines = [ln for ln in normalized if ln not in excluded_lines]
+
+        if not effective_lines:
+            return {
+                "source_file": self.source_file,
+                "query_lines": [],
+                "requested_lines": normalized,
+                "excluded_non_code_lines": [ln for ln in normalized if ln in excluded_lines],
+                "covered_lines": 0,
+                "total_lines": 0,
+                "all_lines_covered": False,
+                "per_line": [],
+                "note": "All requested lines are blank/comment/docstring lines and were excluded.",
+                "reports": {
+                    "atheris": self.ATHERIS_COVERAGE_PATH,
+                    "hypothesis": self.HYPOTHESIS_COVERAGE_PATH,
+                },
+            }
+
+        reports = self._load_reports()
+        available_reports: List[str] = [
+            name for name, payload in reports.items() if payload.get("file_coverage") is not None
+        ]
+        if not available_reports:
+            available_reports = list(reports.keys())
+
+        executed_by_report: Dict[str, Set[int]] = {
+            name: set(payload.get("executed", set())) for name, payload in reports.items()
+        }
+        total_runs = max(1, len(available_reports))
+
+        per_line: List[Dict[str, Any]] = []
+        effective_line_set = set(effective_lines)
+        row_by_line: Dict[int, Dict[str, Any]] = {}
+        for ln in effective_lines:
+            anchor_line = int(continuation_anchor.get(ln, ln))
+            by_atheris = anchor_line in executed_by_report.get("atheris", set())
+            by_hypothesis = anchor_line in executed_by_report.get("hypothesis", set())
+            covered_any = by_atheris or by_hypothesis
+            coverage_hits = sum(
+                1 for report_name in available_reports if anchor_line in executed_by_report.get(report_name, set())
+            )
+            coverage_rate = (coverage_hits / total_runs) * 100.0
+
+            atheris_total = 1 if "atheris" in available_reports else 0
+            hypothesis_total = 1 if "hypothesis" in available_reports else 0
+            atheris_hits = 1 if by_atheris and atheris_total > 0 else 0
+            hypothesis_hits = 1 if by_hypothesis and hypothesis_total > 0 else 0
+            atheris_rate = (atheris_hits / atheris_total) * 100.0 if atheris_total > 0 else 0.0
+            hypothesis_rate = (hypothesis_hits / hypothesis_total) * 100.0 if hypothesis_total > 0 else 0.0
+
+            row = {
+                "line": ln,
+                "anchor_line": anchor_line,
+                "covered": covered_any,
+                "coverage_hits": coverage_hits,
+                "coverage_total": total_runs,
+                "coverage_rate": round(coverage_rate, 4),
+                "covered_by": {
+                    "atheris": by_atheris,
+                    "hypothesis": by_hypothesis,
+                },
+                "coverage_by_tool": {
+                    "atheris": {
+                        "hits": atheris_hits,
+                        "total": atheris_total,
+                        "rate": round(atheris_rate, 4),
+                    },
+                    "hypothesis": {
+                        "hits": hypothesis_hits,
+                        "total": hypothesis_total,
+                        "rate": round(hypothesis_rate, 4),
+                    },
+                },
+            }
+            row_by_line[ln] = row
+            per_line.append(row)
+
+        # Clause lines (else/elif/except/finally/case) are treated as normal lines:
+        # green if any line in their inner block is green; red only if all are red.
+        for clause_line, body_lines in clause_body_map.items():
+            if clause_line not in effective_line_set:
+                continue
+
+            relevant = [ln for ln in sorted(body_lines) if ln in effective_line_set]
+            if not relevant:
+                continue
+
+            body_rows = [row_by_line.get(ln) for ln in relevant if isinstance(row_by_line.get(ln), dict)]
+            if not body_rows:
+                continue
+
+            clause_row = row_by_line.get(clause_line)
+            if not isinstance(clause_row, dict):
+                continue
+
+            by_atheris_clause = any(bool(br.get("covered_by", {}).get("atheris", False)) for br in body_rows)
+            by_hypothesis_clause = any(bool(br.get("covered_by", {}).get("hypothesis", False)) for br in body_rows)
+            coverage_hits_clause = int(by_atheris_clause) + int(by_hypothesis_clause)
+            coverage_rate_clause = (coverage_hits_clause / total_runs) * 100.0
+
+            clause_row["covered"] = bool(by_atheris_clause or by_hypothesis_clause)
+            clause_row["coverage_hits"] = coverage_hits_clause
+            clause_row["coverage_rate"] = round(coverage_rate_clause, 4)
+            clause_row["covered_by"] = {
+                "atheris": by_atheris_clause,
+                "hypothesis": by_hypothesis_clause,
+            }
+
+        covered_count = sum(1 for row in per_line if row["covered"])
+        return {
+            "source_file": self.source_file,
+            "query_lines": effective_lines,
+            "requested_lines": normalized,
+            "excluded_non_code_lines": [ln for ln in normalized if ln in excluded_lines],
+            "covered_lines": covered_count,
+            "total_lines": len(effective_lines),
+            "all_lines_covered": covered_count == len(effective_lines),
+            "per_line": per_line,
+            "reports": {
+                "atheris": reports["atheris"]["path"],
+                "hypothesis": reports["hypothesis"]["path"],
+            },
+        }
+
+    def suite_coverage(self) -> Dict[str, Any]:
+        reports = self._load_reports()
+        atheris_summary = reports["atheris"]["summary"]
+        hypothesis_summary = reports["hypothesis"]["summary"]
+
+        union_executed = set(reports["atheris"]["executed"]) | set(reports["hypothesis"]["executed"])
+
+        num_statements_candidates: List[int] = []
+        for item in (atheris_summary, hypothesis_summary):
+            if isinstance(item, dict):
+                n = int(item.get("num_statements", 0) or 0)
+                if n > 0:
+                    num_statements_candidates.append(n)
+        combined_num_statements = max(num_statements_candidates) if num_statements_candidates else 0
+
+        combined_percent = (
+            (len(union_executed) / combined_num_statements) * 100.0 if combined_num_statements > 0 else 0.0
+        )
+
+        return {
+            "source_file": self.source_file,
+            "reports": {
+                "atheris": {
+                    "path": reports["atheris"]["path"],
+                    "summary": atheris_summary,
+                },
+                "hypothesis": {
+                    "path": reports["hypothesis"]["path"],
+                    "summary": hypothesis_summary,
+                },
+            },
+            "combined": {
+                "strategy": "union_of_executed_lines",
+                "covered_lines": len(union_executed),
+                "num_statements": combined_num_statements,
+                "percent_covered": round(combined_percent, 6),
+                "percent_covered_display": f"{combined_percent:.2f}",
+            },
+        }
 
 
 class QueryBackend(Protocol):
@@ -357,7 +797,58 @@ class NLQueryMapper:
     _var = r"(?P<var>[A-Za-z_][A-Za-z0-9_]*)"
     _line = r"(?P<line>\d+)"
 
-    def map_to_command(self, text: str, default_source: str = "json_parser.py") -> Optional[QueryCommand]:
+    @staticmethod
+    def _extract_line_numbers(text: str) -> List[int]:
+        nums: List[int] = []
+        seen: Set[int] = set()
+
+        def _add(n: int) -> None:
+            if n > 0 and n not in seen:
+                seen.add(n)
+                nums.append(n)
+
+        def _add_range(a: int, b: int) -> None:
+            if a <= 0 or b <= 0:
+                return
+            lo = min(a, b)
+            hi = max(a, b)
+            # Safety cap to avoid accidental huge expansions on malformed input.
+            if hi - lo > 5000:
+                _add(lo)
+                _add(hi)
+                return
+            for n in range(lo, hi + 1):
+                _add(n)
+
+        normalized = text.replace("–", "-").replace("—", "-")
+
+        # Range forms: "192-210", "L192-L210", "192 to 210", "line 192 through 210".
+        for m in re.finditer(
+            r"\b(?:line(?:s)?\s*)?[Ll]?(\d+)\s*(?:-|to|through)\s*(?:[Ll])?(\d+)\b",
+            normalized,
+            re.IGNORECASE,
+        ):
+            _add_range(int(m.group(1)), int(m.group(2)))
+
+        # Explicit L-prefixed singles: "L192".
+        for m in re.finditer(r"\b[Ll](\d+)\b", normalized):
+            _add(int(m.group(1)))
+
+        # Number lists near "line" / "lines": "lines 12, 14 and 18".
+        for m in re.finditer(r"\bline(?:s)?\b([^?.!\n\r]*)", normalized, re.IGNORECASE):
+            chunk = m.group(1)
+
+            # Expand ranges appearing inside this chunk first.
+            for r in re.finditer(r"\b(\d+)\s*(?:-|to|through)\s*(\d+)\b", chunk, re.IGNORECASE):
+                _add_range(int(r.group(1)), int(r.group(2)))
+
+            # Then add standalone numbers.
+            for token in re.findall(r"\b\d+\b", chunk):
+                _add(int(token))
+
+        return nums
+
+    def map_to_command(self, text: str, default_source: str = "course_management_system.py") -> Optional[QueryCommand]:
         q = " ".join(text.strip().split())
         low = q.lower()
 
@@ -427,6 +918,21 @@ class NLQueryMapper:
                 top_k = int(m.group(1))
             return QueryCommand(query_type=QueryType.HOTSPOTS, source_file=default_source, top_k=top_k)
 
+        # Q7 line coverage check
+        if "covered by tests" in low or ("line" in low and "coverage" in low):
+            return QueryCommand(
+                query_type=QueryType.LINES_COVERED_BY_TESTS,
+                source_file=default_source,
+                lines=self._extract_line_numbers(q),
+            )
+
+        # Q8 suite coverage summary
+        if "coverage of the test suite" in low or "test suite coverage" in low:
+            return QueryCommand(
+                query_type=QueryType.TEST_COVERAGE_SUMMARY,
+                source_file=default_source,
+            )
+
         return None
 
 
@@ -436,7 +942,7 @@ class QueryInterface:
     def __init__(
         self,
         backend: Optional[QueryBackend] = None,
-        default_source: str = "json_parser.py",
+        default_source: str = "course_management_system.py",
         ai_client: Optional[AIClient] = None,
         tool_registry: Optional[Dict[str, Callable[..., Dict[str, Any]]]] = None,
         ai_source_max_chars: int = 40000,
@@ -445,7 +951,11 @@ class QueryInterface:
         self.default_source = default_source
         self.mapper = NLQueryMapper()
         self.ai_client = ai_client
-        self.tool_registry = tool_registry or {}
+        built_in_tools: Dict[str, Callable[..., Dict[str, Any]]] = {
+            "are_lines_covered_by_tests": self.are_lines_covered_by_tests,
+            "get_test_suite_coverage": self.get_test_suite_coverage,
+        }
+        self.tool_registry = {**built_in_tools, **(tool_registry or {})}
         self.ai_source_max_chars = max(1000, ai_source_max_chars)
 
     def execute(self, natural_language_query: str) -> Dict[str, Any]:
@@ -459,6 +969,12 @@ class QueryInterface:
         if command is None:
             # Fallback: best-effort direct answer from source; otherwise reject.
             return self._fallback_or_reject(natural_language_query)
+
+        if command.query_type == QueryType.LINES_COVERED_BY_TESTS:
+            return self.are_lines_covered_by_tests(lines=command.lines or [], source_file=command.source_file)
+
+        if command.query_type == QueryType.TEST_COVERAGE_SUMMARY:
+            return self.get_test_suite_coverage(source_file=command.source_file)
 
         if self.backend is None:
             return self._run_fallback(command)
@@ -521,6 +1037,25 @@ class QueryInterface:
                     "error": "AI requested tool call with non-dict arguments.",
                     "ai_router_output": parsed,
                 }
+
+            # For q7 line coverage, AI only decides whether line numbers are present.
+            # We always parse all actual line numbers locally from the user query.
+            if isinstance(tool_name, str) and tool_name.strip() == "are_lines_covered_by_tests":
+                has_line_numbers = bool(arguments.get("has_line_numbers", False))
+                source_file = str(arguments.get("source_file", self.default_source)).strip() or self.default_source
+                if not has_line_numbers:
+                    return {
+                        "mode": "ai-source-answer",
+                        "query_type": query_type,
+                        "can_answer": False,
+                        "reason": "Please include at least one line number to check coverage.",
+                        "related_lines": [],
+                    }
+                arguments = {
+                    "source_file": source_file,
+                    "lines": self.mapper._extract_line_numbers(natural_language_query),
+                }
+
             result = self._invoke_flexible_tool(tool_name.strip(), arguments)
             if "error" not in result:
                 result["status"] = "AI mapped the query to a local API call and the call was executed."
@@ -549,28 +1084,135 @@ class QueryInterface:
         tool_doc = "\n".join(f"- {name}" for name in available_tools) if available_tools else "- (none currently wired)"
 
         return (
-            "You are a query router and answerer for static-analysis questions over a Python source file.\n"
+            "You are a query router and answerer for static-analysis or testing questions over a Python source file.\n"
             "Return ONLY JSON, no markdown.\n"
             "Allowed JSON formats:\n"
             "1) {\"action\":\"call_local_api\",\"query_type\":\"...\",\"tool_name\":\"...\",\"arguments\":{...}}\n"
             "2) {\"action\":\"answer_from_source\",\"query_type\":\"...\",\"can_answer\":true,\"answer\":\"...\",\"related_lines\":[]}\n"
             "3) {\"action\":\"cannot_answer\",\"query_type\":\"...\",\"reason\":\"...\",\"related_lines\":[...]}\n"
             "4) {\"action\":\"delegate_to_regex\"}\n"
-            "Supported query types: q1_dead_code, q2_vars_defined, q3_var_live_at_point, q4_callees, q5_transitive_call_chain, q6_hotspots, other.\n"
+            "Supported query types: q1_dead_code, q2_vars_defined, q3_var_live_at_point, q4_callees, q5_transitive_call_chain, q6_hotspots, q7_lines_covered_by_tests, q8_test_coverage_summary, other.\n"
             "Decision policy:\n"
-            "- If query is one of the six supported types AND a suitable local tool exists, return call_local_api.\n"
-            "- If query is one of the six supported types but no suitable local tool exists, inspect source and return answer_from_source or cannot_answer.\n"
-            "- If query is not one of the six types, inspect source and return answer_from_source or cannot_answer.\n"
+            "- If query is not related to the analysis or testing of the source code or it is not a valid query, return cannot_answer.\n"
+            "- If query is one of the supported types AND a suitable local tool exists, return call_local_api.\n"
+            "- If query is one of the supported types but no suitable local tool exists, inspect source and return answer_from_source or cannot_answer.\n"
+            "- If query is not one of the supported types, inspect source and return answer_from_source or cannot_answer.\n"
             "- Never invent tool names; choose only from available tools listed below.\n"
-            "- For answer_from_source/cannot_answer, include related_lines as the most relevant 1-based source line numbers when possible.\n"
+            "- For answer_from_source, include related_lines as the most relevant 1-based source line numbers when possible.\n"
             "- The source snippet you receive is line-numbered (e.g., ' 123: code'). Use those exact numbers in related_lines.\n"
             "- related_lines must be grounded in the provided source snippet, not guessed.\n"
-            "- Use at most 5 related lines.\n"
+            "- The number of lines should be minimal and directly relevant. Do not include lines that only contain comments or whitespace.\n"
             "- Do NOT use placeholder or repeated canned line numbers. If uncertain, use an empty list [].\n"
             "Known available tool names right now:\n"
             f"{tool_doc}\n"
+            "Query type -> tool correspondence and required arguments:\n"
+            "- q7_lines_covered_by_tests -> are_lines_covered_by_tests(arguments={\"source_file\": \"...\", \"has_line_numbers\": true|false})\n"
+            "  IMPORTANT: Do NOT extract or list line numbers in arguments. Only decide whether the query contains at least one line number.\n"
+            "  The runtime will parse all line numbers locally and process coverage locally.\n"
+            "- q8_test_coverage_summary -> get_test_suite_coverage(arguments={\"source_file\": \"...\"})\n"
             "Important: arguments must be a JSON object with primitive values/arrays/objects only."
         )
+
+    @staticmethod
+    def _normalize_lines_arg(value: Any) -> List[int]:
+        if not isinstance(value, list):
+            return []
+        out: List[int] = []
+        seen: Set[int] = set()
+        for item in value:
+            n: Optional[int] = None
+            if isinstance(item, int):
+                n = item
+            elif isinstance(item, str) and item.strip().isdigit():
+                n = int(item.strip())
+            if n is not None and n > 0 and n not in seen:
+                seen.add(n)
+                out.append(n)
+        return out
+
+    @staticmethod
+    def _format_lines_coverage_answer(result: Dict[str, Any]) -> str:
+        if "error" in result:
+            hint = str(result.get("hint", "")).strip()
+            msg = f"Could not evaluate line coverage: {result.get('error', 'Unknown error.')}"
+            if hint:
+                msg += f"\nHint: {hint}"
+            return msg
+
+        source_file = str(result.get("source_file", "<unknown source>"))
+        covered_lines = int(result.get("covered_lines", 0) or 0)
+        total_lines = int(result.get("total_lines", 0) or 0)
+        all_covered = bool(result.get("all_lines_covered", False))
+
+        lines = [
+            "Coverage Check (Specific Lines)",
+            f"Source: {source_file}",
+            f"Summary: {covered_lines}/{total_lines} line(s) covered by at least one test run.",
+            "",
+            "Details:",
+        ]
+
+        for row in result.get("per_line", []):
+            if not isinstance(row, dict):
+                continue
+            ln = row.get("line")
+            covered = bool(row.get("covered", False))
+            by = row.get("covered_by", {}) if isinstance(row.get("covered_by"), dict) else {}
+            atheris_hit = bool(by.get("atheris", False))
+            hypothesis_hit = bool(by.get("hypothesis", False))
+            marker = "✅" if covered else "❌"
+            lines.append(
+                f"- {marker} Line {ln}: covered={covered} (atheris={atheris_hit}, hypothesis={hypothesis_hit})"
+            )
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_suite_coverage_answer(result: Dict[str, Any]) -> str:
+        source_file = str(result.get("source_file", "<unknown source>"))
+        reports = result.get("reports", {}) if isinstance(result.get("reports"), dict) else {}
+        atheris = reports.get("atheris", {}) if isinstance(reports.get("atheris"), dict) else {}
+        hypothesis = reports.get("hypothesis", {}) if isinstance(reports.get("hypothesis"), dict) else {}
+        atheris_summary = atheris.get("summary", {}) if isinstance(atheris.get("summary"), dict) else {}
+        hypothesis_summary = hypothesis.get("summary", {}) if isinstance(hypothesis.get("summary"), dict) else {}
+        combined = result.get("combined", {}) if isinstance(result.get("combined"), dict) else {}
+
+        return "\n".join(
+            [
+                "Test Suite Coverage Summary",
+                f"Source: {source_file}",
+                "",
+                "Atheris report:",
+                f"- Covered lines: {atheris_summary.get('covered_lines', 0)} / {atheris_summary.get('num_statements', 0)}",
+                f"- Coverage: {atheris_summary.get('percent_covered_display', '0')}%",
+                "",
+                "Hypothesis report:",
+                f"- Covered lines: {hypothesis_summary.get('covered_lines', 0)} / {hypothesis_summary.get('num_statements', 0)}",
+                f"- Coverage: {hypothesis_summary.get('percent_covered_display', '0')}%",
+                "",
+                "Combined (union of executed lines):",
+                f"- Covered lines: {combined.get('covered_lines', 0)} / {combined.get('num_statements', 0)}",
+                f"- Coverage: {combined.get('percent_covered_display', '0')}%",
+            ]
+        )
+
+    def are_lines_covered_by_tests(self, lines: List[int], source_file: Optional[str] = None) -> Dict[str, Any]:
+        target = (source_file or self.default_source or "course_management_system.py").strip() or "course_management_system.py"
+        inspector = CoverageReportInspector(target)
+        result = inspector.lines_covered(self._normalize_lines_arg(lines))
+        result["mode"] = "coverage-report"
+        result["query_type"] = QueryType.LINES_COVERED_BY_TESTS.value
+        result["answer"] = self._format_lines_coverage_answer(result)
+        return result
+
+    def get_test_suite_coverage(self, source_file: Optional[str] = None) -> Dict[str, Any]:
+        target = (source_file or self.default_source or "course_management_system.py").strip() or "course_management_system.py"
+        inspector = CoverageReportInspector(target)
+        result = inspector.suite_coverage()
+        result["mode"] = "coverage-report"
+        result["query_type"] = QueryType.TEST_COVERAGE_SUMMARY.value
+        result["answer"] = self._format_suite_coverage_answer(result)
+        return result
 
     @staticmethod
     def _normalize_line_numbers(value: Any) -> List[int]:
@@ -780,6 +1422,12 @@ class QueryInterface:
         return {"error": f"Unsupported query type: {command.query_type}"}
 
     def _run_fallback(self, command: QueryCommand) -> Dict[str, Any]:
+        if command.query_type == QueryType.LINES_COVERED_BY_TESTS:
+            return self.are_lines_covered_by_tests(lines=command.lines or [], source_file=command.source_file)
+
+        if command.query_type == QueryType.TEST_COVERAGE_SUMMARY:
+            return self.get_test_suite_coverage(source_file=command.source_file)
+
         inspector = SourceInspector(command.source_file)
 
         if command.query_type == QueryType.DEAD_CODE:
@@ -820,6 +1468,13 @@ class QueryInterface:
     def _fallback_or_reject(self, natural_language_query: str) -> Dict[str, Any]:
         # Best effort: if user asks for parse tree-ish info we can still provide function list.
         low = natural_language_query.lower()
+        if "covered by tests" in low or ("line" in low and "coverage" in low):
+            lines = self.mapper._extract_line_numbers(natural_language_query)
+            return self.are_lines_covered_by_tests(lines=lines, source_file=self.default_source)
+
+        if "coverage of the test suite" in low or "test suite coverage" in low:
+            return self.get_test_suite_coverage(source_file=self.default_source)
+
         if "list functions" in low or "what functions" in low:
             inspector = SourceInspector(self.default_source)
             return {
@@ -831,7 +1486,7 @@ class QueryInterface:
             "error": "Unsupported query format.",
             "supported_types": [qt.value for qt in QueryType],
             "message": (
-                "This interface only supports 6 predefined query families. "
+                "This interface only supports 8 predefined query families. "
                 "Please rephrase your question to one of them."
             ),
         }
@@ -846,7 +1501,7 @@ def run_cli() -> None:
     """Simple interactive CLI for demo usage."""
     qi = QueryInterface(
         backend=None,
-        default_source="json_parser.py",
+        default_source="course_management_system.py",
         ai_client=make_ai_client_from_env(),
     )
     if qi.ai_client is not None:

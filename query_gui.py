@@ -9,14 +9,18 @@ Features:
 
 from __future__ import annotations
 
+import ast
 import json
 import keyword
+import io
 import os
 import re
 import sys
+import tokenize
+import token
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Set
 
 try:
     import tkinter as tk
@@ -40,11 +44,11 @@ EXAMPLE_QUERIES: List[str] = [
     "Does parse call parse_value?",
     "Give me the full call chain of run_tests.",
     "Show top 5 hotspots in the program.",
-    "How many functions are in the program?",
-    "What does parse_literal do?",
-    "Which function raises JSONParseError most often?",
-    "Where is exponent handling implemented?",
-    "Does this parser support unicode escapes?",
+    "Are lines 192-210 covered by tests?",
+    "What is the coverage of the test suite?",
+    "Compute the static slice w.r.t. criterion (L184, int_part).",
+    "Which line(s) is line 288 control dependent on?",
+    "Which line(s) is line 188 data dependent on?",
 ]
 
 # Approximate pricing assumptions (USD / 1M tokens). These may change over time.
@@ -71,7 +75,7 @@ class QuerySystemGUI(BaseTk):
         self.geometry("1400x900")
         self.minsize(1100, 700)
 
-        self.source_file_var = tk.StringVar(value="json_parser.py")
+        self.source_file_var = tk.StringVar(value="course_management_system.py")
         self.query_var = tk.StringVar()
         self.mode_var = tk.StringVar(value="-")
         self.query_type_var = tk.StringVar(value="-")
@@ -144,12 +148,6 @@ class QuerySystemGUI(BaseTk):
         self.answer_text.pack(fill=tk.BOTH, expand=True)
         self.answer_text.configure(font=("Consolas", 11) if sys.platform.startswith("win") else ("Menlo", 12) if sys.platform == "darwin" else ("DejaVu Sans Mono", 11), padx=8, pady=8)
 
-        rel_frame = ttk.LabelFrame(left, text="Related Lines", style="Card.TLabelframe")
-        rel_frame.pack(fill=tk.BOTH, expand=True)
-        self.related_lines_text = ScrolledText(rel_frame, wrap=tk.NONE, height=10)
-        self.related_lines_text.pack(fill=tk.BOTH, expand=True)
-        self.related_lines_text.configure(font=("Consolas", 10) if sys.platform.startswith("win") else ("Menlo", 11) if sys.platform == "darwin" else ("DejaVu Sans Mono", 10), padx=8, pady=8)
-
         src_frame = ttk.LabelFrame(right, text="Source Code", style="Card.TLabelframe")
         src_frame.pack(fill=tk.BOTH, expand=True)
         self.source_text = ScrolledText(src_frame, wrap=tk.NONE)
@@ -158,13 +156,19 @@ class QuerySystemGUI(BaseTk):
 
         # Syntax + query highlight tags.
         # VS Code Dark+ inspired palette.
-        self.source_text.tag_configure("py_keyword", foreground="#569CD6")
-        self.source_text.tag_configure("py_control", foreground="#C586C0")
+        self.source_text.tag_configure("py_keyword", foreground="#C586C0")
+        self.source_text.tag_configure("py_control", foreground="#569CD6")
         self.source_text.tag_configure("py_string", foreground="#CE9178")
         self.source_text.tag_configure("py_comment", foreground="#6A9955")
         self.source_text.tag_configure("py_defname", foreground="#DCDCAA")
+        self.source_text.tag_configure("py_decorator", foreground="#C586C0")
+        self.source_text.tag_configure("py_param", foreground="#9CDCFE")
+        self.source_text.tag_configure("py_variable", foreground="#9CDCFE")
+        self.source_text.tag_configure("py_call", foreground="#D7BA7D")
         self.source_text.tag_configure("line_number", foreground="#858585")
         self.source_text.tag_configure("line_highlight", background="#264F78", foreground="#FFFFFF")
+        self.source_text.tag_configure("line_covered", background="#1E4D2B", foreground="#FFFFFF")
+        self.source_text.tag_configure("line_not_covered", background="#5A1E24", foreground="#FFFFFF")
 
         status_bar = ttk.Label(self, textvariable=self.status_var, anchor="w", style="Status.TLabel")
         status_bar.pack(fill=tk.X, padx=10, pady=(0, 8))
@@ -178,15 +182,16 @@ class QuerySystemGUI(BaseTk):
         return "AI: enabled" if self.query_interface.ai_client is not None else "AI: disabled (fallback only)"
 
     def _reload_source(self) -> None:
-        self.query_interface.default_source = self.source_file_var.get().strip() or "json_parser.py"
+        self.query_interface.default_source = self.source_file_var.get().strip() or "course_management_system.py"
         self._load_source()
 
     def _load_source(self) -> None:
-        src = self.source_file_var.get().strip() or "json_parser.py"
+        src = self.source_file_var.get().strip() or "course_management_system.py"
         self.source_text.configure(state=tk.NORMAL)
         self.source_text.delete("1.0", tk.END)
         self.source_text.tag_remove("line_highlight", "1.0", tk.END)
 
+        raw_content = ""
         try:
             raw_content = Path(src).read_text(encoding="utf-8")
             content = self._render_source_with_line_numbers(raw_content)
@@ -194,7 +199,7 @@ class QuerySystemGUI(BaseTk):
             content = f"Unable to load source file '{src}': {exc}"
 
         self.source_text.insert("1.0", content)
-        self._apply_python_syntax_highlighting(content)
+        self._apply_python_syntax_highlighting(raw_content)
         self.source_text.tag_raise("line_highlight")
         self.source_text.configure(state=tk.DISABLED)
         self._set_status(f"Loaded source: {src}")
@@ -383,7 +388,7 @@ class QuerySystemGUI(BaseTk):
             self._set_status("Query is empty.")
             return
 
-        self.query_interface.default_source = self.source_file_var.get().strip() or "json_parser.py"
+        self.query_interface.default_source = self.source_file_var.get().strip() or "course_management_system.py"
         self._set_status("Running query...")
         result = self.query_interface.execute(query)
         self._render_result(result)
@@ -403,16 +408,25 @@ class QuerySystemGUI(BaseTk):
         answer_payload = self._format_answer_payload(result)
         self._set_text(self.answer_text, answer_payload)
 
+        coverage_by_line = self._extract_coverage_by_line(result)
         related_lines = self._extract_related_lines(result)
-        related_text = self._format_related_lines_text(related_lines)
-        self._set_text(self.related_lines_text, related_text)
+        if not related_lines and coverage_by_line:
+            related_lines = sorted(coverage_by_line.keys())
 
-        self._highlight_source_lines(related_lines)
+        self._highlight_source_lines(related_lines, coverage_by_line=coverage_by_line)
 
     @staticmethod
     def _format_answer_payload(result: Dict[str, Any]) -> str:
         if "answer" in result and isinstance(result.get("answer"), str):
             return result["answer"]
+
+        # AI tool-call wrapper often nests the human-readable answer inside result.answer
+        # shape: {"mode":"ai-tool-call", "tool_name":"...", "result": {"answer": "...", ...}}
+        nested = result.get("result")
+        if isinstance(nested, dict):
+            nested_answer = nested.get("answer")
+            if isinstance(nested_answer, str) and nested_answer.strip():
+                return nested_answer
 
         # Keep the answer box focused on the answer-like payload only.
         filtered = {
@@ -433,21 +447,55 @@ class QuerySystemGUI(BaseTk):
                 out.append(x)
         return out
 
-    def _format_related_lines_text(self, lines: List[int]) -> str:
-        if not lines:
-            return "(No related lines provided)"
+    @staticmethod
+    def _extract_coverage_by_line(result: Dict[str, Any]) -> Dict[int, Dict[str, Any]]:
+        # Supports both direct coverage payload and AI tool-call wrapper payload.
+        payload = result
+        nested = result.get("result")
+        if isinstance(nested, dict) and isinstance(nested.get("per_line"), list):
+            payload = nested
 
-        src_path = self.source_file_var.get().strip() or "json_parser.py"
-        try:
-            source_lines = Path(src_path).read_text(encoding="utf-8").splitlines()
-        except OSError as exc:
-            return f"Could not read source file: {exc}"
+        per_line = payload.get("per_line", [])
+        if not isinstance(per_line, list):
+            return {}
 
-        chunks: List[str] = []
-        for ln in lines:
-            if 1 <= ln <= len(source_lines):
-                chunks.append(f"L{ln}: {source_lines[ln - 1]}")
-        return "\n".join(chunks) if chunks else "(Related lines are outside file range)"
+        out: Dict[int, Dict[str, Any]] = {}
+        for row in per_line:
+            if not isinstance(row, dict):
+                continue
+            ln = row.get("line")
+            if not isinstance(ln, int) or ln <= 0:
+                continue
+            hits = row.get("coverage_hits")
+            total = row.get("coverage_total")
+            covered = bool(row.get("covered", False))
+            by = row.get("covered_by", {}) if isinstance(row.get("covered_by"), dict) else {}
+
+            if not isinstance(hits, int) or not isinstance(total, int) or total <= 0:
+                hits = sum(1 for _k, v in by.items() if bool(v))
+                total = max(1, len(by))
+
+            rate = row.get("coverage_rate")
+            if not isinstance(rate, (int, float)):
+                rate = (hits / total) * 100.0
+
+            out[ln] = {
+                "covered": covered,
+                "hits": int(hits),
+                "total": int(total),
+                "rate": float(rate),
+                "coverage_by_tool": row.get("coverage_by_tool", {}) if isinstance(row.get("coverage_by_tool"), dict) else {},
+            }
+        return out
+
+    @staticmethod
+    def _is_blank_or_comment_source_line(line_text: str) -> bool:
+        sep = line_text.find(" | ")
+        src = line_text[sep + 3 :] if sep >= 0 else line_text
+        stripped = src.strip()
+        if not stripped:
+            return True
+        return stripped.startswith("#")
 
     @staticmethod
     def _set_text(widget: Any, text: str) -> None:
@@ -456,24 +504,43 @@ class QuerySystemGUI(BaseTk):
         widget.insert("1.0", text)
         widget.configure(state=tk.DISABLED)
 
-    def _highlight_source_lines(self, lines: List[int]) -> None:
+    def _highlight_source_lines(self, lines: List[int], coverage_by_line: Optional[Dict[int, Dict[str, Any]]] = None) -> None:
         self.source_text.configure(state=tk.NORMAL)
         self.source_text.tag_remove("line_highlight", "1.0", tk.END)
+        self.source_text.tag_remove("line_covered", "1.0", tk.END)
+        self.source_text.tag_remove("line_not_covered", "1.0", tk.END)
+
+        coverage_by_line = coverage_by_line or {}
 
         # determine max line in widget to avoid invalid ranges
         end_index = self.source_text.index("end-1c")
         max_line = int(end_index.split(".")[0]) if end_index else 1
 
-        for ln in lines:
-            if 1 <= ln <= max_line:
-                start = f"{ln}.0"
-                end = f"{ln}.0 lineend"
+        valid_lines = [ln for ln in lines if 1 <= ln <= max_line]
+        visible_lines = [
+            ln
+            for ln in valid_lines
+            if not self._is_blank_or_comment_source_line(self.source_text.get(f"{ln}.0", f"{ln}.0 lineend"))
+        ]
+
+        for ln in visible_lines:
+            start = f"{ln}.0"
+            end = f"{ln}.0 lineend"
+            info = coverage_by_line.get(ln)
+            if info is None:
                 self.source_text.tag_add("line_highlight", start, end)
+                continue
+
+            covered = bool(info.get("covered", False))
+            line_tag = "line_covered" if covered else "line_not_covered"
+            self.source_text.tag_add(line_tag, start, end)
 
         if lines:
             first = min(ln for ln in lines if ln > 0)
             self.source_text.see(f"{first}.0")
 
+        self.source_text.tag_raise("line_covered")
+        self.source_text.tag_raise("line_not_covered")
         self.source_text.tag_raise("line_highlight")
         self.source_text.configure(state=tk.DISABLED)
 
@@ -482,8 +549,7 @@ class QuerySystemGUI(BaseTk):
         self.query_type_var.set("-")
         self.can_answer_var.set("-")
         self._set_text(self.answer_text, "")
-        self._set_text(self.related_lines_text, "")
-        self._highlight_source_lines([])
+        self._highlight_source_lines([], coverage_by_line={})
         self._set_status("Cleared outputs.")
 
     def _focus_query_box(self) -> None:
@@ -497,41 +563,177 @@ class QuerySystemGUI(BaseTk):
 
     def _apply_python_syntax_highlighting(self, source: str) -> None:
         # Reset syntax tags.
-        for tag in ("py_keyword", "py_control", "py_string", "py_comment", "py_defname", "line_number"):
+        for tag in (
+            "py_keyword",
+            "py_control",
+            "py_string",
+            "py_comment",
+            "py_defname",
+            "py_decorator",
+            "py_param",
+            "py_variable",
+            "py_call",
+            "line_number",
+        ):
             self.source_text.tag_remove(tag, "1.0", tk.END)
 
-        def add_tag(tag: str, start: int, end: int) -> None:
-            self.source_text.tag_add(tag, f"1.0+{start}c", f"1.0+{end}c")
+        source_lines = source.splitlines()
+        line_count = len(source_lines)
+        if line_count == 0:
+            line_count = 1
+        gutter_width = max(4, len(str(line_count)))
+        gutter_len = gutter_width + 3  # "<line_no> | "
 
-        # Strings (single, double, triple; best-effort).
-        string_pat = re.compile(r"'''[\s\S]*?'''|\"\"\"[\s\S]*?\"\"\"|'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"")
-        for m in string_pat.finditer(source):
-            add_tag("py_string", m.start(), m.end())
+        def widget_index(line_no: int, raw_col: int) -> str:
+            safe_line = max(1, line_no)
+            safe_col = max(0, raw_col)
+            return f"{safe_line}.{gutter_len + safe_col}"
 
-        # Comments.
-        for m in re.finditer(r"#.*", source):
-            add_tag("py_comment", m.start(), m.end())
+        def add_span(tag: str, sline: int, scol: int, eline: int, ecol: int) -> None:
+            if sline <= 0 or eline <= 0:
+                return
+            if (eline, ecol) < (sline, scol):
+                return
+            self.source_text.tag_add(tag, widget_index(sline, scol), widget_index(eline, ecol))
 
-        # Keywords.
-        kw_pattern = r"\b(" + "|".join(re.escape(k) for k in keyword.kwlist) + r")\b"
-        for m in re.finditer(kw_pattern, source):
-            add_tag("py_keyword", m.start(), m.end())
+        control_keywords = {"class", "def", "if", "elif", "else", "for", "while", "try", "except", "finally", "with", "return"}
 
-        # Control-flow / structure keywords (stronger color).
-        for m in re.finditer(r"\b(class|def|if|elif|else|for|while|try|except|finally|with|return)\b", source):
-            add_tag("py_control", m.start(), m.end())
+        try:
+            tokens = list(tokenize.generate_tokens(io.StringIO(source).readline))
+            expect_defname = False
+            for tok in tokens:
+                tok_type = tok.type
+                tok_text = tok.string
+                (sline, scol) = tok.start
+                (eline, ecol) = tok.end
 
-        # Function/class names after def/class tokens.
-        for m in re.finditer(r"\b(?:def|class)\s+([A-Za-z_][A-Za-z0-9_]*)", source):
-            name_start = m.start(1)
-            name_end = m.end(1)
-            add_tag("py_defname", name_start, name_end)
+                if tok_type == token.NAME:
+                    if tok_text in keyword.kwlist:
+                        add_span("py_keyword", sline, scol, eline, ecol)
+                    if tok_text in control_keywords:
+                        add_span("py_control", sline, scol, eline, ecol)
+                    if expect_defname:
+                        add_span("py_defname", sline, scol, eline, ecol)
+                        expect_defname = False
+                    if tok_text in {"def", "class"}:
+                        expect_defname = True
+                    continue
+
+                if tok_type == token.STRING:
+                    add_span("py_string", sline, scol, eline, ecol)
+                elif tok_type == tokenize.COMMENT:
+                    add_span("py_comment", sline, scol, eline, ecol)
+
+                if tok_type not in {tokenize.NL, token.NEWLINE, token.INDENT, token.DEDENT}:
+                    expect_defname = False
+        except tokenize.TokenError:
+            # If source has temporary syntax issues while editing, skip token-based tags.
+            pass
+
+        # Decorators: highlight full decorator lines (e.g., @dataclass, @staticmethod).
+        for line_no, line_text in enumerate(source_lines, start=1):
+            match = re.match(r"^\s*@[^\n\r]*", line_text)
+            if not match:
+                continue
+            start_col = match.start()
+            end_col = match.end()
+            add_span("py_decorator", line_no, start_col, line_no, end_col)
+
+        # Add richer semantic tags from AST: parameters, variables, and function calls.
+        try:
+            tree = ast.parse(source)
+
+            # Build parent links so we can determine enclosing function scope.
+            parent: Dict[ast.AST, ast.AST] = {}
+            for node in ast.walk(tree):
+                for child in ast.iter_child_nodes(node):
+                    parent[child] = node
+
+            def _enclosing_callable(node: ast.AST) -> Any:
+                cur: Optional[ast.AST] = node
+                while cur is not None:
+                    if isinstance(cur, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                        return cur
+                    cur = parent.get(cur)
+                return None
+
+            param_names_by_callable: Dict[ast.AST, Set[str]] = {}
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                    args_obj = node.args
+                    names: Set[str] = set(arg.arg for arg in getattr(args_obj, "args", []))
+                    names |= set(arg.arg for arg in getattr(args_obj, "kwonlyargs", []))
+                    posonly = getattr(args_obj, "posonlyargs", [])
+                    names |= set(arg.arg for arg in posonly)
+                    if getattr(args_obj, "vararg", None):
+                        names.add(args_obj.vararg.arg)
+                    if getattr(args_obj, "kwarg", None):
+                        names.add(args_obj.kwarg.arg)
+                    param_names_by_callable[node] = names
+
+            for node in ast.walk(tree):
+                if isinstance(node, ast.arg):
+                    if hasattr(node, "lineno") and hasattr(node, "col_offset"):
+                        start_col = int(node.col_offset)
+                        end_col = start_col + len(node.arg)
+                        add_span("py_param", int(node.lineno), start_col, int(node.lineno), end_col)
+                    continue
+
+                if isinstance(node, ast.Name):
+                    # Keep common receiver names uncolored as variables.
+                    if node.id in {"self", "cls"}:
+                        continue
+
+                    tag = "py_variable"
+                    scope = _enclosing_callable(node)
+                    if scope is not None and node.id in param_names_by_callable.get(scope, set()):
+                        tag = "py_param"
+
+                    add_span(
+                        tag,
+                        int(node.lineno),
+                        int(node.col_offset),
+                        int(getattr(node, "end_lineno", node.lineno)),
+                        int(getattr(node, "end_col_offset", node.col_offset + len(node.id))),
+                    )
+                    continue
+
+                if isinstance(node, ast.Call):
+                    func_node = node.func
+                    if isinstance(func_node, ast.Name):
+                        add_span(
+                            "py_call",
+                            int(func_node.lineno),
+                            int(func_node.col_offset),
+                            int(getattr(func_node, "end_lineno", func_node.lineno)),
+                            int(getattr(func_node, "end_col_offset", func_node.col_offset + len(func_node.id))),
+                        )
+                    elif isinstance(func_node, ast.Attribute):
+                        # Highlight only the called attribute (method/function name), not the object receiver.
+                        end_line = int(getattr(func_node, "end_lineno", func_node.lineno))
+                        end_col = int(getattr(func_node, "end_col_offset", func_node.col_offset))
+                        attr_len = len(func_node.attr)
+                        start_col = max(int(func_node.col_offset), end_col - attr_len)
+                        add_span("py_call", end_line, start_col, end_line, end_col)
+        except SyntaxError:
+            # Skip AST-based semantic tags if source is temporarily syntactically invalid.
+            pass
 
         # Keep the line-number gutter style fixed and free from syntax tags.
         # This prevents multiline string/comment tags from bleeding into line numbers.
-        line_count = int(self.source_text.index("end-1c").split(".")[0])
-        syntax_tags = ("py_keyword", "py_control", "py_string", "py_comment", "py_defname")
-        for ln in range(1, line_count + 1):
+        widget_line_count = int(self.source_text.index("end-1c").split(".")[0])
+        syntax_tags = (
+            "py_keyword",
+            "py_control",
+            "py_string",
+            "py_comment",
+            "py_defname",
+            "py_decorator",
+            "py_param",
+            "py_variable",
+            "py_call",
+        )
+        for ln in range(1, widget_line_count + 1):
             line_text = self.source_text.get(f"{ln}.0", f"{ln}.0 lineend")
             sep_idx = line_text.find(" | ")
             if sep_idx == -1:
@@ -546,6 +748,10 @@ class QuerySystemGUI(BaseTk):
         # Keep control and line highlights visible over generic keyword tag.
         self.source_text.tag_raise("line_number")
         self.source_text.tag_raise("py_control")
+        self.source_text.tag_raise("py_decorator")
+        self.source_text.tag_raise("py_call")
+        self.source_text.tag_raise("py_param")
+        self.source_text.tag_raise("py_variable")
         self.source_text.tag_raise("line_highlight")
 
 
