@@ -10,7 +10,7 @@ High-level flow:
 2. AI router returns structured JSON (`action`, `query_type`, `tool_name`, `arguments`, optional `related_lines`).
 3. Runtime applies a **tool-first policy**:
 	 - if the query matches a supported type with a local tool, call local tool(s);
-	 - otherwise fall back to source-based answering.
+	 - otherwise fall back to answering based on source code.
 4. Result is returned with summary metadata + answer payload.
 
 <details>
@@ -65,6 +65,16 @@ Query type -> tool correspondence and required arguments:
 	The runtime will parse all line numbers locally and process coverage locally.
 - q7_test_coverage_summary -> get_test_suite_coverage(arguments={"source_file": "..."})
 Important: arguments must be a JSON object with primitive values/arrays/objects only.
+
+[User Prompt]
+User query:
+<QUERY>
+
+Source file: course_management_system.py
+Source code with explicit 1-based line numbers (possibly truncated):
+-----BEGIN SOURCE-----
+<SOURCE_CODE>
+-----END SOURCE-----
 ```
 
 </details>
@@ -80,6 +90,41 @@ Important: arguments must be a JSON object with primitive values/arrays/objects 
 | `q5_function_coverage` | Function-level coverage summary | `get_function_coverage(function_name)` |
 | `q6_lines_covered_by_tests` | Coverage of specific lines/ranges | `are_lines_covered_by_tests(source_file, lines)` *(lines parsed at runtime)* |
 | `q7_test_coverage_summary` | Overall test-suite coverage | `get_test_suite_coverage(source_file)` |
+| `other` | Not in q1–q7; AI tries to answer based on source code or rejects | No local API |
+
+### `other` type behavior
+
+`other` is used when a query does not match q1–q7. In this case, the AI router does one of the following:
+
+- `answer_from_source`: the question can be answered from the provided source snippet.
+- `cannot_answer`: the question is out-of-scope, invalid, or unsupported by available evidence.
+
+Examples in this project:
+
+- `What is the code about?` → `other` + `answer_from_source`
+- `How are you?` → `other` + `cannot_answer`
+
+## AI Router Return Fields
+
+Key JSON fields returned by the AI router and how runtime uses them:
+
+- `action`:
+	- Routing decision (`call_local_api`, `answer_from_source`, `cannot_answer`, `delegate_to_regex`).
+- `query_type`:
+	- Classified family (`q1`–`q7` or `other`).
+- `tool_name`:
+	- Local tool to call when `action=call_local_api`.
+- `arguments`:
+	- JSON arguments passed to the selected local tool.
+- `can_answer`:
+	- Used with `answer_from_source`; `true` means provide an answer, `false` means answer is not reliable/insufficient.
+- `answer`:
+	- Natural-language response text (based on source code).
+- `reason`:
+	- Explanation for rejection or inability (commonly with `cannot_answer`, sometimes with `can_answer=false`).
+- `related_lines`:
+	- 1-based source lines supporting the answer/tool decision.
+	- For q6, runtime ignores AI-provided related lines and derives exact target lines from the query.
 
 ## Implementation Details
 
