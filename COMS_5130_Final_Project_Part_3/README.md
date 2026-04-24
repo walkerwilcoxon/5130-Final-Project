@@ -1,5 +1,7 @@
 # COMS 5130 Final Project — Part 3 (Query System Progress)
 
+Group members (Group 8): Walker Wilcoxon, Hengbo Tong, Junhyung Shim, Kenny Jia Hui Leong, Haifeng Huang 
+
 ## Introduction
 
 Our query system takes a natural-language question, routes it through an AI-based query router, executes local analysis tools, and returns a structured answer for the GUI.
