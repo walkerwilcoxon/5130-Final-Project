@@ -18,6 +18,7 @@ Output is JSON written to stdout.
 import argparse
 import csv
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -33,7 +34,31 @@ from jinja2 import Environment, FileSystemLoader
 SCRIPT_DIR = Path(__file__).parent.resolve()
 QUERIES_DIR = SCRIPT_DIR / "queries"
 DB_PATH = "codeql-db"
-CODEQL_EXE = "codeql"
+
+
+def _resolve_codeql_exe() -> str:
+    """Resolve the CodeQL executable path.
+
+    Some environments (IDE kernels, subprocesses) may not inherit shell PATH
+    entries such as /opt/homebrew/bin on macOS. We therefore try PATH first,
+    then common absolute locations.
+    """
+    found = shutil.which("codeql")
+    if found:
+        return found
+
+    candidates = [
+        "/opt/homebrew/bin/codeql",  # Apple Silicon Homebrew
+        "/usr/local/bin/codeql",     # Intel Homebrew
+    ]
+    for candidate in candidates:
+        if Path(candidate).exists():
+            return candidate
+
+    return "codeql"
+
+
+CODEQL_EXE = _resolve_codeql_exe()
 
 
 # ---------------------------------------------------------------------------

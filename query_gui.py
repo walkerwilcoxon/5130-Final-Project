@@ -38,25 +38,22 @@ from query_interface import run_cli as run_query_cli
 BaseTk = tk.Tk if tk is not None else object
 
 EXAMPLE_QUERIES: List[str] = [
-    "Are there any unreachable functions in the program?",
-    "Inside parse_object, which variables are defined?",
-    "In function parse_string, is esc live at line 224?",
-    "Does parse call parse_value?",
-    "Give me the full call chain of run_tests.",
-    "Show top 5 hotspots in the program.",
-    "Are lines 192-210 covered by tests?",
+    "Does register_student call can_register?",
+    "Who calls can_register?",
+    "Inside register_student, which variables are defined?",
+    "How many branches are in function register_student?",
+    "What is the coverage for function parse_meeting_time?",
+    "Are lines 142-154 covered by tests?",
     "What is the coverage of the test suite?",
-    "Compute the static slice w.r.t. criterion (L184, int_part).",
-    "Which line(s) is line 288 control dependent on?",
-    "Which line(s) is line 188 data dependent on?",
 ]
 
 # Approximate pricing assumptions (USD / 1M tokens). These may change over time.
 MODEL_PRICING: List[Dict[str, Any]] = [
     {"model": "gpt-4o-mini", "input_per_1m": 0.15, "output_per_1m": 0.60},
+    {"model": "gpt-4o", "input_per_1m": 5.00, "output_per_1m": 15.00},
     {"model": "gpt-4.1-nano", "input_per_1m": 0.10, "output_per_1m": 0.40},
     {"model": "gpt-4.1-mini", "input_per_1m": 0.40, "output_per_1m": 1.60},
-    {"model": "gpt-4o", "input_per_1m": 5.00, "output_per_1m": 15.00},
+    {"model": "gpt-4.1", "input_per_1m": 4.00, "output_per_1m": 12.00},
     {"model": "gpt-5.4-nano", "input_per_1m": 0.12, "output_per_1m": 0.48},
     {"model": "gpt-5.4-mini", "input_per_1m": 0.45, "output_per_1m": 1.80},
     {"model": "gpt-5.4", "input_per_1m": 6.00, "output_per_1m": 18.00},
@@ -80,6 +77,8 @@ class QuerySystemGUI(BaseTk):
         self.mode_var = tk.StringVar(value="-")
         self.query_type_var = tk.StringVar(value="-")
         self.can_answer_var = tk.StringVar(value="-")
+        self.tool_name_var = tk.StringVar(value="-")
+        self.tool_args_var = tk.StringVar(value="-")
         self.status_var = tk.StringVar(value="Ready")
 
         self.query_interface = QueryInterface(
@@ -141,12 +140,35 @@ class QuerySystemGUI(BaseTk):
         self._add_meta_row(meta, 0, "mode", self.mode_var)
         self._add_meta_row(meta, 1, "query_type", self.query_type_var)
         self._add_meta_row(meta, 2, "can_answer", self.can_answer_var)
+        self._add_meta_row(meta, 3, "tool_name", self.tool_name_var)
+        ttk.Label(meta, text="tool_args:", style="SummaryKey.TLabel").grid(row=4, column=0, sticky="nw", padx=6, pady=4)
+        tool_args_frame = ttk.Frame(meta)
+        tool_args_frame.grid(row=4, column=1, sticky="ew", padx=6, pady=4)
+        self.tool_args_text = ScrolledText(tool_args_frame, wrap=tk.NONE, height=4)
+        self.tool_args_text.pack(fill=tk.BOTH, expand=True)
+        self.tool_args_text.configure(
+            font=("Consolas", 10)
+            if sys.platform.startswith("win")
+            else ("Menlo", 11)
+            if sys.platform == "darwin"
+            else ("DejaVu Sans Mono", 10),
+            padx=6,
+            pady=6,
+        )
+        self._set_text(self.tool_args_text, "-")
+        meta.columnconfigure(1, weight=1)
 
-        ans_frame = ttk.LabelFrame(left, text="Answer / Result", style="Card.TLabelframe")
-        ans_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 8))
-        self.answer_text = ScrolledText(ans_frame, wrap=tk.WORD, height=20)
-        self.answer_text.pack(fill=tk.BOTH, expand=True)
-        self.answer_text.configure(font=("Consolas", 11) if sys.platform.startswith("win") else ("Menlo", 12) if sys.platform == "darwin" else ("DejaVu Sans Mono", 11), padx=8, pady=8)
+        ai_frame = ttk.LabelFrame(left, text="AI Response", style="Card.TLabelframe")
+        ai_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 8))
+        self.ai_response_text = ScrolledText(ai_frame, wrap=tk.WORD, height=10)
+        self.ai_response_text.pack(fill=tk.BOTH, expand=True)
+        self.ai_response_text.configure(font=("Consolas", 11) if sys.platform.startswith("win") else ("Menlo", 12) if sys.platform == "darwin" else ("DejaVu Sans Mono", 11), padx=8, pady=8)
+
+        final_frame = ttk.LabelFrame(left, text="Tool / Final Output", style="Card.TLabelframe")
+        final_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 8))
+        self.final_output_text = ScrolledText(final_frame, wrap=tk.WORD, height=12)
+        self.final_output_text.pack(fill=tk.BOTH, expand=True)
+        self.final_output_text.configure(font=("Consolas", 11) if sys.platform.startswith("win") else ("Menlo", 12) if sys.platform == "darwin" else ("DejaVu Sans Mono", 11), padx=8, pady=8)
 
         src_frame = ttk.LabelFrame(right, text="Source Code", style="Card.TLabelframe")
         src_frame.pack(fill=tk.BOTH, expand=True)
@@ -347,7 +369,7 @@ class QuerySystemGUI(BaseTk):
             payload = (
                 "[System Prompt]\n"
                 + str(info.get("router_system_prompt", ""))
-                + "\n\n[User Prompt Template]\n"
+                + "\n\n[User Prompt]\n"
                 + str(info.get("router_user_prompt_template", ""))
             )
             self.clipboard_clear()
@@ -362,7 +384,7 @@ class QuerySystemGUI(BaseTk):
             "1.0",
             "[System Prompt]\n"
             + str(info.get("router_system_prompt", ""))
-            + "\n\n[User Prompt Template]\n"
+            + "\n\n[User Prompt]\n"
             + str(info.get("router_user_prompt_template", "")),
         )
         prompt_box.configure(state=tk.DISABLED)
@@ -405,8 +427,18 @@ class QuerySystemGUI(BaseTk):
         self.query_type_var.set(query_type)
         self.can_answer_var.set(can_answer)
 
-        answer_payload = self._format_answer_payload(result)
-        self._set_text(self.answer_text, answer_payload)
+        if mode == "tool-call":
+            self.tool_name_var.set(str(result.get("tool_name", "-") or "-"))
+            args_value = result.get("tool_arguments", {})
+            self._set_text(self.tool_args_text, self._format_tool_args_payload(args_value))
+        else:
+            self.tool_name_var.set("-")
+            self._set_text(self.tool_args_text, "-")
+
+        ai_payload = self._format_ai_response_payload(result)
+        final_payload = self._format_final_output_payload(result)
+        self._set_text(self.ai_response_text, ai_payload)
+        self._set_text(self.final_output_text, final_payload)
 
         coverage_by_line = self._extract_coverage_by_line(result)
         related_lines = self._extract_related_lines(result)
@@ -416,25 +448,66 @@ class QuerySystemGUI(BaseTk):
         self._highlight_source_lines(related_lines, coverage_by_line=coverage_by_line)
 
     @staticmethod
-    def _format_answer_payload(result: Dict[str, Any]) -> str:
+    def _format_ai_response_payload(result: Dict[str, Any]) -> str:
+        mode = str(result.get("mode", "-")).strip().lower()
+        router_output = result.get("ai_router_output")
+
+        if isinstance(router_output, dict):
+            return json.dumps(router_output, indent=2, ensure_ascii=False)
+
+        if mode == "ai-source-answer" and isinstance(result.get("answer"), str):
+            return str(result.get("answer", ""))
+
+        if mode == "tool-call":
+            return "AI selected and executed a local tool call."
+
+        return "N/A (query resolved without AI router response payload)."
+
+    @staticmethod
+    def _format_final_output_payload(result: Dict[str, Any]) -> str:
         if "answer" in result and isinstance(result.get("answer"), str):
             return result["answer"]
 
         # AI tool-call wrapper often nests the human-readable answer inside result.answer
-        # shape: {"mode":"ai-tool-call", "tool_name":"...", "result": {"answer": "...", ...}}
+        # shape: {"mode":"tool-call", "tool_name":"...", "result": {"answer": "...", ...}}
         nested = result.get("result")
         if isinstance(nested, dict):
             nested_answer = nested.get("answer")
             if isinstance(nested_answer, str) and nested_answer.strip():
                 return nested_answer
+            return json.dumps(nested, indent=2, ensure_ascii=False)
+        if nested is not None:
+            return str(nested)
 
         # Keep the answer box focused on the answer-like payload only.
         filtered = {
             k: v
             for k, v in result.items()
-            if k not in {"mode", "query_type", "can_answer", "related_lines"}
+            if k not in {"mode", "query_type", "can_answer", "related_lines", "ai_router_output", "tool_name", "tool_arguments"}
         }
         return json.dumps(filtered, indent=2, ensure_ascii=False)
+
+    @staticmethod
+    def _to_compact_json(value: Any, fallback: str = "-", max_len: int = 120) -> str:
+        try:
+            text = json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+        except Exception:
+            text = str(value) if value is not None else fallback
+        if not text:
+            return fallback
+        if len(text) > max_len:
+            return text[: max_len - 3] + "..."
+        return text
+
+    @staticmethod
+    def _format_tool_args_payload(value: Any) -> str:
+        if value is None:
+            return "-"
+        try:
+            return json.dumps(value, indent=2, ensure_ascii=False)
+        except Exception:
+            text = str(value)
+            return text if text else "-"
 
     @staticmethod
     def _extract_related_lines(result: Dict[str, Any]) -> List[int]:
@@ -548,7 +621,11 @@ class QuerySystemGUI(BaseTk):
         self.mode_var.set("-")
         self.query_type_var.set("-")
         self.can_answer_var.set("-")
-        self._set_text(self.answer_text, "")
+        self.tool_name_var.set("-")
+        self.tool_args_var.set("-")
+        self._set_text(self.tool_args_text, "-")
+        self._set_text(self.ai_response_text, "")
+        self._set_text(self.final_output_text, "")
         self._highlight_source_lines([], coverage_by_line={})
         self._set_status("Cleared outputs.")
 
