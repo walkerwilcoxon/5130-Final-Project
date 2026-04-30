@@ -1,0 +1,17 @@
+/**
+ * Query: Variable dependencies within functions.
+ * For every assignment lhs = <expr>, finds each variable referenced
+ * anywhere in <expr> and records it as a dependency of lhs.
+ * @kind problem
+ * @id python/variable-dependencies
+ */
+import python
+
+from Function f, AssignStmt assign, Variable lhs, Variable rhs, Name rhs_name
+where
+  assign.getScope() = f and
+  assign.getATarget().(Name).getVariable() = lhs and
+  rhs_name = assign.getValue().getASubExpression*().(Name) and
+  rhs_name.getVariable() = rhs and
+  lhs != rhs
+select assign, f.getName() + "," + lhs.getId() + "," + rhs.getId()

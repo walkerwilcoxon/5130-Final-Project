@@ -215,6 +215,69 @@ def query_coverage(function_name: str) -> dict:
     }
 
 
+def query_call_graph() -> dict:
+    """Return the full call graph of the project as {caller: [callee, ...]}."""
+    ql = render_template("call_graph.ql.j2", {})
+    rows = run_codeql_query(ql)
+    graph = {}
+    for row in rows:
+        val = row.get("col1", "")
+        if "," not in val:
+            continue
+        caller, callee = val.split(",", 1)
+        if caller not in graph:
+            graph[caller] = []
+        if callee not in graph[caller]:
+            graph[caller].append(callee)
+    return graph
+
+
+def query_variable_dependencies() -> dict:
+    """Return variable dependencies for all functions as:
+    {
+        "function_name": {
+            "var": ["dep1", "dep2", ...],
+            ...
+        },
+        ...
+    }
+    """
+    ql = render_template("variable_dependencies.ql.j2", {})
+    rows = run_codeql_query(ql)
+    result = {}
+    for row in rows:
+        val = row.get("col1", "")
+        parts = val.split(",", 2)
+        if len(parts) != 3:
+            continue
+        func, lhs, rhs = parts
+        if func not in result:
+            result[func] = {}
+        if lhs not in result[func]:
+            result[func][lhs] = []
+        if rhs not in result[func][lhs]:
+            result[func][lhs].append(rhs)
+    return result
+
+
+def query_taint_from_input(function_name: str) -> list[dict]:
+    """
+    Return all locations where a value tainted by input() reaches
+    an argument of *function_name*.
+
+    Each result includes the sink location and the source location.
+    """
+    ql = render_template("taint_from_input.ql.j2", {"function_name": function_name})
+    rows = run_codeql_query(ql)
+    results = []
+    for row in rows:
+        # col0: sink label, col1: sink location+message string
+        message = row.get("col1", "")
+        location = row.get("col0", "unknown")
+        results.append({"sink": location, "message": message})
+    return results
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -252,6 +315,13 @@ def build_parser() -> argparse.ArgumentParser:
     p5 = subparsers.add_parser("coverage", help="Get coverage for a given function from hypothesis_coverage.json.")
     p5.add_argument("--function", required=True, metavar="NAME", help="Name of the function to inspect")
 
+    subparsers.add_parser("call-graph", help="Generate the full call graph of the project.")
+
+    subparsers.add_parser("var-deps", help="Get variable dependencies for all functions.")
+
+    p_taint = subparsers.add_parser("taint", help="Check if a function receives tainted input() values.")
+    p_taint.add_argument("--function", required=True, metavar="NAME", help="Name of the function to check")
+
     return parser
 
 
@@ -268,7 +338,14 @@ def main() -> None:
     }
 
     try:
-        results = dispatch[args.command](function_name=args.function)
+        if args.command == "call-graph":
+            results = query_call_graph()
+        elif args.command == "var-deps":
+            results = query_variable_dependencies()
+        elif args.command == "taint":
+            results = query_taint_from_input(function_name=args.function)
+        else:
+            results = dispatch[args.command](function_name=args.function)
     except (FileNotFoundError, RuntimeError) as exc:
         print(json.dumps({"error": str(exc)}, indent=2 if args.pretty else None))
         sys.exit(1)

@@ -1,0 +1,16 @@
+/**
+ * Query: Full call graph of the project.
+ * @kind problem
+ * @id python/call-graph
+ */
+import python
+
+from Call call, Function caller, string callee_name
+where
+  caller.containsInScope(call) and
+  (
+    callee_name = call.getFunc().(Name).getId()
+    or
+    callee_name = call.getFunc().(Attribute).getName()
+  )
+select caller, caller.getName() + "," + callee_name
