@@ -45,6 +45,8 @@ EXAMPLE_QUERIES: List[str] = [
     "What is the coverage for function parse_meeting_time?",
     "Are lines 142-154 covered by tests?",
     "What is the coverage of the test suite?",
+    "In function register_student, is variable section_id dependent on variable course_code?",
+    "Does register_student receive tainted input from input()?",
 ]
 
 # Approximate pricing assumptions (USD / 1M tokens). These may change over time.
@@ -513,7 +515,20 @@ class QuerySystemGUI(BaseTk):
     def _extract_related_lines(result: Dict[str, Any]) -> List[int]:
         raw = result.get("related_lines", [])
         if not isinstance(raw, list):
-            return []
+            raw = []
+
+        # Fallback for q10 taint queries: take source_taint_line from top-level
+        # result or nested tool result when related_lines is intentionally empty.
+        if not raw:
+            src_lines = result.get("source_taint_line")
+            if isinstance(src_lines, list):
+                raw = src_lines
+        if not raw and isinstance(result.get("result"), dict):
+            nested = result.get("result", {})
+            src_lines = nested.get("source_taint_line")
+            if isinstance(src_lines, list):
+                raw = src_lines
+
         out: List[int] = []
         for x in raw:
             if isinstance(x, int) and x > 0:
