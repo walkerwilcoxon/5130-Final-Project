@@ -7,7 +7,6 @@ Usage examples (Windows):
   python query_system.py calls-made  --function my_func
   python query_system.py callers-of  --function my_func
   python query_system.py variables   --function my_func
-  python query_system.py branches    --function my_func
 
 The database is always "codeql-db" in the current directory.
 The CodeQL CLI executable is always "codeql" (must be on PATH).
@@ -18,7 +17,6 @@ Output is JSON written to stdout.
 import argparse
 import csv
 import json
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -34,31 +32,10 @@ from jinja2 import Environment, FileSystemLoader
 SCRIPT_DIR = Path(__file__).parent.resolve()
 QUERIES_DIR = SCRIPT_DIR / "queries"
 DB_PATH = "codeql-db"
-
-
-def _resolve_codeql_exe() -> str:
-    """Resolve the CodeQL executable path.
-
-    Some environments (IDE kernels, subprocesses) may not inherit shell PATH
-    entries such as /opt/homebrew/bin on macOS. We therefore try PATH first,
-    then common absolute locations.
-    """
-    found = shutil.which("codeql")
-    if found:
-        return found
-
-    candidates = [
-        "/opt/homebrew/bin/codeql",  # Apple Silicon Homebrew
-        "/usr/local/bin/codeql",     # Intel Homebrew
-    ]
-    for candidate in candidates:
-        if Path(candidate).exists():
-            return candidate
-
-    return "codeql"
-
-
-CODEQL_EXE = _resolve_codeql_exe()
+CODEQL_EXE = "codeql"
+GRAPH_DB_DIR    = SCRIPT_DIR / "graph_database"
+CALL_GRAPH_FILE = GRAPH_DB_DIR / "call_graph.json"
+VAR_DEP_FILE    = GRAPH_DB_DIR / "variable_dependency_graph.json"
 
 
 # ---------------------------------------------------------------------------
@@ -173,18 +150,85 @@ def _unique(values: list[str]) -> list[str]:
     return out
 
 
-def query_calls_made(function_name: str) -> list[str]:
-    """Return the names of all functions that *function_name* calls."""
-    ql = render_template("calls_made.ql.j2", {"caller_name": function_name})
-    rows = run_codeql_query(ql)
-    return _unique([r["col1"] for r in rows if "col1" in r])
+def _load_call_graph() -> dict:
+    if not CALL_GRAPH_FILE.exists():
+        raise FileNotFoundError("call_graph.json not found. Run 'generate-call-graph' first.")
+    with open(CALL_GRAPH_FILE, encoding="utf-8") as fh:
+        return json.load(fh)
 
 
-def query_callers_of(function_name: str) -> list[str]:
-    """Return the names of all functions that call *function_name*."""
-    ql = render_template("callers_of.ql.j2", {"target_name": function_name})
-    rows = run_codeql_query(ql)
-    return _unique([r["col1"] for r in rows if "col1" in r])
+def _load_var_dep_graph() -> dict:
+    if not VAR_DEP_FILE.exists():
+        raise FileNotFoundError("variable_dependency_graph.json not found. Run 'generate-variable-dependencies' first.")
+    with open(VAR_DEP_FILE, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def _transitive_calls(graph: dict, start: str) -> list[str]:
+    """BFS over call graph from *start*, returning all reachable function names."""
+    visited = []
+    seen = {start}
+    queue = list(graph.get(start, []))
+    while queue:
+        node = queue.pop(0)
+        if node in seen:
+            continue
+        seen.add(node)
+        visited.append(node)
+        queue.extend(n for n in graph.get(node, []) if n not in seen)
+    return visited
+
+
+def _transitive_callers(graph: dict, target: str) -> list[str]:
+    """BFS over reversed call graph from *target*, returning all functions that can reach it."""
+    # Build reverse graph
+    reverse: dict = {}
+    for caller, callees in graph.items():
+        for callee in callees:
+            reverse.setdefault(callee, []).append(caller)
+    visited = []
+    seen = {target}
+    queue = list(reverse.get(target, []))
+    while queue:
+        node = queue.pop(0)
+        if node in seen:
+            continue
+        seen.add(node)
+        visited.append(node)
+        queue.extend(n for n in reverse.get(node, []) if n not in seen)
+    return visited
+
+
+def _transitive_var_deps(graph: dict, function_name: str, variable_name: str) -> list[str]:
+    """BFS over variable dependency graph, returning all transitive dependencies."""
+    func_graph = graph.get(function_name, {})
+    visited = []
+    seen = {variable_name}
+    queue = list(func_graph.get(variable_name, []))
+    while queue:
+        node = queue.pop(0)
+        if node in seen:
+            continue
+        seen.add(node)
+        visited.append(node)
+        queue.extend(n for n in func_graph.get(node, []) if n not in seen)
+    return visited
+
+
+def query_calls_made(function_name: str, transitive: bool = False) -> list[str]:
+    """Return functions that *function_name* calls (direct or transitive)."""
+    graph = _load_call_graph()
+    if transitive:
+        return _transitive_calls(graph, function_name)
+    return graph.get(function_name, [])
+
+
+def query_callers_of(function_name: str, transitive: bool = False) -> list[str]:
+    """Return functions that call *function_name* (direct or transitive)."""
+    graph = _load_call_graph()
+    if transitive:
+        return _transitive_callers(graph, function_name)
+    return _unique([caller for caller, callees in graph.items() if function_name in callees])
 
 
 def query_variables_defined(function_name: str) -> list[str]:
@@ -194,15 +238,7 @@ def query_variables_defined(function_name: str) -> list[str]:
     return _unique([r["col1"] for r in rows if "col1" in r])
 
 
-def query_branch_count(function_name: str) -> int:
-    """Return the number of branches inside *function_name*."""
-    ql = render_template("branch_count.ql.j2", {"function_name": function_name})
-    rows = run_codeql_query(ql)
-    values = [r["col1"] for r in rows if "col1" in r]
-    return int(values[0]) if values else 0
-
-
-COVERAGE_FILE = SCRIPT_DIR / "hypothesis_coverage.json"
+COVERAGE_FILE = SCRIPT_DIR / "test_results" / "fuzzing" / "hypothesis" / "raw" / "coverage.json"
 
 
 def query_coverage(function_name: str) -> dict:
@@ -241,7 +277,7 @@ def query_coverage(function_name: str) -> dict:
 
 
 def query_call_graph() -> dict:
-    """Return the full call graph of the project as {caller: [callee, ...]}."""
+    """Build the full call graph, write it to call_graph.json, and return it."""
     ql = render_template("call_graph.ql.j2", {})
     rows = run_codeql_query(ql)
     graph = {}
@@ -254,19 +290,14 @@ def query_call_graph() -> dict:
             graph[caller] = []
         if callee not in graph[caller]:
             graph[caller].append(callee)
+    GRAPH_DB_DIR.mkdir(parents=True, exist_ok=True)
+    with open(CALL_GRAPH_FILE, "w", encoding="utf-8") as fh:
+        json.dump(graph, fh, indent=2)
     return graph
 
 
 def query_variable_dependencies() -> dict:
-    """Return variable dependencies for all functions as:
-    {
-        "function_name": {
-            "var": ["dep1", "dep2", ...],
-            ...
-        },
-        ...
-    }
-    """
+    """Build variable dependency graph, write it to variable_dependency_graph.json, and return it."""
     ql = render_template("variable_dependencies.ql.j2", {})
     rows = run_codeql_query(ql)
     result = {}
@@ -280,27 +311,45 @@ def query_variable_dependencies() -> dict:
             result[func] = {}
         if lhs not in result[func]:
             result[func][lhs] = []
-        if rhs not in result[func][lhs]:
+        # rhs is empty string for variables with no dependencies
+        if rhs and rhs not in result[func][lhs]:
             result[func][lhs].append(rhs)
+    GRAPH_DB_DIR.mkdir(parents=True, exist_ok=True)
+    with open(VAR_DEP_FILE, "w", encoding="utf-8") as fh:
+        json.dump(result, fh, indent=2)
     return result
 
 
 def query_taint_from_input(function_name: str) -> list[dict]:
     """
     Return all locations where a value tainted by input() reaches
-    an argument of *function_name*.
-
-    Each result includes the sink location and the source location.
+    an argument of *function_name*, as [{"line": <source line>}, ...].
     """
     ql = render_template("taint_from_input.ql.j2", {"function_name": function_name})
     rows = run_codeql_query(ql)
     results = []
+    seen = set()
     for row in rows:
-        # col0: sink label, col1: sink location+message string
-        message = row.get("col1", "")
-        location = row.get("col0", "unknown")
-        results.append({"sink": location, "message": message})
+        val = row.get("col1", "")
+        if not val or val in seen:
+            continue
+        seen.add(val)
+        parts = val.split(",", 1)
+        line_str = parts[0]
+        var_name = parts[1] if len(parts) > 1 else "<unknown>"
+        try:
+            results.append({"line": int(line_str), "variable": var_name})
+        except ValueError:
+            results.append({"line": line_str, "variable": var_name})
     return results
+
+
+def query_variable_deps_for(function_name: str, variable_name: str, transitive: bool = False) -> list[str]:
+    """Return variables that *variable_name* depends on in *function_name* (direct or transitive)."""
+    graph = _load_var_dep_graph()
+    if transitive:
+        return _transitive_var_deps(graph, function_name, variable_name)
+    return graph.get(function_name, {}).get(variable_name, [])
 
 
 # ---------------------------------------------------------------------------
@@ -317,35 +366,33 @@ def build_parser() -> argparse.ArgumentParser:
             "Run 'codeql pack install' once before first use."
         ),
     )
-    parser.add_argument(
-        "--pretty",
-        action="store_true",
-        help="Pretty-print JSON output",
-    )
-
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     p1 = subparsers.add_parser("calls-made", help="List all functions that a given function calls.")
     p1.add_argument("--function", required=True, metavar="NAME", help="Name of the caller function")
+    p1.add_argument("--transitive", action="store_true", help="Include transitive callees (default: direct only)")
 
     p2 = subparsers.add_parser("callers-of", help="List all functions that call a given function.")
     p2.add_argument("--function", required=True, metavar="NAME", help="Name of the target function")
+    p2.add_argument("--transitive", action="store_true", help="Include transitive callers (default: direct only)")
 
     p3 = subparsers.add_parser("variables", help="List all variables defined inside a given function.")
     p3.add_argument("--function", required=True, metavar="NAME", help="Name of the function to inspect")
 
-    p4 = subparsers.add_parser("branches", help="Count the number of branches inside a given function.")
-    p4.add_argument("--function", required=True, metavar="NAME", help="Name of the function to inspect")
-
     p5 = subparsers.add_parser("coverage", help="Get coverage for a given function from hypothesis_coverage.json.")
     p5.add_argument("--function", required=True, metavar="NAME", help="Name of the function to inspect")
 
-    subparsers.add_parser("call-graph", help="Generate the full call graph of the project.")
+    subparsers.add_parser("generate-call-graph", help="Generate the full call graph of the project.")
 
-    subparsers.add_parser("var-deps", help="Get variable dependencies for all functions.")
+    subparsers.add_parser("generate-variable-dependencies", help="Get variable dependencies for all functions.")
 
     p_taint = subparsers.add_parser("taint", help="Check if a function receives tainted input() values.")
     p_taint.add_argument("--function", required=True, metavar="NAME", help="Name of the function to check")
+
+    p_vdf = subparsers.add_parser("var-deps-for", help="Get dependencies of a variable in a function.")
+    p_vdf.add_argument("--function", required=True, metavar="NAME", help="Name of the function")
+    p_vdf.add_argument("--variable", required=True, metavar="NAME", help="Name of the variable")
+    p_vdf.add_argument("--transitive", action="store_true", help="Include transitive dependencies (default: direct only)")
 
     return parser
 
@@ -358,24 +405,32 @@ def main() -> None:
         "calls-made": query_calls_made,
         "callers-of": query_callers_of,
         "variables":  query_variables_defined,
-        "branches":   query_branch_count,
         "coverage":   query_coverage,
+        "taint":      query_taint_from_input,
     }
 
     try:
-        if args.command == "call-graph":
+        if args.command == "generate-call-graph":
             results = query_call_graph()
-        elif args.command == "var-deps":
+        elif args.command == "generate-variable-dependencies":
             results = query_variable_dependencies()
-        elif args.command == "taint":
-            results = query_taint_from_input(function_name=args.function)
+        elif args.command == "var-deps-for":
+            results = query_variable_deps_for(
+                function_name=args.function,
+                variable_name=args.variable,
+                transitive=getattr(args, "transitive", False),
+            )
         else:
-            results = dispatch[args.command](function_name=args.function)
+            transitive = getattr(args, "transitive", False)
+            if transitive:
+                results = dispatch[args.command](function_name=args.function, transitive=True)
+            else:
+                results = dispatch[args.command](function_name=args.function)
     except (FileNotFoundError, RuntimeError) as exc:
-        print(json.dumps({"error": str(exc)}, indent=2 if args.pretty else None))
+        print(json.dumps({"error": str(exc)}, indent=2))
         sys.exit(1)
 
-    print(json.dumps(results, indent=2 if args.pretty else None))
+    print(json.dumps(results, indent=2))
 
 
 if __name__ == "__main__":

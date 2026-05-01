@@ -1,0 +1,412 @@
+{
+  "normalize_text": [
+    "lower",
+    "join",
+    "split",
+    "strip"
+  ],
+  "parse_time_string": [
+    "len",
+    "ValueError",
+    "int",
+    "split",
+    "strip"
+  ],
+  "parse_meeting_time": [
+    "len",
+    "ValueError",
+    "parse_time_string",
+    "strip",
+    "split"
+  ],
+  "meeting_times_conflict": [
+    "parse_meeting_time",
+    "append"
+  ],
+  "safe_int_input": [
+    "input",
+    "int",
+    "strip"
+  ],
+  "current_credit_load": [
+    "get"
+  ],
+  "is_registered_in_semester": [
+    "get"
+  ],
+  "to_dict": [
+    "list",
+    "items"
+  ],
+  "from_dict": [
+    "Student",
+    "list",
+    "get",
+    "Course",
+    "Instructor",
+    "Section",
+    "EnrollmentRecord",
+    "RegistrationSystem",
+    "items"
+  ],
+  "seats_available": [
+    "len"
+  ],
+  "is_full": [
+    "len"
+  ],
+  "add_student": [
+    "Student"
+  ],
+  "remove_student": [
+    "list",
+    "get",
+    "drop_student",
+    "remove"
+  ],
+  "add_course": [
+    "Course"
+  ],
+  "remove_course": [
+    "values"
+  ],
+  "add_instructor": [
+    "Instructor"
+  ],
+  "remove_instructor": [
+    "values"
+  ],
+  "create_section": [
+    "parse_meeting_time",
+    "Section"
+  ],
+  "remove_section": [
+    "list",
+    "get",
+    "drop_student",
+    "remove"
+  ],
+  "get_student_semester_sections": [
+    "get",
+    "append"
+  ],
+  "check_prerequisites": [
+    "len",
+    "get",
+    "has_completed",
+    "append"
+  ],
+  "check_schedule_conflict": [
+    "meeting_times_conflict",
+    "get",
+    "get_student_semester_sections"
+  ],
+  "check_credit_limit": [
+    "get",
+    "current_credit_load"
+  ],
+  "check_duplicate_course_in_semester": [
+    "get"
+  ],
+  "can_register": [
+    "len",
+    "get",
+    "append",
+    "check_prerequisites",
+    "join",
+    "check_duplicate_course_in_semester",
+    "check_schedule_conflict",
+    "check_credit_limit"
+  ],
+  "register_student": [
+    "EnrollmentRecord",
+    "can_register",
+    "join",
+    "is_full",
+    "append"
+  ],
+  "drop_student": [
+    "EnrollmentRecord",
+    "get",
+    "remove",
+    "append",
+    "promote_waitlist"
+  ],
+  "promote_waitlist": [
+    "EnrollmentRecord",
+    "get",
+    "is_full",
+    "pop",
+    "can_register",
+    "_can_promote_waitlisted_student",
+    "remove",
+    "append",
+    "join"
+  ],
+  "_can_promote_waitlisted_student": [
+    "len",
+    "get",
+    "append",
+    "check_prerequisites",
+    "join",
+    "check_duplicate_course_in_semester_promotion",
+    "check_schedule_conflict",
+    "check_credit_limit"
+  ],
+  "check_duplicate_course_in_semester_promotion": [
+    "get"
+  ],
+  "record_completed_course": [
+    "get",
+    "append"
+  ],
+  "search_courses": [
+    "normalize_text",
+    "values",
+    "append",
+    "sort"
+  ],
+  "list_sections_for_course": [
+    "values",
+    "append",
+    "sort"
+  ],
+  "list_student_schedule": [
+    "get",
+    "append",
+    "sort"
+  ],
+  "report_student_schedule": [
+    "sorted",
+    "get",
+    "list_student_schedule",
+    "append",
+    "join",
+    "current_credit_load"
+  ],
+  "report_course_roster": [
+    "len",
+    "enumerate",
+    "get",
+    "seats_available",
+    "join",
+    "append"
+  ],
+  "report_open_sections": [
+    "sorted",
+    "values",
+    "seats_available",
+    "get",
+    "append",
+    "join"
+  ],
+  "report_overloaded_students": [
+    "sorted",
+    "values",
+    "current_credit_load",
+    "append",
+    "join"
+  ],
+  "report_waitlisted_students": [
+    "sorted",
+    "enumerate",
+    "values",
+    "get",
+    "append",
+    "join"
+  ],
+  "report_system_summary": [
+    "len",
+    "sum",
+    "values",
+    "join"
+  ],
+  "genexpr": [
+    "len"
+  ],
+  "dictcomp": [
+    "to_dict",
+    "from_dict"
+  ],
+  "listcomp": [
+    "to_dict",
+    "from_dict",
+    "strip"
+  ],
+  "save_to_file": [
+    "open",
+    "dump",
+    "to_dict"
+  ],
+  "load_from_file": [
+    "open",
+    "load",
+    "from_dict"
+  ],
+  "print_all_students": [
+    "print",
+    "sorted",
+    "values"
+  ],
+  "print_all_courses": [
+    "print",
+    "sorted",
+    "values",
+    "join"
+  ],
+  "print_all_sections": [
+    "print",
+    "sorted",
+    "len",
+    "values"
+  ],
+  "print_all_instructors": [
+    "print",
+    "sorted",
+    "values"
+  ],
+  "build_demo_system": [
+    "RegistrationSystem",
+    "add_instructor",
+    "add_course",
+    "add_student",
+    "record_completed_course",
+    "create_section",
+    "register_student"
+  ],
+  "show_menu": [
+    "print"
+  ],
+  "cli_add_student": [
+    "input",
+    "safe_int_input",
+    "print",
+    "strip",
+    "add_student"
+  ],
+  "cli_remove_student": [
+    "input",
+    "print",
+    "strip",
+    "remove_student"
+  ],
+  "cli_add_course": [
+    "input",
+    "safe_int_input",
+    "print",
+    "strip",
+    "split",
+    "add_course"
+  ],
+  "cli_remove_course": [
+    "input",
+    "print",
+    "strip",
+    "remove_course"
+  ],
+  "cli_add_instructor": [
+    "input",
+    "print",
+    "strip",
+    "add_instructor"
+  ],
+  "cli_remove_instructor": [
+    "input",
+    "print",
+    "strip",
+    "remove_instructor"
+  ],
+  "cli_create_section": [
+    "input",
+    "safe_int_input",
+    "print",
+    "strip",
+    "append",
+    "create_section"
+  ],
+  "cli_remove_section": [
+    "input",
+    "print",
+    "strip",
+    "remove_section"
+  ],
+  "cli_register_student": [
+    "input",
+    "print",
+    "strip",
+    "register_student"
+  ],
+  "cli_drop_student": [
+    "input",
+    "print",
+    "strip",
+    "drop_student"
+  ],
+  "cli_record_completed_course": [
+    "input",
+    "print",
+    "strip",
+    "record_completed_course"
+  ],
+  "cli_search_courses": [
+    "input",
+    "print",
+    "strip",
+    "search_courses",
+    "join"
+  ],
+  "cli_student_schedule_report": [
+    "input",
+    "print",
+    "strip",
+    "report_student_schedule"
+  ],
+  "cli_course_roster_report": [
+    "input",
+    "print",
+    "strip",
+    "report_course_roster"
+  ],
+  "cli_save": [
+    "input",
+    "print",
+    "strip",
+    "save_to_file"
+  ],
+  "cli_load": [
+    "input",
+    "print",
+    "strip",
+    "load_from_file"
+  ],
+  "run_cli": [
+    "show_menu",
+    "input",
+    "cli_add_student",
+    "cli_remove_student",
+    "cli_add_course",
+    "cli_remove_course",
+    "cli_add_instructor",
+    "cli_remove_instructor",
+    "cli_create_section",
+    "cli_remove_section",
+    "cli_register_student",
+    "cli_drop_student",
+    "cli_record_completed_course",
+    "cli_search_courses",
+    "cli_student_schedule_report",
+    "cli_course_roster_report",
+    "print",
+    "cli_save",
+    "cli_load",
+    "strip",
+    "print_all_students",
+    "print_all_courses",
+    "print_all_instructors",
+    "print_all_sections",
+    "report_open_sections",
+    "report_overloaded_students",
+    "report_waitlisted_students",
+    "report_system_summary"
+  ]
+}

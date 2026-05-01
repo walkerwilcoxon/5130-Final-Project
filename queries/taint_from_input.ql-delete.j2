@@ -1,6 +1,6 @@
 /**
  * Query: Does tainted input() reach '{{ function_name }}'?
- * Outputs the line number of the input() source and the variable name at the sink.
+ * Outputs the line number of the input() source call.
  * @kind problem
  * @id python/taint-from-input
  */
@@ -55,15 +55,6 @@ module TaintFromInputConfig implements DataFlow::ConfigSig {
 
 module TaintFromInput = TaintTracking::Global<TaintFromInputConfig>;
 
-from DataFlow::Node source, DataFlow::Node sink, string var_name
-where
-  TaintFromInput::flow(source, sink) and
-  (
-    // sink is a plain variable reference
-    var_name = sink.asCfgNode().(NameNode).getId()
-    or
-    // sink is not a Name node — use a placeholder
-    (not exists(sink.asCfgNode().(NameNode).getId()) and var_name = "<expr>")
-  )
-select sink,
-  source.getLocation().getStartLine().toString() + "," + var_name
+from DataFlow::Node source, DataFlow::Node sink
+where TaintFromInput::flow(source, sink)
+select sink, source.getLocation().getStartLine().toString()

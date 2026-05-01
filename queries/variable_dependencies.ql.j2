@@ -1,17 +1,36 @@
 /**
  * Query: Variable dependencies within functions.
- * For every assignment lhs = <expr>, finds each variable referenced
- * anywhere in <expr> and records it as a dependency of lhs.
+ * Emits one row per (lhs, rhs) dependency pair.
+ * Variables with no dependencies emit a row with empty rhs.
+ * Excludes Name nodes that are the callee of a Call expression.
  * @kind problem
  * @id python/variable-dependencies
  */
 import python
 
-from Function f, AssignStmt assign, Variable lhs, Variable rhs, Name rhs_name
+from Function f, AssignStmt assign, Variable lhs, string rhs_id
 where
   assign.getScope() = f and
   assign.getATarget().(Name).getVariable() = lhs and
-  rhs_name = assign.getValue().getASubExpression*().(Name) and
-  rhs_name.getVariable() = rhs and
-  lhs != rhs
-select assign, f.getName() + "," + lhs.getId() + "," + rhs.getId()
+  (
+    // Case 1: lhs has at least one variable dependency
+    exists(Variable rhs, Name rhs_name |
+      rhs_name = assign.getValue().getASubExpression*().(Name) and
+      rhs_name.getVariable() = rhs and
+      lhs != rhs and
+      not exists(Call c | c.getFunc() = rhs_name) and
+      rhs_id = rhs.getId()
+    )
+    or
+    // Case 2: lhs has no variable dependencies - emit empty rhs
+    (
+      not exists(Variable rhs, Name rhs_name |
+        rhs_name = assign.getValue().getASubExpression*().(Name) and
+        rhs_name.getVariable() = rhs and
+        lhs != rhs and
+        not exists(Call c | c.getFunc() = rhs_name)
+      ) and
+      rhs_id = ""
+    )
+  )
+select assign, f.getName() + "," + lhs.getId() + "," + rhs_id
