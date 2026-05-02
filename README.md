@@ -31,18 +31,7 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     ```
 
 # Usage:
-* To run the fuzzing tests, execute the following command in the terminal:
-    ```bash
-    mkdir -p corpus
-    python fuzz_json.py corpus/ seed_corpus/
-    ```
-* To run with coverage reporting, execute the following commands. Once you do, you can open the report by opening `htmlcov/index.html` in a web browser.
-    ```bash
-    coverage run fuzz_json.py corpus/ seed_corpus/
-    coverage report
-    coverage html
-    ```
-* To run performance/stress testing, install pytest-benchmark in venv, then run:
+* To run performance/stress testing, run:
     ```bash
     python run_pytest_benchmark.py
     ```
@@ -55,11 +44,6 @@ Note: Artheris requires Linux so it is recommended to use WSL on Windows.
     export OPENAI_API_KEY="your_api_key"  # get it from https://platform.openai.com/settings/organization/api-keys
     python query_gui.py
     ```
-<!-- * To run the CodeQL analysis, execute the following command in the terminal:
-    ```bash
-    codeql database create codeql-db --language=python --source-root=.
-    codeql query run example_query.ql --database=codeql-db 
-    ``` -->
 
 # Automated Test Case Generation
 
@@ -94,7 +78,7 @@ conda install -c conda-forge graphviz
 
 ```bash
 mkdir $PROJ_DIR
-cp json_parser.py $PROJ_DIR # put the python code under a project dir
+cp course_management_system.py $PROJ_DIR # put the python code under a project dir
 
 joern-parse $PROJ_DIR --language PYTHONSRC
 joern-export --repr pdg --out $OUTPUT_DIR # output .dot files are saved at $OUTPUT_DIR

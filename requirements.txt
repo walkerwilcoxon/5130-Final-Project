@@ -5,3 +5,4 @@ pytest-cov==7.1.0
 pytest==9.0.2
 hypothesis==6.151.10
 jinja2==3.1.6
+pytest-benchmark==3.0.0
