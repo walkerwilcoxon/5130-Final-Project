@@ -1,0 +1,17 @@
+/**
+ * Query: What functions does '{{ caller_name }}' call?
+ * @kind problem
+ * @id python/calls-made
+ */
+import python
+
+from Call call, Function caller, string callee_name
+where
+  caller.getName() = "{{ caller_name }}" and
+  caller.containsInScope(call) and
+  (
+    callee_name = call.getFunc().(Name).getId()
+    or
+    callee_name = call.getFunc().(Attribute).getName()
+  )
+select call, callee_name

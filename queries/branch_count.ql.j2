@@ -1,0 +1,20 @@
+/**
+ * Query: How many branches does '{{ function_name }}' have?
+ * @kind problem
+ * @id python/branch-count
+ */
+import python
+
+from Function f, int branches
+where
+  f.getName() = "{{ function_name }}" and
+  branches = count(Stmt s |
+    s.getScope() = f and
+    (
+      s instanceof If
+      or s instanceof While
+      or s instanceof For
+      or s instanceof Try
+    )
+  )
+select f, branches.toString()

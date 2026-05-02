@@ -1,6 +1,6 @@
 """Natural-language query interface for static-analysis results.
 
-Scope: supports exactly 7 query families.
+Scope: supports 9 query families.
 Target source (default): course_management_system.py
 """
 
@@ -18,13 +18,15 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Protocol, Set
 
 try:
-    from query_system import (
-        query_calls_made,
-        query_callers_of,
-        query_variables_defined,
-        query_branch_count,
-        query_coverage,
-    )
+    import query_system as _qs
+
+    query_calls_made = getattr(_qs, "query_calls_made", None)
+    query_callers_of = getattr(_qs, "query_callers_of", None)
+    query_variables_defined = getattr(_qs, "query_variables_defined", None)
+    query_branch_count = getattr(_qs, "query_branch_count", None)
+    query_coverage = getattr(_qs, "query_coverage", None)
+    query_variable_deps_for = getattr(_qs, "query_variable_deps_for", None)
+    query_taint_from_input = getattr(_qs, "query_taint_from_input", None)
     QUERY_SYSTEM_IMPORT_ERROR: Optional[str] = None
 except Exception as _exc:  # pragma: no cover - environment/dependency dependent
     query_calls_made = None  # type: ignore[assignment]
@@ -32,6 +34,8 @@ except Exception as _exc:  # pragma: no cover - environment/dependency dependent
     query_variables_defined = None  # type: ignore[assignment]
     query_branch_count = None  # type: ignore[assignment]
     query_coverage = None  # type: ignore[assignment]
+    query_variable_deps_for = None  # type: ignore[assignment]
+    query_taint_from_input = None  # type: ignore[assignment]
     QUERY_SYSTEM_IMPORT_ERROR = str(_exc)
 
 
@@ -45,6 +49,8 @@ class QueryType(str, Enum):
     FUNCTION_COVERAGE_ALT = "q5_function_coverage"
     LINES_COVERED_BY_TESTS = "q6_lines_covered_by_tests"
     TEST_COVERAGE_SUMMARY = "q7_test_coverage_summary"
+    VARIABLE_DEP_CHECK = "q8_variable_dependency_check"
+    TAINT_FROM_INPUT = "q9_taint_from_input"
 
 
 @dataclass
@@ -54,6 +60,8 @@ class QueryCommand:
     function_name: Optional[str] = None
     called_function_name: Optional[str] = None
     variable_name: Optional[str] = None
+    depends_on_variable_name: Optional[str] = None
+    transitive: bool = False
     line: Optional[int] = None
     lines: Optional[List[int]] = None
     top_k: int = 5
@@ -940,6 +948,72 @@ class NLQueryMapper:
                 function_name=m.group("func"),
             )
 
+        # Q8 variable dependency check in a specific function
+        # Example: "Is variable a dependent on variable b within function f?"
+        m = re.search(
+            rf"(?:is|does)\s+(?:variable\s+)?(?P<var>[A-Za-z_][A-Za-z0-9_]*)\s+"
+            rf"(?:depend(?:ent)?(?:\s+on)?|dependent\s+on)\s+(?:variable\s+)?(?P<dep>[A-Za-z_][A-Za-z0-9_]*)"
+            rf".*(?:in|inside|within)\s+(?:function\s+)?(?P<func>[A-Za-z_][A-Za-z0-9_]*)",
+            q,
+            re.IGNORECASE,
+        )
+        if not m:
+            m = re.search(
+                rf"(?:in|inside|within)\s+(?:function\s+)?(?P<func>[A-Za-z_][A-Za-z0-9_]*)"
+                rf".*(?:is|does)\s+(?:variable\s+)?(?P<var>[A-Za-z_][A-Za-z0-9_]*)\s+"
+                rf"(?:depend(?:ent)?(?:\s+on)?|dependent\s+on)\s+(?:variable\s+)?(?P<dep>[A-Za-z_][A-Za-z0-9_]*)",
+                q,
+                re.IGNORECASE,
+            )
+        if m:
+            return QueryCommand(
+                query_type=QueryType.VARIABLE_DEP_CHECK,
+                source_file=default_source,
+                function_name=m.group("func"),
+                variable_name=m.group("var"),
+                depends_on_variable_name=m.group("dep"),
+                transitive=("transitive" in low or "indirect" in low),
+            )
+
+        # Q9 taint from input() to function arguments
+        taint_candidates: List[str] = []
+
+        # Forms like: "Does register_student receive tainted input ...?"
+        for m in re.finditer(
+            rf"\b(?:is|does|can)\s+{self._func}\s+(?:receive|receives|get|gets|take|takes|accept|accepts|have|has|be)\b.*\b(?:taint(?:ed)?|input\(\))\b",
+            q,
+            re.IGNORECASE,
+        ):
+            taint_candidates.append(m.group("func"))
+
+        # Forms like: "Can tainted input reach function register_student?"
+        if not taint_candidates:
+            for m in re.finditer(
+                rf"\b(?:reach(?:es)?|flow(?:s)?|taint(?:ed)?)\b.*\b(?:function\s+)?{self._func}\b",
+                q,
+                re.IGNORECASE,
+            ):
+                taint_candidates.append(m.group("func"))
+
+        # Generic fallback with explicit function mention.
+        if not taint_candidates:
+            for m in re.finditer(rf"\bfunction\s+{self._func}\b", q, re.IGNORECASE):
+                taint_candidates.append(m.group("func"))
+
+        target_func = ""
+        for cand in taint_candidates:
+            candidate = (cand or "").strip()
+            if candidate and candidate.lower() not in {"input", "taint", "tainted"}:
+                target_func = candidate
+                break
+
+        if target_func and ("taint" in low or "input(" in low):
+            return QueryCommand(
+                query_type=QueryType.TAINT_FROM_INPUT,
+                source_file=default_source,
+                function_name=target_func,
+            )
+
         # Q7 suite coverage summary (must be checked before function coverage).
         if "coverage of the test suite" in low or "test suite coverage" in low:
             return QueryCommand(
@@ -1003,6 +1077,8 @@ class QueryInterface:
             "get_function_coverage": self.get_function_coverage,
             "are_lines_covered_by_tests": self.are_lines_covered_by_tests,
             "get_test_suite_coverage": self.get_test_suite_coverage,
+            "get_variable_deps_for": self.get_variable_deps_for,
+            "get_taint_from_input": self.get_taint_from_input,
         }
         self.tool_registry = {**built_in_tools, **(tool_registry or {})}
         self.ai_source_max_chars = max(1000, ai_source_max_chars)
@@ -1042,6 +1118,17 @@ class QueryInterface:
 
         if command.query_type == QueryType.TEST_COVERAGE_SUMMARY:
             return self.get_test_suite_coverage(source_file=command.source_file)
+
+        if command.query_type == QueryType.VARIABLE_DEP_CHECK:
+            return self.get_variable_deps_for(
+                function_name=command.function_name or "",
+                variable_name=command.variable_name or "",
+                depends_on_variable_name=command.depends_on_variable_name,
+                transitive=bool(command.transitive),
+            )
+
+        if command.query_type == QueryType.TAINT_FROM_INPUT:
+            return self.get_taint_from_input(function_name=command.function_name or "")
 
         if self.backend is None:
             return self._run_fallback(command)
@@ -1139,6 +1226,10 @@ class QueryInterface:
                 # For q6, ignore AI related_lines. Runtime knows exact target lines.
                 related_lines = []
 
+            if isinstance(tool_name, str) and tool_name.strip() == "get_taint_from_input":
+                # For q9, ignore AI related_lines. Runtime uses source_taint_line from tool output.
+                related_lines = []
+
             result = self._invoke_flexible_tool(tool_name.strip(), arguments)
             function_effective_lines: Optional[List[int]] = None
             if tool_name.strip() == "get_function_coverage" and related_lines:
@@ -1154,6 +1245,10 @@ class QueryInterface:
                 result["tool_name"] = tool_name.strip()
                 result["tool_arguments"] = arguments
                 result["ai_router_output"] = parsed
+                if tool_name.strip() == "get_taint_from_input":
+                    taint_lines = self._extract_source_taint_lines_from_payload(result)
+                    if taint_lines:
+                        result["related_lines"] = taint_lines
                 lines_for_highlight = function_effective_lines if function_effective_lines is not None else related_lines
                 if lines_for_highlight:
                     result["related_lines"] = lines_for_highlight
@@ -1188,7 +1283,7 @@ class QueryInterface:
             "2) {\"action\":\"answer_from_source\",\"query_type\":\"...\",\"can_answer\":true,\"answer\":\"...\",\"related_lines\":[]}\n"
             "3) {\"action\":\"cannot_answer\",\"query_type\":\"...\",\"reason\":\"...\",\"related_lines\":[...]}\n"
             "4) {\"action\":\"delegate_to_regex\"}\n"
-            "Supported query types: q1_calls_made, q2_callers_of, q3_vars_defined, q4_branch_count, q5_function_coverage, q6_lines_covered_by_tests, q7_test_coverage_summary, other.\n"
+            "Supported query types: q1_calls_made, q2_callers_of, q3_vars_defined, q4_branch_count, q5_function_coverage, q6_lines_covered_by_tests, q7_test_coverage_summary, q8_variable_dependency_check, q9_taint_from_input, other.\n"
             "Decision policy:\n"
             "- If query is not related to the analysis or testing of the source code or it is not a valid query, return cannot_answer.\n"
             "- If query is one of the supported types AND a suitable local tool exists, you MUST return call_local_api.\n"
@@ -1198,6 +1293,7 @@ class QueryInterface:
             "- Never invent tool names; choose only from available tools listed below.\n"
             "- For call_local_api, include related_lines whenever the source contains clear evidence (otherwise use []).\n"
             "- Exception: for q6_lines_covered_by_tests, set related_lines to [] because runtime derives exact lines from the query text.\n"
+            "- Exception: for q9_taint_from_input, set related_lines to [] because runtime derives source_taint_line directly from tool output.\n"
             "- For q5_function_coverage, include the full function line range in related_lines as a single range string when available (example: \"164-189\").\n"
             "- For answer_from_source, include related_lines as the most relevant 1-based source line numbers when possible.\n"
             "- The source snippet you receive is line-numbered (e.g., ' 123: code'). Use those exact numbers in related_lines.\n"
@@ -1212,6 +1308,8 @@ class QueryInterface:
             "- get_function_coverage: input=function_name. Output=line coverage for that function.\n"
             "- are_lines_covered_by_tests: input=source_file + has_line_numbers. Runtime parses all line numbers.\n"
             "- get_test_suite_coverage: input=source_file. Output=overall suite coverage summary.\n"
+            "- get_variable_deps_for: input=function_name, variable_name, optional transitive and depends_on_variable_name. Output=dependency list and optional yes/no check.\n"
+            "- get_taint_from_input: input=function_name. Output=taint flow findings where input() reaches that function's arguments.\n"
             "Query type -> tool correspondence and required arguments:\n"
             "- q1_calls_made -> get_calls_made(arguments={\"function_name\": \"...\", \"called_function_name\": \"...\" (optional)})\n"
             "- q2_callers_of -> get_callers_of(arguments={\"function_name\": \"...\"})\n"
@@ -1224,6 +1322,8 @@ class QueryInterface:
             "  IMPORTANT: Do NOT extract or list line numbers in arguments. Only decide whether the query contains at least one line number.\n"
             "  The runtime will parse all line numbers locally and process coverage locally.\n"
             "- q7_test_coverage_summary -> get_test_suite_coverage(arguments={\"source_file\": \"...\"})\n"
+            "- q8_variable_dependency_check -> get_variable_deps_for(arguments={\"function_name\":\"...\",\"variable_name\":\"...\",\"depends_on_variable_name\":\"...\",\"transitive\":false})\n"
+            "- q9_taint_from_input -> get_taint_from_input(arguments={\"function_name\": \"...\"})\n"
             "Important: arguments must be a JSON object with primitive values/arrays/objects only."
         )
 
@@ -1238,6 +1338,8 @@ class QueryInterface:
             QueryType.FUNCTION_COVERAGE_ALT: "get_function_coverage",
             QueryType.LINES_COVERED_BY_TESTS: "are_lines_covered_by_tests",
             QueryType.TEST_COVERAGE_SUMMARY: "get_test_suite_coverage",
+            QueryType.VARIABLE_DEP_CHECK: "get_variable_deps_for",
+            QueryType.TAINT_FROM_INPUT: "get_taint_from_input",
         }
         return mapping[query_type]
 
@@ -1266,6 +1368,20 @@ class QueryInterface:
                 "source_file": (command.source_file or self.default_source).strip() or self.default_source,
             }
 
+        if command.query_type == QueryType.VARIABLE_DEP_CHECK:
+            args = {
+                "function_name": (command.function_name or "").strip(),
+                "variable_name": (command.variable_name or "").strip(),
+                "transitive": bool(command.transitive),
+            }
+            dep = (command.depends_on_variable_name or "").strip()
+            if dep:
+                args["depends_on_variable_name"] = dep
+            return args
+
+        if command.query_type == QueryType.TAINT_FROM_INPUT:
+            return {"function_name": (command.function_name or "").strip()}
+
         return {}
 
     def _is_tool_wired(self, tool_name: str) -> bool:
@@ -1290,8 +1406,13 @@ class QueryInterface:
         if command.query_type == QueryType.LINES_COVERED_BY_TESTS:
             # For q6, runtime controls target lines; ignore AI related_lines.
             related_lines = []
+        if command.query_type == QueryType.TAINT_FROM_INPUT:
+            # For q10, highlight lines come from tool output (source_taint_line).
+            related_lines = []
 
         arguments = self._arguments_for_command(command)
+        if command.query_type == QueryType.TAINT_FROM_INPUT and not str(arguments.get("function_name", "")).strip():
+            return None
         result = self._invoke_flexible_tool(tool_name, arguments)
         if not isinstance(result, dict):
             return None
@@ -1311,6 +1432,10 @@ class QueryInterface:
         result["ai_router_output"] = ai_router_output
         result["ai_original_action"] = str(ai_router_output.get("action", ""))
         result["ai_original_query_type"] = str(ai_router_output.get("query_type", ""))
+        if command.query_type == QueryType.TAINT_FROM_INPUT:
+            taint_lines = self._extract_source_taint_lines_from_payload(result)
+            if taint_lines:
+                result["related_lines"] = taint_lines
         lines_for_highlight = function_effective_lines if function_effective_lines is not None else related_lines
         if lines_for_highlight:
             result["related_lines"] = lines_for_highlight
@@ -1366,6 +1491,19 @@ class QueryInterface:
             "error": "query_system APIs are unavailable.",
             "detail": QUERY_SYSTEM_IMPORT_ERROR,
         }
+
+    @staticmethod
+    def _extract_source_taint_lines_from_payload(payload: Dict[str, Any]) -> List[int]:
+        nested = payload.get("result") if isinstance(payload.get("result"), dict) else payload
+        raw = nested.get("source_taint_line", []) if isinstance(nested, dict) else []
+        out: List[int] = []
+        seen: Set[int] = set()
+        if isinstance(raw, list):
+            for item in raw:
+                if isinstance(item, int) and item > 0 and item not in seen:
+                    seen.add(item)
+                    out.append(item)
+        return out
 
     @staticmethod
     def _query_system_error_payload(query_type: QueryType, function_name: str, message: str, detail: Optional[str] = None) -> Dict[str, Any]:
@@ -1504,6 +1642,8 @@ class QueryInterface:
             )
         if not function_name.strip():
             return self._query_system_error_payload(QueryType.BRANCH_COUNT, function_name, "Function name is required.")
+        if query_branch_count is None:
+            return self._query_system_error_payload(QueryType.BRANCH_COUNT, function_name, "query_branch_count is not available in query_system.py")
 
         try:
             count = int(query_branch_count(function_name.strip()))  # type: ignore[misc]
@@ -1550,6 +1690,139 @@ class QueryInterface:
                 f"Coverage for '{function_name}': {covered}/{total} "
                 f"line(s) ({percent:.2f}%)."
             ),
+        }
+
+    def get_variable_deps_for(
+        self,
+        function_name: str,
+        variable_name: str,
+        depends_on_variable_name: Optional[str] = None,
+        transitive: bool = False,
+    ) -> Dict[str, Any]:
+        unavailable = self._query_system_unavailable()
+        if unavailable is not None:
+            return self._query_system_error_payload(
+                QueryType.VARIABLE_DEP_CHECK,
+                function_name,
+                str(unavailable.get("error", "query_system unavailable")),
+                str(unavailable.get("detail", "")) or None,
+            )
+        if not function_name.strip():
+            return self._query_system_error_payload(QueryType.VARIABLE_DEP_CHECK, function_name, "Function name is required.")
+        if not variable_name.strip():
+            return self._query_system_error_payload(QueryType.VARIABLE_DEP_CHECK, function_name, "Variable name is required.")
+        if query_variable_deps_for is None:
+            return self._query_system_error_payload(
+                QueryType.VARIABLE_DEP_CHECK,
+                function_name,
+                "query_variable_deps_for is not available in query_system.py",
+            )
+
+        try:
+            deps = list(
+                query_variable_deps_for(  # type: ignore[misc]
+                    function_name=function_name.strip(),
+                    variable_name=variable_name.strip(),
+                    transitive=bool(transitive),
+                )
+            )
+        except (FileNotFoundError, RuntimeError) as exc:
+            return self._query_system_error_payload(QueryType.VARIABLE_DEP_CHECK, function_name, str(exc))
+
+        dep_target = (depends_on_variable_name or "").strip()
+        is_dependent = None
+        if dep_target:
+            is_dependent = dep_target in set(deps)
+            answer = (
+                f"Yes. In function '{function_name}', variable '{variable_name}' depends on '{dep_target}'."
+                if is_dependent
+                else f"No. In function '{function_name}', variable '{variable_name}' does not depend on '{dep_target}'."
+            )
+        else:
+            answer = (
+                f"Dependencies of '{variable_name}' in '{function_name}':\n- " + "\n- ".join(deps)
+                if deps
+                else f"No dependencies found for '{variable_name}' in '{function_name}'."
+            )
+
+        return {
+            "mode": "query-system",
+            "query_type": QueryType.VARIABLE_DEP_CHECK.value,
+            "function": function_name,
+            "variable": variable_name,
+            "depends_on": dep_target,
+            "dependencies": deps,
+            "transitive": bool(transitive),
+            "is_dependent": is_dependent,
+            "answer": answer,
+        }
+
+    def get_taint_from_input(self, function_name: str) -> Dict[str, Any]:
+        unavailable = self._query_system_unavailable()
+        if unavailable is not None:
+            return self._query_system_error_payload(
+                QueryType.TAINT_FROM_INPUT,
+                function_name,
+                str(unavailable.get("error", "query_system unavailable")),
+                str(unavailable.get("detail", "")) or None,
+            )
+        if not function_name.strip():
+            return self._query_system_error_payload(QueryType.TAINT_FROM_INPUT, function_name, "Function name is required.")
+        if query_taint_from_input is None:
+            return self._query_system_error_payload(
+                QueryType.TAINT_FROM_INPUT,
+                function_name,
+                "query_taint_from_input is not available in query_system.py",
+            )
+
+        try:
+            findings = list(query_taint_from_input(function_name.strip()))  # type: ignore[misc]
+        except (FileNotFoundError, RuntimeError) as exc:
+            return self._query_system_error_payload(QueryType.TAINT_FROM_INPUT, function_name, str(exc))
+
+        tainted_arguments: List[Dict[str, Any]] = []
+        source_taint_line: List[int] = []
+        seen_lines: Set[int] = set()
+
+        for item in findings:
+            if not isinstance(item, dict):
+                continue
+            line = item.get("line")
+            variable = str(item.get("variable", "<unknown>"))
+            row: Dict[str, Any] = {"variable": variable}
+            if isinstance(line, int) and line > 0:
+                row["line"] = line
+                if line not in seen_lines:
+                    seen_lines.add(line)
+                    source_taint_line.append(line)
+            elif isinstance(line, str) and line.strip():
+                row["line"] = line.strip()
+            tainted_arguments.append(row)
+
+        has_taint = len(tainted_arguments) > 0
+        if has_taint:
+            details = []
+            for row in tainted_arguments:
+                line_txt = row.get("line", "?")
+                var_txt = row.get("variable", "<unknown>")
+                details.append(f"- variable '{var_txt}', source_taint_line: {line_txt}")
+            answer = (
+                f"Taint from input() reaches {len(tainted_arguments)} arguments of '{function_name}'\n"
+                + "\n".join(details)
+            )
+        else:
+            answer = f"No input()-taint flow to arguments of '{function_name}' was found."
+
+        return {
+            "mode": "query-system",
+            "query_type": QueryType.TAINT_FROM_INPUT.value,
+            "function": function_name,
+            "taint_found": has_taint,
+            "tainted_arguments": tainted_arguments,
+            "source_taint_line": source_taint_line,
+            "related_lines": source_taint_line,
+            "findings": findings,
+            "answer": answer,
         }
 
     @staticmethod
@@ -1891,6 +2164,17 @@ class QueryInterface:
         if command.query_type == QueryType.TEST_COVERAGE_SUMMARY:
             return self.get_test_suite_coverage(source_file=command.source_file)
 
+        if command.query_type == QueryType.VARIABLE_DEP_CHECK:
+            return self.get_variable_deps_for(
+                function_name=command.function_name or "",
+                variable_name=command.variable_name or "",
+                depends_on_variable_name=command.depends_on_variable_name,
+                transitive=bool(command.transitive),
+            )
+
+        if command.query_type == QueryType.TAINT_FROM_INPUT:
+            return self.get_taint_from_input(function_name=command.function_name or "")
+
         return {"error": f"Unsupported query type: {command.query_type}"}
 
     def _fallback_or_reject(self, natural_language_query: str) -> Dict[str, Any]:
@@ -1912,7 +2196,7 @@ class QueryInterface:
             "error": "Unsupported query format.",
             "supported_types": [qt.value for qt in QueryType],
             "message": (
-                "This interface only supports 7 predefined query families. "
+                "This interface only supports 9 predefined query families. "
                 "Please rephrase your question to one of them."
             ),
         }

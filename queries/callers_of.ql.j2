@@ -1,0 +1,16 @@
+/**
+ * Query: What functions call '{{ target_name }}'?
+ * @kind problem
+ * @id python/callers-of
+ */
+import python
+
+from Call call, Function caller
+where
+  caller.containsInScope(call) and
+  (
+    call.getFunc().(Name).getId() = "{{ target_name }}"
+    or
+    call.getFunc().(Attribute).getName() = "{{ target_name }}"
+  )
+select caller, caller.getName()
