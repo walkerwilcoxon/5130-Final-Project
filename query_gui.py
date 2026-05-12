@@ -45,7 +45,7 @@ EXAMPLE_QUERIES: List[str] = [
     "What is the coverage for function parse_meeting_time?",
     "Are lines 142-154 covered by tests?",
     "What is the coverage of the test suite?",
-    "In function register_student, is variable section_id dependent on variable course_code?",
+    "In function register_student, is variable student dependent on variable student_id?",
     "Does register_student receive tainted input from input()?",
 ]
 
@@ -92,8 +92,20 @@ class QuerySystemGUI(BaseTk):
         self._configure_styles()
         self._build_layout()
         self._load_source()
+        self.after(50, self._bring_window_to_front)
         self.bind_all("<Control-Return>", lambda _e: self._run_query())
         self.bind_all("<Control-l>", lambda _e: self._focus_query_box())
+
+    def _bring_window_to_front(self) -> None:
+        """Bring the GUI to foreground when it first launches."""
+        try:
+            self.lift()
+            self.attributes("-topmost", True)
+            self.focus_force()
+            self.after(250, lambda: self.attributes("-topmost", False))
+        except Exception:
+            # Ignore platform/window-manager specific focus limitations.
+            pass
 
     def _configure_styles(self) -> None:
         style = ttk.Style(self)
@@ -112,19 +124,24 @@ class QuerySystemGUI(BaseTk):
         src_entry = ttk.Entry(top, textvariable=self.source_file_var, width=55)
         src_entry.grid(row=0, column=1, sticky="ew", padx=(6, 6))
 
-        ttk.Button(top, text="Reload Source", command=self._reload_source).grid(row=0, column=2, padx=(0, 8))
-        self.ai_status_label = ttk.Label(top, text=self._ai_status_text())
-        self.ai_status_label.grid(row=0, column=3, sticky="e")
-        ttk.Button(top, text="AI Info", command=self._open_ai_info_dialog).grid(row=0, column=4, padx=(8, 0))
+        ttk.Button(top, text="Reload Source", command=self._reload_source).grid(row=0, column=2, padx=(0, 8), sticky="w")
+
+        ai_controls = ttk.Frame(top)
+        ai_controls.grid(row=0, column=3, columnspan=3, sticky="e")
+        self.ai_status_label = ttk.Label(ai_controls, text=self._ai_status_text())
+        self.ai_status_label.pack(side=tk.LEFT, pady=1)
+        ttk.Button(ai_controls, text="AI Info", command=self._open_ai_info_dialog).pack(side=tk.LEFT, padx=(8, 0))
 
         ttk.Label(top, text="Query:").grid(row=1, column=0, sticky="w", pady=(8, 0))
         query_entry = ttk.Entry(top, textvariable=self.query_var)
         query_entry.grid(row=1, column=1, columnspan=2, sticky="ew", padx=(6, 6), pady=(8, 0))
         query_entry.bind("<Return>", lambda _e: self._run_query())
         self.query_entry = query_entry
-        ttk.Button(top, text="Run Query", command=self._run_query).grid(row=1, column=3, sticky="e", pady=(8, 0))
-        ttk.Button(top, text="Example Queries", command=self._open_example_queries_dialog).grid(row=1, column=4, sticky="e", padx=(8, 0), pady=(8, 0))
-        ttk.Button(top, text="Clear", command=self._clear_outputs).grid(row=1, column=5, sticky="e", padx=(8, 0), pady=(8, 0))
+        query_actions = ttk.Frame(top)
+        query_actions.grid(row=1, column=3, columnspan=3, sticky="e", pady=(8, 0))
+        ttk.Button(query_actions, text="Run Query", command=self._run_query).pack(side=tk.LEFT)
+        ttk.Button(query_actions, text="Example Queries", command=self._open_example_queries_dialog).pack(side=tk.LEFT, padx=(8, 0))
+        ttk.Button(query_actions, text="Clear", command=self._clear_outputs).pack(side=tk.LEFT, padx=(8, 0))
 
         top.columnconfigure(1, weight=1)
 
@@ -202,8 +219,22 @@ class QuerySystemGUI(BaseTk):
         ttk.Label(parent, text=f"{label}:", style="SummaryKey.TLabel").grid(row=row, column=0, sticky="w", padx=6, pady=4)
         ttk.Label(parent, textvariable=var, style="SummaryValue.TLabel").grid(row=row, column=1, sticky="w", padx=6, pady=4)
 
+    def _current_ai_model_name(self) -> str:
+        client = self.query_interface.ai_client
+        if client is None:
+            return "-"
+        model = str(getattr(client, "model", "-") or "-").strip()
+        return model or "-"
+
     def _ai_status_text(self) -> str:
-        return "AI: enabled" if self.query_interface.ai_client is not None else "AI: disabled (fallback only)"
+        if self.query_interface.ai_client is None:
+            return "AI: disabled (fallback only)"
+        model = self._current_ai_model_name()
+        return f"AI: enabled ({model})" if model != "-" else "AI: enabled"
+
+    @staticmethod
+    def _extract_model_name_from_label(label: str) -> str:
+        return label.split("  (", 1)[0].strip()
 
     def _reload_source(self) -> None:
         self.query_interface.default_source = self.source_file_var.get().strip() or "course_management_system.py"
@@ -288,56 +319,31 @@ class QuerySystemGUI(BaseTk):
         root = ttk.Frame(dialog)
         root.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        summary = (
-            f"AI Enabled: {info.get('ai_enabled')}\n"
-            f"Backend: {info.get('backend')}\n"
-            f"Model: {info.get('model')}\n"
-            f"Base URL: {info.get('base_url')}"
-        )
-        ttk.Label(root, text=summary, justify=tk.LEFT).pack(anchor="w", pady=(0, 8))
+        summary_var = tk.StringVar()
+        estimate_var = tk.StringVar()
+        apply_status_var = tk.StringVar(value="")
+        prompt_status_var = tk.StringVar(value="")
+        selected_model_label = tk.StringVar(value="")
+        option_to_model: Dict[str, str] = {}
+        assumed_output_tokens = 180
+
+        ttk.Label(root, textvariable=summary_var, justify=tk.LEFT).pack(anchor="w", pady=(0, 8))
 
         model_frame = ttk.LabelFrame(root, text="AI Model")
         model_frame.pack(fill=tk.X, pady=(0, 8))
 
-        input_tokens = self._estimate_input_tokens_for_query(self.query_var.get().strip() or "<QUERY>")
-        assumed_output_tokens = 180
         ttk.Label(
             model_frame,
-            text=(
-                "Estimated with current prompt size. "
-                f"Assuming ~{input_tokens} input tokens and ~{assumed_output_tokens} output tokens/query."
-            ),
+            textvariable=estimate_var,
             justify=tk.LEFT,
         ).grid(row=0, column=0, columnspan=3, sticky="w", padx=8, pady=(6, 4))
 
-        model_options: List[str] = []
-        option_to_model: Dict[str, str] = {}
-        current_model = str(info.get("model", ""))
-        current_selection = ""
-
-        for item in MODEL_PRICING:
-            model_name = item["model"]
-            cost = self._estimate_cost_per_query(
-                input_tokens=input_tokens,
-                output_tokens=assumed_output_tokens,
-                input_price_per_1m=float(item["input_per_1m"]),
-                output_price_per_1m=float(item["output_per_1m"]),
-            )
-            label = f"{model_name}  (~${cost:.6f}/query)"
-            model_options.append(label)
-            option_to_model[label] = model_name
-            if model_name == current_model:
-                current_selection = label
-
-        selected_model_label = tk.StringVar(value=current_selection or (model_options[0] if model_options else ""))
-        model_combo = ttk.Combobox(model_frame, textvariable=selected_model_label, values=model_options, state="readonly", width=55)
+        model_combo = ttk.Combobox(model_frame, textvariable=selected_model_label, values=[], state="readonly", width=55)
         model_combo.grid(row=1, column=0, sticky="w", padx=8, pady=(2, 6))
-
-        apply_status_var = tk.StringVar(value="")
 
         def apply_model() -> None:
             picked = selected_model_label.get().strip()
-            target_model = option_to_model.get(picked)
+            target_model = option_to_model.get(picked) or self._extract_model_name_from_label(picked)
             if not target_model:
                 apply_status_var.set("No model selected.")
                 return
@@ -351,7 +357,8 @@ class QuerySystemGUI(BaseTk):
                 setattr(client, "model", target_model)
                 os.environ["OPENAI_MODEL"] = target_model
                 apply_status_var.set(f"Applied model: {target_model}")
-                self.ai_status_label.configure(text=self._ai_status_text())
+                refresh_summary()
+                rebuild_model_options(preferred_model=target_model)
             else:
                 apply_status_var.set("Current AI backend does not support runtime model updates.")
 
@@ -364,38 +371,170 @@ class QuerySystemGUI(BaseTk):
             justify=tk.LEFT,
         ).grid(row=2, column=0, columnspan=3, sticky="w", padx=8, pady=(0, 8))
 
+        prompt_frame = ttk.LabelFrame(root, text="Prompt Editor")
+        prompt_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 8))
+
+        ttk.Label(
+            prompt_frame,
+            text=(
+                "Edits are temporary for this app session. Supported placeholders in the user prompt: "
+                f"{info.get('query_placeholder', '<QUERY>')}, "
+                f"{info.get('source_file_placeholder', '<SOURCE_FILE>')}, "
+                f"{info.get('source_placeholder', '<SOURCE_CODE>')}."
+            ),
+            justify=tk.LEFT,
+        ).pack(anchor="w", padx=8, pady=(8, 6))
+
+        prompt_editors = ttk.Panedwindow(prompt_frame, orient=tk.HORIZONTAL)
+        prompt_editors.pack(fill=tk.BOTH, expand=True, padx=8, pady=(0, 8))
+
+        system_frame = ttk.LabelFrame(prompt_editors, text="System Prompt")
+        user_frame = ttk.LabelFrame(prompt_editors, text="User Prompt Template")
+        prompt_editors.add(system_frame, weight=1)
+        prompt_editors.add(user_frame, weight=1)
+
+        system_prompt_text = ScrolledText(system_frame, wrap=tk.WORD, height=16)
+        system_prompt_text.pack(fill=tk.BOTH, expand=True, padx=6, pady=6)
+        system_prompt_text.configure(font=("Consolas", 11) if sys.platform.startswith("win") else ("Menlo", 12) if sys.platform == "darwin" else ("DejaVu Sans Mono", 11), padx=8, pady=8)
+        system_prompt_text.insert("1.0", str(info.get("router_system_prompt", "")))
+
+        user_prompt_text = ScrolledText(user_frame, wrap=tk.WORD, height=16)
+        user_prompt_text.pack(fill=tk.BOTH, expand=True, padx=6, pady=6)
+        user_prompt_text.configure(font=("Consolas", 11) if sys.platform.startswith("win") else ("Menlo", 12) if sys.platform == "darwin" else ("DejaVu Sans Mono", 11), padx=8, pady=8)
+        user_prompt_text.insert("1.0", str(info.get("router_user_prompt_template", "")))
+
         actions = ttk.Frame(root)
         actions.pack(fill=tk.X, pady=(0, 6))
+
+        def _get_editor_text(widget: Any) -> str:
+            return widget.get("1.0", "end-1c")
+
+        def _set_editor_text(widget: Any, text: str) -> None:
+            widget.delete("1.0", tk.END)
+            widget.insert("1.0", text)
+
+        def refresh_summary() -> None:
+            current_info = self.query_interface.get_ai_info()
+            summary_var.set(
+                f"AI Enabled: {current_info.get('ai_enabled')}\n"
+                f"Backend: {current_info.get('backend')}\n"
+                f"Model: {current_info.get('model')}\n"
+                f"Base URL: {current_info.get('base_url')}"
+            )
+            self.ai_status_label.configure(text=self._ai_status_text())
+
+        def rebuild_model_options(preferred_model: Optional[str] = None) -> None:
+            current_query = self.query_var.get().strip() or str(info.get("query_placeholder", "<QUERY>"))
+            input_tokens = self._estimate_input_tokens_for_query(
+                current_query,
+                system_prompt=_get_editor_text(system_prompt_text),
+                user_prompt_template=_get_editor_text(user_prompt_text),
+            )
+            estimate_var.set(
+                "Estimated with current prompt size. "
+                f"Assuming ~{input_tokens} input tokens and ~{assumed_output_tokens} output tokens/query."
+            )
+
+            option_to_model.clear()
+            model_options: List[str] = []
+            for item in MODEL_PRICING:
+                model_name = item["model"]
+                cost = self._estimate_cost_per_query(
+                    input_tokens=input_tokens,
+                    output_tokens=assumed_output_tokens,
+                    input_price_per_1m=float(item["input_per_1m"]),
+                    output_price_per_1m=float(item["output_per_1m"]),
+                )
+                label = f"{model_name}  (~${cost:.6f}/query)"
+                model_options.append(label)
+                option_to_model[label] = model_name
+
+            target_model = preferred_model or self._extract_model_name_from_label(selected_model_label.get()) or self._current_ai_model_name()
+            if target_model and target_model != "-" and target_model not in {item["model"] for item in MODEL_PRICING}:
+                custom_label = f"{target_model}  (custom pricing unavailable)"
+                model_options.insert(0, custom_label)
+                option_to_model[custom_label] = target_model
+
+            model_combo.configure(values=model_options)
+            if model_options:
+                selected_label = next(
+                    (label for label in model_options if option_to_model.get(label) == target_model),
+                    model_options[0],
+                )
+                selected_model_label.set(selected_label)
+            else:
+                selected_model_label.set("")
+
+        def apply_prompts() -> None:
+            self.query_interface.set_ai_prompt_overrides(
+                router_system_prompt=_get_editor_text(system_prompt_text),
+                router_user_prompt_template=_get_editor_text(user_prompt_text),
+            )
+            prompt_status_var.set("Applied prompt changes for this session.")
+            refresh_summary()
+            rebuild_model_options(preferred_model=self._current_ai_model_name())
+
+        def reset_prompts() -> None:
+            self.query_interface.reset_ai_prompt_overrides()
+            refreshed = self.query_interface.get_ai_info()
+            _set_editor_text(system_prompt_text, str(refreshed.get("router_system_prompt", "")))
+            _set_editor_text(user_prompt_text, str(refreshed.get("router_user_prompt_template", "")))
+            prompt_status_var.set("Reset prompts to defaults.")
+            refresh_summary()
+            rebuild_model_options(preferred_model=self._current_ai_model_name())
 
         def copy_prompt() -> None:
             payload = (
                 "[System Prompt]\n"
-                + str(info.get("router_system_prompt", ""))
+                + _get_editor_text(system_prompt_text)
                 + "\n\n[User Prompt]\n"
-                + str(info.get("router_user_prompt_template", ""))
+                + _get_editor_text(user_prompt_text)
             )
             self.clipboard_clear()
             self.clipboard_append(payload)
             self._set_status("Copied prompt info to clipboard.")
 
-        ttk.Button(actions, text="Copy Prompt", command=copy_prompt).pack(side=tk.LEFT)
+        ttk.Button(actions, text="Apply Prompt", command=apply_prompts).pack(side=tk.LEFT)
+        ttk.Button(actions, text="Reset Prompt", command=reset_prompts).pack(side=tk.LEFT, padx=(8, 0))
+        ttk.Button(actions, text="Copy Prompt", command=copy_prompt).pack(side=tk.LEFT, padx=(8, 0))
+        ttk.Label(actions, textvariable=prompt_status_var).pack(side=tk.LEFT, padx=(12, 0))
 
-        prompt_box = ScrolledText(root, wrap=tk.WORD)
-        prompt_box.pack(fill=tk.BOTH, expand=True)
-        prompt_box.insert(
-            "1.0",
-            "[System Prompt]\n"
-            + str(info.get("router_system_prompt", ""))
-            + "\n\n[User Prompt]\n"
-            + str(info.get("router_user_prompt_template", "")),
+        def _on_prompt_edit(_event: Any = None) -> None:
+            rebuild_model_options(preferred_model=self._extract_model_name_from_label(selected_model_label.get()) or self._current_ai_model_name())
+
+        system_prompt_text.bind("<KeyRelease>", _on_prompt_edit)
+        user_prompt_text.bind("<KeyRelease>", _on_prompt_edit)
+
+        query_trace_id = self.query_var.trace_add(
+            "write",
+            lambda *_args: rebuild_model_options(
+                preferred_model=self._extract_model_name_from_label(selected_model_label.get()) or self._current_ai_model_name()
+            ),
         )
-        prompt_box.configure(state=tk.DISABLED)
 
-    def _estimate_input_tokens_for_query(self, query_text: str) -> int:
-        # Approximation: 1 token ~= 4 chars.
-        system_prompt = self.query_interface._build_ai_router_prompt()
-        user_prompt = self.query_interface._build_ai_user_prompt(query_text)
-        return max(1, int((len(system_prompt) + len(user_prompt)) / 4))
+        def _close_dialog() -> None:
+            try:
+                self.query_var.trace_remove("write", query_trace_id)
+            except Exception:
+                pass
+            dialog.destroy()
+
+        dialog.protocol("WM_DELETE_WINDOW", _close_dialog)
+
+        refresh_summary()
+        rebuild_model_options(preferred_model=str(info.get("model", "")) or self._current_ai_model_name())
+
+    def _estimate_input_tokens_for_query(
+        self,
+        query_text: str,
+        system_prompt: Optional[str] = None,
+        user_prompt_template: Optional[str] = None,
+    ) -> int:
+        return self.query_interface.estimate_ai_input_tokens(
+            natural_language_query=query_text,
+            router_system_prompt=system_prompt,
+            router_user_prompt_template=user_prompt_template,
+        )
 
     @staticmethod
     def _estimate_cost_per_query(

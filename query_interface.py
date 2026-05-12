@@ -1057,6 +1057,10 @@ class NLQueryMapper:
 class QueryInterface:
     """Main orchestration layer for NL query => command => API call => response."""
 
+    AI_QUERY_PLACEHOLDER = "<QUERY>"
+    AI_SOURCE_FILE_PLACEHOLDER = "<SOURCE_FILE>"
+    AI_SOURCE_PLACEHOLDER = "<SOURCE_CODE>"
+
     def __init__(
         self,
         backend: Optional[QueryBackend] = None,
@@ -1082,6 +1086,8 @@ class QueryInterface:
         }
         self.tool_registry = {**built_in_tools, **(tool_registry or {})}
         self.ai_source_max_chars = max(1000, ai_source_max_chars)
+        self._ai_router_prompt_override: Optional[str] = None
+        self._ai_user_prompt_template_override: Optional[str] = None
 
     def execute(self, natural_language_query: str) -> Dict[str, Any]:
         if self.ai_client is not None:
@@ -1274,7 +1280,7 @@ class QueryInterface:
             "ai_router_output": parsed,
         }
 
-    def _build_ai_router_prompt(self) -> str:
+    def _default_ai_router_prompt(self) -> str:
         return (
             "You are a query router and answerer for static-analysis or testing questions over a Python source file.\n"
             "Return ONLY JSON, no markdown.\n"
@@ -1326,6 +1332,92 @@ class QueryInterface:
             "- q9_taint_from_input -> get_taint_from_input(arguments={\"function_name\": \"...\"})\n"
             "Important: arguments must be a JSON object with primitive values/arrays/objects only."
         )
+
+    def _build_ai_router_prompt(self) -> str:
+        if self._ai_router_prompt_override is not None:
+            return self._ai_router_prompt_override
+        return self._default_ai_router_prompt()
+
+    def _default_ai_user_prompt_template(
+        self,
+        query_placeholder: Optional[str] = None,
+        source_file_placeholder: Optional[str] = None,
+        source_placeholder: Optional[str] = None,
+    ) -> str:
+        query_value = query_placeholder or self.AI_QUERY_PLACEHOLDER
+        source_file_value = source_file_placeholder or self.AI_SOURCE_FILE_PLACEHOLDER
+        source_value = source_placeholder or self.AI_SOURCE_PLACEHOLDER
+        return (
+            "User query:\n"
+            f"{query_value}\n\n"
+            f"Source file: {source_file_value}\n"
+            "Source code with explicit 1-based line numbers (possibly truncated):\n"
+            "-----BEGIN SOURCE-----\n"
+            f"{source_value}\n"
+            "-----END SOURCE-----\n"
+        )
+
+    def _current_ai_user_prompt_template(self) -> str:
+        if self._ai_user_prompt_template_override is not None:
+            return self._ai_user_prompt_template_override
+        return self._default_ai_user_prompt_template()
+
+    def _render_ai_user_prompt_template(
+        self,
+        template: str,
+        natural_language_query: str,
+        source_text: str,
+        source_file: Optional[str] = None,
+    ) -> str:
+        rendered = str(template)
+        replacements = {
+            self.AI_QUERY_PLACEHOLDER: natural_language_query,
+            self.AI_SOURCE_FILE_PLACEHOLDER: (source_file or self.default_source),
+            self.AI_SOURCE_PLACEHOLDER: source_text,
+        }
+        for placeholder, value in replacements.items():
+            rendered = rendered.replace(placeholder, value)
+        return rendered
+
+    def set_ai_prompt_overrides(
+        self,
+        router_system_prompt: Optional[str] = None,
+        router_user_prompt_template: Optional[str] = None,
+    ) -> None:
+        self._ai_router_prompt_override = str(router_system_prompt) if router_system_prompt is not None else None
+        self._ai_user_prompt_template_override = (
+            str(router_user_prompt_template) if router_user_prompt_template is not None else None
+        )
+
+    def reset_ai_prompt_overrides(self) -> None:
+        self._ai_router_prompt_override = None
+        self._ai_user_prompt_template_override = None
+
+    def estimate_ai_input_tokens(
+        self,
+        natural_language_query: str,
+        router_system_prompt: Optional[str] = None,
+        router_user_prompt_template: Optional[str] = None,
+    ) -> int:
+        # Approximation: 1 token ~= 4 chars.
+        source_text = self._get_source_for_ai()
+        system_prompt = (
+            str(router_system_prompt)
+            if router_system_prompt is not None
+            else self._build_ai_router_prompt()
+        )
+        user_template = (
+            str(router_user_prompt_template)
+            if router_user_prompt_template is not None
+            else self._current_ai_user_prompt_template()
+        )
+        user_prompt = self._render_ai_user_prompt_template(
+            user_template,
+            natural_language_query=natural_language_query,
+            source_text=source_text,
+            source_file=self.default_source,
+        )
+        return max(1, int((len(system_prompt) + len(user_prompt)) / 4))
 
     @staticmethod
     def _tool_for_query_type(query_type: QueryType) -> str:
@@ -2002,17 +2094,14 @@ class QueryInterface:
 
     def _build_ai_user_prompt(self, natural_language_query: str) -> str:
         source_text = self._get_source_for_ai()
-        return (
-            "User query:\n"
-            f"{natural_language_query}\n\n"
-            f"Source file: {self.default_source}\n"
-            "Source code with explicit 1-based line numbers (possibly truncated):\n"
-            "-----BEGIN SOURCE-----\n"
-            f"{source_text}\n"
-            "-----END SOURCE-----\n"
+        return self._render_ai_user_prompt_template(
+            self._current_ai_user_prompt_template(),
+            natural_language_query=natural_language_query,
+            source_text=source_text,
+            source_file=self.default_source,
         )
 
-    def get_ai_info(self, query_placeholder: str = "<QUERY>", source_placeholder: str = "<SOURCE_CODE>") -> Dict[str, Any]:
+    def get_ai_info(self) -> Dict[str, Any]:
         """Returns AI runtime metadata and prompt templates for GUI/debug display."""
         client = self.ai_client
         backend = "disabled"
@@ -2024,23 +2113,18 @@ class QueryInterface:
             model = getattr(client, "model", "-")
             base_url = getattr(client, "base_url", "-")
 
-        user_prompt_template = (
-            "User query:\n"
-            f"{query_placeholder}\n\n"
-            f"Source file: {self.default_source}\n"
-            "Source code with explicit 1-based line numbers (possibly truncated):\n"
-            "-----BEGIN SOURCE-----\n"
-            f"{source_placeholder}\n"
-            "-----END SOURCE-----\n"
-        )
-
         return {
             "ai_enabled": client is not None,
             "backend": backend,
             "model": model,
             "base_url": base_url,
             "router_system_prompt": self._build_ai_router_prompt(),
-            "router_user_prompt_template": user_prompt_template,
+            "router_user_prompt_template": self._current_ai_user_prompt_template(),
+            "default_router_system_prompt": self._default_ai_router_prompt(),
+            "default_router_user_prompt_template": self._default_ai_user_prompt_template(),
+            "query_placeholder": self.AI_QUERY_PLACEHOLDER,
+            "source_file_placeholder": self.AI_SOURCE_FILE_PLACEHOLDER,
+            "source_placeholder": self.AI_SOURCE_PLACEHOLDER,
         }
 
     def _get_source_for_ai(self) -> str:
