@@ -1,6 +1,0 @@
-digraph cluster_is_digit {
-	graph [label=_is_digit]
-	58 [label="#58
-return ch is not None and '0' <= ch <= '9'
-"]
-}
