@@ -1,0 +1,622 @@
+{
+  "parse_time_string": {
+    "parts": [
+      "time_str"
+    ],
+    "hour": [
+      "int",
+      "parts"
+    ],
+    "minute": [
+      "int",
+      "parts"
+    ]
+  },
+  "minutes_to_time_string": {
+    "hour": [
+      "value"
+    ],
+    "minute": [
+      "value"
+    ]
+  },
+  "parse_meeting_time": {
+    "raw": [
+      "entry"
+    ],
+    "pieces": [
+      "raw"
+    ],
+    "day": [
+      "pieces"
+    ],
+    "time_range": [
+      "pieces"
+    ],
+    "start_min": [
+      "parse_time_string",
+      "start_str"
+    ],
+    "end_min": [
+      "parse_time_string",
+      "end_str"
+    ]
+  },
+  "safe_int_input": {
+    "raw": [
+      "prompt",
+      "input"
+    ]
+  },
+  "current_credit_load": {
+    "section": [
+      "sections",
+      "section_id"
+    ]
+  },
+  "is_registered_in_semester": {
+    "section": [
+      "sections",
+      "section_id"
+    ]
+  },
+  "remove_student": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ]
+  },
+  "add_course": {
+    "prereqs": [
+      "prerequisites"
+    ]
+  },
+  "create_section": {
+    "course": [
+      "self",
+      "course_code"
+    ],
+    "section": [
+      "Section",
+      "section_id",
+      "course_code",
+      "semester",
+      "instructor_id",
+      "meeting_times",
+      "capacity",
+      "course"
+    ]
+  },
+  "remove_section": {
+    "section": [
+      "self",
+      "section_id"
+    ],
+    "student": [
+      "self",
+      "student_id"
+    ]
+  },
+  "get_student_semester_sections": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ]
+  },
+  "check_prerequisites": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "course": [
+      "self",
+      "course_code"
+    ]
+  },
+  "check_schedule_conflict": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "target": [
+      "self",
+      "section_id"
+    ]
+  },
+  "check_credit_limit": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ],
+    "current": [
+      "self",
+      "student"
+    ],
+    "projected": [
+      "section",
+      "current"
+    ],
+    "allowed": [
+      "student",
+      "projected"
+    ]
+  },
+  "check_duplicate_course_in_semester": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "target": [
+      "self",
+      "section_id"
+    ],
+    "existing": [
+      "self",
+      "existing_section_id",
+      "waitlisted_section_id"
+    ]
+  },
+  "can_register": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ]
+  },
+  "register_student": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ]
+  },
+  "drop_student": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ],
+    "was_enrolled": [
+      "student_id",
+      "section"
+    ],
+    "was_waitlisted": [
+      "student_id",
+      "section"
+    ],
+    "message": [
+      "student_id",
+      "section_id",
+      "reason"
+    ],
+    "promoted_message": [
+      "self",
+      "section_id"
+    ]
+  },
+  "promote_waitlist": {
+    "section": [
+      "self",
+      "section_id"
+    ],
+    "next_student_id": [
+      "section"
+    ],
+    "student": [
+      "self",
+      "next_student_id"
+    ]
+  },
+  "_can_promote_waitlisted_student": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ]
+  },
+  "check_duplicate_course_in_semester_promotion": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "target": [
+      "self",
+      "section_id"
+    ],
+    "existing": [
+      "self",
+      "existing_section_id",
+      "waitlisted_section_id"
+    ]
+  },
+  "record_completed_course": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "course": [
+      "self",
+      "course_code"
+    ]
+  },
+  "search_courses": {
+    "needle": [
+      "normalize_text",
+      "query"
+    ],
+    "haystack": [
+      "course"
+    ]
+  },
+  "list_student_schedule": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ]
+  },
+  "report_student_schedule": {
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "lines": [
+      "student"
+    ],
+    "sections": [
+      "self",
+      "student_id"
+    ],
+    "course": [
+      "self",
+      "section"
+    ],
+    "instructor": [
+      "self",
+      "section"
+    ],
+    "section": [
+      "self",
+      "section_id"
+    ],
+    "total_credits": [
+      "self",
+      "student"
+    ]
+  },
+  "report_course_roster": {
+    "section": [
+      "self",
+      "section_id"
+    ],
+    "course": [
+      "self",
+      "section"
+    ],
+    "instructor": [
+      "self",
+      "section"
+    ],
+    "lines": [
+      "len",
+      "section",
+      "course",
+      "instructor"
+    ],
+    "student": [
+      "self",
+      "student_id"
+    ]
+  },
+  "report_open_sections": {
+    "found": [
+      "False",
+      "True"
+    ],
+    "course": [
+      "self",
+      "section"
+    ]
+  },
+  "report_overloaded_students": {
+    "found": [
+      "False",
+      "True"
+    ],
+    "current": [
+      "self",
+      "student"
+    ]
+  },
+  "report_waitlisted_students": {
+    "found": [
+      "False",
+      "True"
+    ],
+    "course": [
+      "self",
+      "section"
+    ],
+    "student": [
+      "self",
+      "student_id"
+    ],
+    "name": [
+      "student"
+    ]
+  },
+  "report_system_summary": {
+    "total_students": [
+      "len",
+      "self"
+    ],
+    "total_courses": [
+      "len",
+      "self"
+    ],
+    "total_instructors": [
+      "len",
+      "self"
+    ],
+    "total_sections": [
+      "len",
+      "self"
+    ],
+    "total_enrolled": [
+      "self",
+      "sum"
+    ],
+    "total_waitlisted": [
+      "self",
+      "sum"
+    ],
+    "lines": [
+      "total_students",
+      "total_courses",
+      "total_instructors",
+      "total_sections",
+      "total_enrolled",
+      "total_waitlisted"
+    ]
+  },
+  "from_dict": {
+    "system": [
+      "RegistrationSystem"
+    ]
+  },
+  "load_from_file": {
+    "data": [
+      "json",
+      "f"
+    ],
+    "system": [
+      "RegistrationSystem",
+      "data"
+    ]
+  },
+  "print_all_courses": {
+    "prereq_text": [
+      "course"
+    ]
+  },
+  "build_demo_system": {
+    "system": [
+      "RegistrationSystem"
+    ]
+  },
+  "cli_add_student": {
+    "student_id": [
+      "input"
+    ],
+    "name": [
+      "input"
+    ],
+    "max_credits": [
+      "safe_int_input"
+    ],
+    "success": [
+      "system",
+      "student_id",
+      "name",
+      "max_credits"
+    ]
+  },
+  "cli_remove_student": {
+    "student_id": [
+      "input"
+    ],
+    "success": [
+      "system",
+      "student_id"
+    ]
+  },
+  "cli_add_course": {
+    "course_code": [
+      "input"
+    ],
+    "title": [
+      "input"
+    ],
+    "credits": [
+      "safe_int_input"
+    ],
+    "prereq_raw": [
+      "input"
+    ],
+    "prereqs": [
+      "prereq_raw",
+      "p"
+    ],
+    "success": [
+      "system",
+      "course_code",
+      "title",
+      "credits",
+      "prereqs"
+    ]
+  },
+  "cli_remove_course": {
+    "course_code": [
+      "input"
+    ],
+    "success": [
+      "system",
+      "course_code"
+    ]
+  },
+  "cli_add_instructor": {
+    "instructor_id": [
+      "input"
+    ],
+    "name": [
+      "input"
+    ],
+    "department": [
+      "input"
+    ],
+    "success": [
+      "system",
+      "instructor_id",
+      "name",
+      "department"
+    ]
+  },
+  "cli_remove_instructor": {
+    "instructor_id": [
+      "input"
+    ],
+    "success": [
+      "system",
+      "instructor_id"
+    ]
+  },
+  "cli_create_section": {
+    "section_id": [
+      "input"
+    ],
+    "course_code": [
+      "input"
+    ],
+    "semester": [
+      "input"
+    ],
+    "instructor_id": [
+      "input"
+    ],
+    "capacity": [
+      "safe_int_input"
+    ],
+    "line": [
+      "input"
+    ],
+    "success": [
+      "system",
+      "section_id",
+      "course_code",
+      "semester",
+      "instructor_id",
+      "capacity",
+      "meeting_times"
+    ]
+  },
+  "cli_remove_section": {
+    "section_id": [
+      "input"
+    ],
+    "success": [
+      "system",
+      "section_id"
+    ]
+  },
+  "cli_register_student": {
+    "student_id": [
+      "input"
+    ],
+    "section_id": [
+      "input"
+    ]
+  },
+  "cli_drop_student": {
+    "student_id": [
+      "input"
+    ],
+    "section_id": [
+      "input"
+    ]
+  },
+  "cli_record_completed_course": {
+    "student_id": [
+      "input"
+    ],
+    "course_code": [
+      "input"
+    ]
+  },
+  "cli_search_courses": {
+    "query": [
+      "input"
+    ],
+    "results": [
+      "system",
+      "query"
+    ],
+    "prereqs": [
+      "course"
+    ]
+  },
+  "cli_student_schedule_report": {
+    "student_id": [
+      "input"
+    ]
+  },
+  "cli_course_roster_report": {
+    "section_id": [
+      "input"
+    ]
+  },
+  "cli_save": {
+    "filename": [
+      "input"
+    ]
+  },
+  "cli_load": {
+    "filename": [
+      "input"
+    ]
+  },
+  "run_cli": {
+    "choice": [
+      "input"
+    ],
+    "loaded": [
+      "cli_load"
+    ]
+  }
+}
