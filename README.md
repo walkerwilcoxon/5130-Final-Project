@@ -60,21 +60,6 @@ pip install -r requirements.txt
     codeql pack install
     ```
 
-### Joern (for PDGs only)
-
-```bash
-mkdir joern && cd joern
-curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
-chmod u+x joern-install.sh
-./joern-install.sh --interactive
-
-# Java and Graphviz (apt)
-sudo apt update && sudo apt install default-jdk graphviz
-
-# Or with conda
-conda install -c conda-forge openjdk graphviz
-```
-
 ---
 
 ## Usage
@@ -172,6 +157,23 @@ python build_cfg.py
 Per-function CFGs are written to `cfg/course_management_system/`.
 
 ### Program Dependence Graphs (Joern)
+
+#### Install Joern and dependencies
+
+```bash
+mkdir joern && cd joern
+curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
+chmod u+x joern-install.sh
+./joern-install.sh --interactive
+
+# Java and Graphviz (apt)
+sudo apt update && sudo apt install default-jdk graphviz
+
+# Or with conda
+conda install -c conda-forge openjdk graphviz
+```
+
+#### Generate PDGs with Joern:
 
 ```bash
 mkdir $PROJ_DIR
