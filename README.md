@@ -1,87 +1,182 @@
+# COMS 5130 Final Project
 
+Analysis of AI-generated Python code using static analysis, fuzzing, property-based testing, symbolic execution, and taint analysis.
 
-# Installation:
-Note: Artheris requires Linux so it is recommended to use WSL on Windows.
+Authors: Walker Wilcoxon, Hengbo Tong, Junhyung Shim, Kenny Jia Hui Leong, Haifeng Huang
 
+---
 
-## Python Dependencies
-1. Create a virtual environment:
-    ```bash
-    python -m venv venv
-    ```
-2.  Activate the virtual environment:
-    ```bash
-    source venv/bin/activate
-    ```
-3. Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Repository Structure
 
-## CodeQL
-1. Install CodeQL CLI from the official GitHub repository [CodeQL CLI](https://github.com/github/codeql-cli-binaries/releases). You should install the Linux version if you are using WSL.
-2. Extract the downloaded archive and add the `codeql` executable to your system's PATH.
-3. Open a terminal and run the following command:
+```
+course_management_system.py   # Subject program (AI-generated, 1471 lines)
+query_gui.py                  # Tkinter GUI for the query interface
+query_interface.py            # Natural-language query interface (9 query types)
+query_system.py               # Backend: CodeQL + graph DB + coverage queries
+queries/                      # Jinja2 CodeQL query templates (.ql.j2)
+graph_database/               # Generated call graph and variable dependency JSON
+call_graphs/                  # Call graph outputs (DOT, PNG, TXT)
+cfg/                          # Per-function control-flow graphs (DOT, PNG)
+pdg/                          # Program dependence graphs via Joern (DOT, SVG)
+codeql-db/                    # CodeQL database for the subject program
+test_results/
+  static_analysis/            # PyLint JSON reports (full, warnings, refactors, conventions)
+  fuzzing/atheris/            # Atheris fuzzer: raw log, coverage, crash, corpus, summary
+  fuzzing/hypothesis/         # Hypothesis: raw coverage, JUnit XML, log, summary
+  symbolic/crosshair/         # CrossHair: raw log, summary JSON/MD
+  property_based_test/        # Property-based test HTML coverage report
+  unit_test/                  # Unit test HTML coverage report + XLSX
+  performance_stress_testing/ # Benchmark JSON results
+build_cfg.py                  # Script to build CFGs
+run_pylint.py                 # Script to run PyLint and write results
+run_pytest_benchmark.py       # Script to run pytest-benchmark
+property_test_course_management_system.py
+test_course_management_system.py
+test_query_interface.py
+research_report.txt           # Final written report
+```
+
+---
+
+## Installation
+
+> Atheris requires Linux. On Windows, use WSL for all fuzzing steps.
+
+### Python Dependencies
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # WSL/Linux
+# .venv\Scripts\Activate.ps1    # Windows PowerShell
+pip install -r requirements.txt
+```
+
+### CodeQL
+
+1. Download the CodeQL CLI from https://github.com/github/codeql-cli-binaries/releases (Linux build if using WSL).
+2. Extract and add the `codeql` binary to your PATH.
+3. Install the QL pack dependencies:
     ```bash
     codeql pack install
     ```
-4. Run the following command to install the Python libraries for CodeQL:
-    ```bash
-    git clone https://github.com/github/codeql codeql-libs
-    ```
 
-# Usage:
-* To run performance/stress testing, run:
-    ```bash
-    python run_pytest_benchmark.py
-    ```
-* To run static analysis, install pylint in venv, then run:
-    ```bash
-    python run_pylint.py
-    ```
-* To run the query system GUI:
-    ```bash
-    export OPENAI_API_KEY="your_api_key"  # get it from https://platform.openai.com/settings/organization/api-keys
-    python query_gui.py
-    ```
-
-# Automated Test Case Generation
+### Joern (for PDGs only)
 
 ```bash
-pytest -v --cov=course_management_system --cov-branch --cov-report=term --cov-report=html
-```
-# Program Dependency Graphs
-
-We use [Joern](https://docs.joern.io/frontends/python/) on Python code to export PDGs.
-
-## Install
-
-```bash
-# Install Joern
 mkdir joern && cd joern
 curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
 chmod u+x joern-install.sh
 ./joern-install.sh --interactive
 
+# Java and Graphviz (apt)
+sudo apt update && sudo apt install default-jdk graphviz
 
-
-# Install Java and Graphviz
-sudo apt update
-sudo apt install default-jdk graphviz
-
-# If you don't have sudo permission, I installed them with anaconda/miniconda
-conda install -c conda-forge openjdk 
-conda install -c conda-forge graphviz
+# Or with conda
+conda install -c conda-forge openjdk graphviz
 ```
 
-## Parse a Python project
+---
+
+## Usage
+
+### Query System GUI
+
+The GUI accepts natural-language queries about the subject program and dispatches them to CodeQL, the call/variable dependency graphs, or coverage data. An OpenAI API key enables AI-assisted query routing; without one it falls back to regex matching.
+
+```bash
+export OPENAI_API_KEY="sk-..."   # optional — enables AI routing
+python query_gui.py
+```
+
+Example queries supported:
+- Does register_student call can_register?
+- Who calls can_register?
+- Inside register_student, which variables are defined?
+- What is the coverage for function parse_meeting_time?
+- Does register_student receive tainted input from input()?
+- In function register_student, is variable student dependent on variable student_id?
+
+The query system can also be used from the command line:
+
+```bash
+python query_system.py calls-made --function register_student
+python query_system.py callers-of --function can_register --transitive
+python query_system.py variables --function register_student
+python query_system.py coverage --function parse_meeting_time
+python query_system.py taint --function cli_save
+python query_system.py var-deps-for --function register_student --variable student
+```
+
+### Generate the Graph Database
+
+The graph database must be built once before call/variable queries will work:
+
+```bash
+python query_system.py generate-call-graph
+python query_system.py generate-variable-dependencies
+```
+
+This writes `graph_database/call_graph.json` and `graph_database/variable_dependency_graph.json`.
+
+### Static Analysis (PyLint)
+
+```bash
+python run_pylint.py
+```
+
+Results are written to `test_results/static_analysis/`.
+
+### Fuzzing (Atheris)
+
+Must be run on Linux or WSL.
+
+```bash
+cd test_results/fuzzing/atheris/scripts
+python run_atheris.py
+```
+
+Raw output goes to `test_results/fuzzing/atheris/raw/`.
+
+### Property-Based Testing (Hypothesis)
+
+```bash
+cd test_results/fuzzing/hypothesis/scripts
+python run_hypothesis.py
+```
+
+### Symbolic Execution (CrossHair)
+
+```bash
+cd test_results/symbolic/crosshair/scripts
+python run_crosshair.py
+```
+
+### Unit Tests
+
+```bash
+pytest -v --cov=course_management_system --cov-branch --cov-report=term --cov-report=html
+```
+
+### Performance / Stress Testing
+
+```bash
+python run_pytest_benchmark.py
+```
+
+### Control-Flow Graphs
+
+```bash
+python build_cfg.py
+```
+
+Per-function CFGs are written to `cfg/course_management_system/`.
+
+### Program Dependence Graphs (Joern)
 
 ```bash
 mkdir $PROJ_DIR
-cp course_management_system.py $PROJ_DIR # put the python code under a project dir
-
+cp course_management_system.py $PROJ_DIR
 joern-parse $PROJ_DIR --language PYTHONSRC
-joern-export --repr pdg --out $OUTPUT_DIR # output .dot files are saved at $OUTPUT_DIR
-
-bash pdg/draw_pdg.sh # render dot files to pvg files.
+joern-export --repr pdg --out pdg/course_management_system
+bash pdg/draw_pdg.sh   # renders .dot files to .svg
 ```
