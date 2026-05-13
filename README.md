@@ -42,8 +42,6 @@ research_report.txt           # Final written report
 
 ### Python Dependencies
 
-Most dependencies work on any platform:
-
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # WSL/Linux/Mac
@@ -51,11 +49,7 @@ source .venv/bin/activate        # WSL/Linux/Mac
 pip install -r requirements.txt
 ```
 
-**Atheris and python-scalpel require Linux or Mac**. On Windows, use WSL. Install these separately once inside a Linux/Mac/WSL environment:
-
-```bash
-pip install -r requirements-linux.txt
-```
+`atheris` and `python-scalpel` are Linux-only and are skipped automatically on Windows. To use fuzzing or CFG generation on Windows, run inside WSL.
 
 ### CodeQL
 
@@ -75,9 +69,17 @@ pip install -r requirements-linux.txt
 The GUI accepts natural-language queries about the subject program and dispatches them to CodeQL, the call/variable dependency graphs, or coverage data. An OpenAI API key enables AI-assisted query routing; without one it falls back to regex matching.
 
 ```bash
-export OPENAI_API_KEY="sk-..."   # optional — enables AI routing
+export OPENAI_API_KEY="sk-..."   # optional — enables AI routing; we provide one API key in the final report with $9 credits left, should work fine for testing.
 python query_gui.py
 ```
+
+![GUI Example](assets/GUI_example.png)
+
+- The GUI should pop out directly on the screen, and there should be **"AI: enabled"** at the upper-right corner. If it says **"AI: disabled (fallback only)"**, there is probably something wrong with the API key or the OpenAI-related Python packages.
+
+- Try running any simple query. If the output section (left side) reports no errors, then everything should work fine. If you see an error about CodeQL, it is likely that CodeQL is not installed/configured properly.
+
+
 
 Example queries supported:
 - Does register_student call can_register?
@@ -119,7 +121,7 @@ Results are written to `test_results/static_analysis/`.
 
 ### Fuzzing (Atheris)
 
-Requires Linux, Mac, or WSL. Ensure `requirements-linux.txt` is installed before running.
+Requires Linux, Mac, or WSL.
 
 ```bash
 cd test_results/fuzzing/atheris/scripts
@@ -156,7 +158,7 @@ python run_pytest_benchmark.py
 
 ### Control-Flow Graphs
 
-Requires Linux, Mac, or WSL. Ensure `requirements-linux.txt` is installed before running.
+Requires Linux, Mac, or WSL.
 
 ```bash
 python build_cfg.py
