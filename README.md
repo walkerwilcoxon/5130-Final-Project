@@ -69,9 +69,17 @@ pip install -r requirements.txt
 The GUI accepts natural-language queries about the subject program and dispatches them to CodeQL, the call/variable dependency graphs, or coverage data. An OpenAI API key enables AI-assisted query routing; without one it falls back to regex matching.
 
 ```bash
-export OPENAI_API_KEY="sk-..."   # optional — enables AI routing
+export OPENAI_API_KEY="sk-..."   # optional — enables AI routing; we provide one API key in the final report with $9 credits left, should work fine for testing.
 python query_gui.py
 ```
+
+![GUI Example](assets/GUI_example.png)
+
+- The GUI should pop out directly on the screen, and there should be **"AI: enabled"** at the upper-right corner. If it says **"AI: disabled (fallback only)"**, there is probably something wrong with the API key or the OpenAI-related Python packages.
+
+- Try running any simple query. If the output section (left side) reports no errors, then everything should work fine. If you see an error about CodeQL, it is likely that CodeQL is not installed/configured properly.
+
+
 
 Example queries supported:
 - Does register_student call can_register?
