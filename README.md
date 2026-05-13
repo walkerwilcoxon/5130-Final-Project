@@ -40,15 +40,21 @@ research_report.txt           # Final written report
 
 ## Installation
 
-> Atheris requires Linux. On Windows, use WSL for all fuzzing steps.
-
 ### Python Dependencies
+
+Most dependencies work on any platform:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate        # WSL/Linux
+source .venv/bin/activate        # WSL/Linux/Mac
 # .venv\Scripts\Activate.ps1    # Windows PowerShell
 pip install -r requirements.txt
+```
+
+**Atheris and python-scalpel require Linux or Mac**. On Windows, use WSL. Install these separately once inside a Linux/Mac/WSL environment:
+
+```bash
+pip install -r requirements-linux.txt
 ```
 
 ### CodeQL
@@ -113,7 +119,7 @@ Results are written to `test_results/static_analysis/`.
 
 ### Fuzzing (Atheris)
 
-Must be run on Linux or WSL.
+Requires Linux, Mac, or WSL. Ensure `requirements-linux.txt` is installed before running.
 
 ```bash
 cd test_results/fuzzing/atheris/scripts
@@ -149,6 +155,8 @@ python run_pytest_benchmark.py
 ```
 
 ### Control-Flow Graphs
+
+Requires Linux, Mac, or WSL. Ensure `requirements-linux.txt` is installed before running.
 
 ```bash
 python build_cfg.py
